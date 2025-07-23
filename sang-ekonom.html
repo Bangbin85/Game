@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Sang Ekonom</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Mochiy+Pop+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+	<link rel="icon" type="image/x-icon" href="https://lh3.googleusercontent.com/d/1_4llqCMNoBDmwDHsI7RYsCM6rSK5wEjw">
+    <style>
+        :root {
+            --bg-color: #87CEEB; /* Sky Blue */
+            --container-bg: #ffffff;
+            --card-bg: #FFFACD; /* Lemon Chiffon */
+            --card-border: #FFD700; /* Gold */
+            --text-color: #4A4A4A;
+            --title-color: #4CAF50; /* Green */
+            --btn-bg: #FF9800; /* Orange */
+            --btn-shadow: #E65100; /* Dark Orange */
+            --font-title: 'Lilita One', cursive;
+            --font-body: 'Mochiy Pop One', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+            color: var(--text-color);
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 15px;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        #main-container {
+            max-width: 900px;
+            width: 100%;
+            background: var(--container-bg);
+            padding: 20px 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            border: 5px solid white;
+        }
+
+        h1 {
+            font-family: var(--font-title);
+            color: var(--title-color);
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            text-shadow: 2px 2px 0px white, 4px 4px 0px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            font-family: var(--font-title);
+            color: #5D9CEC;
+        }
+
+        #game-info {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 20px;
+            font-family: var(--font-title);
+            font-size: 1.5rem;
+        }
+
+        #score-container { color: var(--title-color); }
+        #timer-container { color: #f44336; }
+        
+        #timer-container.warning {
+            color: #d32f2f;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        #game-area {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #statements-container {
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px dashed #ccc;
+            width: 100%;
+        }
+        
+        #cards-pool {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            min-height: 50px;
+        }
+
+        .statement-card {
+            background-color: var(--card-bg);
+            padding: 12px 18px;
+            border-radius: 12px;
+            border: 3px solid var(--card-border);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: grab;
+            font-size: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            touch-action: none;
+        }
+
+        .dragging {
+            opacity: 0.7;
+            cursor: grabbing;
+            transform: scale(1.1);
+            position: fixed !important;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        #categories-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .category-box {
+            width: 200px;
+            min-height: 180px;
+            padding: 20px;
+            border-radius: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .category-box.drag-over {
+            transform: scale(1.08) translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.2);
+        }
+        
+        .category-box h2 {
+            font-family: var(--font-title);
+            margin-top: 0;
+            color: white;
+            text-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+            pointer-events: none;
+        }
+
+        #box-produksi { background: #FFB347; }
+        #box-distribusi { background: #46B2E0; }
+        #box-konsumsi { background: #77DD77; }
+
+        #feedback {
+            font-size: 1.8rem;
+            font-weight: bold;
+            height: 40px;
+            font-family: var(--font-title);
+        }
+        
+        .btn-3d {
+            background-color: var(--btn-bg);
+            color: white;
+            font-family: var(--font-title);
+            font-size: 1.8rem;
+            border: none;
+            border-radius: 15px;
+            padding: 15px 35px;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+            box-shadow: 0 6px 0 var(--btn-shadow);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            margin-top: 20px;
+        }
+        .btn-3d:hover { transform: translateY(-2px); box-shadow: 0 8px 0 var(--btn-shadow); }
+        .btn-3d:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--btn-shadow); }
+        
+        #end-animation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 9999;
+        }
+
+        .flower {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><g fill="%23FFD700"><circle cx="50" cy="15" r="15"/><path d="M50,30 A35,35 0 0,1 85,50 L50,50 Z"/><path d="M50,30 A35,35 0 0,0 15,50 L50,50 Z" transform="rotate(72, 50, 50)"/><path d="M50,30 A35,35 0 0,0 15,50 L50,50 Z" transform="rotate(144, 50, 50)"/><path d="M50,30 A35,35 0 0,0 15,50 L50,50 Z" transform="rotate(216, 50, 50)"/><path d="M50,30 A35,35 0 0,0 15,50 L50,50 Z" transform="rotate(288, 50, 50)"/></g><circle cx="50" cy="50" r="15" fill="%23A0522D"/></svg>');
+            background-size: contain;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="end-animation-container"></div>
+    <div id="main-container">
+
+        <div id="start-screen">
+            <h1>Sang Ekonom</h1>
+            <p style="font-size: 1.2rem;">Kamu punya waktu <b>30 detik</b> untuk menjodohkan semua kartu. Ayo buktikan kehebatanmu!</p>
+            <button id="start-btn" class="btn-3d">Mulai!</button>
+        </div>
+
+        <div id="game-area">
+            <div id="game-info">
+                <div id="score-container">Skor: <span id="score">0</span></div>
+                <div id="timer-container">Waktu: <span id="time">30</span></div>
+            </div>
+            <div id="statements-container">
+                <h3>👇 Seret kartu dari sini 👇</h3>
+                <div id="cards-pool"></div>
+            </div>
+            <div id="categories-container"></div>
+            <div id="feedback"></div>
+        </div>
+
+        <div id="end-screen" style="display: none;">
+            <h1>Permainan Selesai!</h1>
+            <h2 id="final-title">Skor Akhir Kamu:</h2>
+            <h2 id="final-score" style="color: #007bff; font-size: 4rem;">0</h2>
+            <p id="final-message" style="font-size: 1.2rem;"></p>
+            <button id="restart-btn" class="btn-3d">Main Lagi</button>
+            <a href="index.html"><button class="btn-3d"><i class="fa fa-home"></i></button></a>
+        </div>
+
+    </div>
+
+    <script>
+        const GAME_DURATION = 30;
+        
+        // PERBAIKAN 1: Deklarasi variabel ganda dihapus. Hanya ada satu 'const statements'.
+        const statements = [
+            { id: 1, text: "Petani menanam padi di sawah", category: "produksi" },
+            { id: 2, text: "Truk mengantar sayuran ke pasar", category: "distribusi" },
+            { id: 3, text: "Keluarga makan malam bersama", category: "konsumsi" },
+            { id: 4, text: "Pabrik membuat sepatu", category: "produksi" },
+            { id: 5, text: "Kurir mengantar paket ke rumah", category: "distribusi" },
+            { id: 6, text: "Anak-anak membeli es krim", category: "konsumsi" },
+            { id: 7, text: "Penjahit membuat baju", category: "produksi" },
+            { id: 8, text: "Pedagang menjual buah di toko", category: "distribusi" },
+            { id: 9, text: "Memakai seragam baru ke sekolah", category: "konsumsi" },
+            { id: 10, text: "Nelayan menangkap ikan di laut", category: "produksi" }
+        ];
+        
+        // PERBAIKAN 2: Kunci objek diubah agar sesuai dengan kategori pada 'statements'
+        const categories = {
+            produksi: { title: "Produksi", elementId: "box-produksi" },
+            distribusi: { title: "Distribusi", elementId: "box-distribusi" },
+            konsumsi: { title: "Konsumsi", elementId: "box-konsumsi" },
+        };
+
+        const startScreen = document.getElementById('start-screen');
+        const gameArea = document.getElementById('game-area');
+        const endScreen = document.getElementById('end-screen');
+        const startBtn = document.getElementById('start-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const cardsPool = document.getElementById('cards-pool');
+        const categoriesContainer = document.getElementById('categories-container');
+        const scoreEl = document.getElementById('score');
+        const timeEl = document.getElementById('time');
+        const timerContainer = document.getElementById('timer-container');
+        const feedbackEl = document.getElementById('feedback');
+        const finalTitleEl = document.getElementById('final-title');
+        const finalScoreEl = document.getElementById('final-score');
+        const finalMessageEl = document.getElementById('final-message');
+        const animationContainer = document.getElementById('end-animation-container');
+
+        let score, matchedCards, activeCard, offsetX, offsetY, timer, timeLeft;
+        let audioCtx;
+
+        function playSound(type) {
+            if (!audioCtx) return;
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+
+            switch (type) {
+                case 'correct':
+                    oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3);
+                    break;
+                case 'wrong':
+                    oscillator.type = 'square';
+                    oscillator.frequency.setValueAtTime(150, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.2);
+                    break;
+                case 'click':
+                    oscillator.frequency.setValueAtTime(600, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.1);
+                    break;
+                case 'tick':
+                    oscillator.type = 'square';
+                    oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.05);
+                    break;
+                case 'win':
+                    const now = audioCtx.currentTime;
+                    oscillator.frequency.setValueAtTime(523.25, now);
+                    oscillator.frequency.linearRampToValueAtTime(659.25, now + 0.1);
+                    oscillator.frequency.linearRampToValueAtTime(783.99, now + 0.2);
+                    gainNode.gain.exponentialRampToValueAtTime(0.00001, now + 0.5);
+                    break;
+            }
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.5);
+        }
+
+        function initAudio() {
+             if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+        
+        startBtn.addEventListener('click', () => { initAudio(); playSound('click'); startGame(); });
+        restartBtn.addEventListener('click', () => { playSound('click'); startGame(); });
+        
+        function startGame() {
+            score = 0;
+            matchedCards = 0;
+            scoreEl.innerText = score;
+            feedbackEl.innerText = "";
+            animationContainer.innerHTML = '';
+            
+            startScreen.style.display = 'none';
+            endScreen.style.display = 'none';
+            gameArea.style.display = 'flex';
+
+            setupGame();
+            startTimer();
+        }
+
+        function startTimer() {
+            timeLeft = GAME_DURATION;
+            timeEl.innerText = timeLeft;
+            timerContainer.classList.remove('warning');
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--;
+                timeEl.innerText = timeLeft;
+                if (timeLeft <= 5 && timeLeft > 0) {
+                    timerContainer.classList.add('warning');
+                    playSound('tick');
+                }
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    endGame('timeup');
+                }
+            }, 1000);
+        }
+
+        function setupGame() {
+            cardsPool.innerHTML = '';
+            categoriesContainer.innerHTML = '';
+
+            for (const key in categories) {
+                const category = categories[key];
+                const box = document.createElement('div');
+                box.id = category.elementId;
+                box.className = 'category-box';
+                box.dataset.category = key;
+                box.innerHTML = `<h2>${category.title}</h2>`;
+                categoriesContainer.appendChild(box);
+                
+                box.addEventListener('dragover', e => { e.preventDefault(); box.classList.add('drag-over'); });
+                box.addEventListener('dragleave', () => box.classList.remove('drag-over'));
+                box.addEventListener('drop', onDrop);
+            }
+
+            const shuffledStatements = statements.sort(() => Math.random() - 0.5);
+            shuffledStatements.forEach(statement => {
+                const card = document.createElement('div');
+                card.id = `card-${statement.id}`;
+                card.className = 'statement-card';
+                card.draggable = true;
+                card.innerText = statement.text;
+                card.dataset.category = statement.category;
+                cardsPool.appendChild(card);
+                
+                card.addEventListener('dragstart', onDragStartMouse);
+                card.addEventListener('touchstart', onTouchStart, { passive: false });
+            });
+
+            document.addEventListener('touchmove', onTouchMove, { passive: false });
+            document.addEventListener('touchend', onTouchEnd);
+        }
+        
+        function handleMatch(card, dropZone) {
+            const cardCategory = card.dataset.category;
+            const zoneCategory = dropZone.dataset.category;
+
+            if (cardCategory === zoneCategory) {
+                playSound('correct');
+                feedbackEl.innerText = "Benar!";
+                feedbackEl.style.color = '#28a745';
+                score += 10;
+                scoreEl.innerText = score;
+                card.draggable = false;
+                card.className = 'statement-card';
+                card.style = '';
+                dropZone.appendChild(card);
+                matchedCards++;
+                if (matchedCards === statements.length) {
+                    clearInterval(timer);
+                    setTimeout(() => endGame('win'), 500);
+                }
+            } else {
+                playSound('wrong');
+                feedbackEl.innerText = "Kurang Tepat!";
+                feedbackEl.style.color = '#dc3545';
+                cardsPool.appendChild(card);
+            }
+            setTimeout(() => { feedbackEl.innerText = "" }, 1500);
+        }
+
+        function onDragStartMouse(e) { e.dataTransfer.setData('text/plain', e.target.id); }
+        function onDrop(e) {
+            e.preventDefault();
+            const dropZone = e.currentTarget;
+            dropZone.classList.remove('drag-over');
+            const cardId = e.dataTransfer.getData('text/plain');
+            handleMatch(document.getElementById(cardId), dropZone);
+        }
+
+        function onTouchStart(e) {
+            e.preventDefault();
+            activeCard = e.currentTarget;
+            const rect = activeCard.getBoundingClientRect();
+            offsetX = e.touches[0].clientX - rect.left;
+            offsetY = e.touches[0].clientY - rect.top;
+            activeCard.style.width = `${rect.width}px`;
+            activeCard.style.height = `${rect.height}px`;
+            activeCard.classList.add('dragging');
+            activeCard.style.left = `${e.touches[0].clientX - offsetX}px`;
+            activeCard.style.top = `${e.touches[0].clientY - offsetY}px`;
+        }
+
+        function onTouchMove(e) {
+            if (!activeCard) return;
+            e.preventDefault();
+            const x = e.touches[0].clientX, y = e.touches[0].clientY;
+            activeCard.style.left = `${x - offsetX}px`;
+            activeCard.style.top = `${y - offsetY}px`;
+            document.querySelectorAll('.category-box').forEach(box => {
+                const rect = box.getBoundingClientRect();
+                box.classList.toggle('drag-over', x > rect.left && x < rect.right && y > rect.top && y < rect.bottom);
+            });
+        }
+
+        function onTouchEnd(e) {
+            if (!activeCard) return;
+            activeCard.classList.remove('dragging');
+            const x = e.changedTouches[0].clientX, y = e.changedTouches[0].clientY;
+            activeCard.style.display = 'none';
+            const elementBelow = document.elementFromPoint(x, y);
+            activeCard.style.display = 'block';
+            let dropZone = elementBelow ? elementBelow.closest('.category-box') : null;
+            document.querySelectorAll('.category-box').forEach(box => box.classList.remove('drag-over'));
+            if (dropZone) {
+                handleMatch(activeCard, dropZone);
+            } else {
+                cardsPool.appendChild(activeCard);
+                activeCard.style.position = 'static';
+                activeCard.style.width = 'auto';
+                activeCard.style.height = 'auto';
+            }
+            activeCard = null;
+        }
+
+        function createFallingFlowers() {
+            for (let i = 0; i < 30; i++) {
+                const flower = document.createElement('div');
+                flower.className = 'flower';
+                flower.style.left = `${Math.random() * 100}vw`;
+                flower.style.animationDuration = `${Math.random() * 3 + 4}s`;
+                flower.style.animationDelay = `${Math.random() * 3}s`;
+                flower.style.transform = `scale(${Math.random() * 0.5 + 0.5})`;
+                animationContainer.appendChild(flower);
+            }
+        }
+        
+        function endGame(reason) {
+            gameArea.style.display = 'none';
+            endScreen.style.display = 'block';
+            finalScoreEl.innerText = score;
+            
+            if (reason === 'timeup') {
+                playSound('wrong');
+                finalTitleEl.innerText = "Waktu Habis!";
+                finalMessageEl.innerText = "Jangan menyerah, coba lagi ya!";
+            } else if (reason === 'win') {
+                playSound('win');
+                finalTitleEl.innerText = "Luar Biasa!";
+                finalMessageEl.innerText = "Kamu berhasil menyelesaikan tantangan!";
+                createFallingFlowers();
+            }
+        }
+    </script>
+</body>
+</html>
