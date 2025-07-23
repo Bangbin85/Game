@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Interaktif Lambang Sila Pancasila</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fredoka+One&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+	<link rel="icon" type="image/x-icon" href="https://lh3.googleusercontent.com/d/1_4llqCMNoBDmwDHsI7RYsCM6rSK5wEjw">
+    <style>
+        /* Sembunyikan scrollbar */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        body {
+            font-family: 'Fredoka One', 'Poppins', 'Arial Rounded MT Bold', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Mencegah scroll horizontal */
+            background-color: #111; /* Fallback background */
+            color: #333;
+        }
+
+        #threejs-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 80%;
+            height: 60%;
+            z-index: -1; /* Letakkan di belakang */
+        }
+        h1, h2, h3 {
+            font-family: 'Fredoka One', cursive;
+            color: #0056b3;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* --- Section Styling --- */
+        .page-section {
+            display: none; /* Semua section disembunyikan secara default */
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+            box-sizing: border-box;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .page-section.active {
+            display: flex; /* Hanya section aktif yang ditampilkan */
+        }
+
+        /* Halaman Depan (Home Section) */
+		#home-section .welcome-title {
+			font-family: 'Fredoka One', cursive;
+			font-size: 5em;
+			color: #0576e6;
+			margin-bottom: 5px;
+			text-align: center;
+			-webkit-text-stroke: 5px #fff;
+			text-stroke: 5px #fff; /* Untuk browser modern */
+		}
+        #home-section .welcome-subtitle {
+            font-size: 2.2em;
+            color: #fff;
+            margin-top: 0;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        /* Tata Letak Tombol */
+        .home-buttons-wrapper { display: flex; flex-direction: column; align-items: center; gap: 30px; width: 100%; }
+        .top-buttons-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+
+        .home-btn {
+            padding: 10px 10px; font-size: 2.1em; font-family: 'Fredoka One', sans-serif; font-weight: 700;
+            border-radius: 12px; border: none; color: white; cursor: pointer; position: relative;
+            transition: transform 0.1s ease, box-shadow 0.1s ease; text-shadow: 0px 1px 2px rgba(0,0,0,0.3);
+        }
+        .home-btn:active { transform: translateY(4px); }
+        #btn-mulai { background-color: #2ecc71; box-shadow: 0 6px 0 #27ae60; font-size: 2.5em; padding: 8px 15px; border-radius: 20px; }
+        #btn-mulai:active { box-shadow: 0 2px 0 #27ae60; }
+        #btn-petunjuk { background-color: #3498db; box-shadow: 0 6px 0 #2980b9; }
+        #btn-petunjuk:active { box-shadow: 0 2px 0 #2980b9; }
+        #btn-materi { background-color: #9b59b6; box-shadow: 0 6px 0 #8e44ad; }
+        #btn-materi:active { box-shadow: 0 2px 0 #8e44ad; }
+        #btn-tujuan { background-color: #f1c40f; box-shadow: 0 6px 0 #f39c12; }
+        #btn-tujuan:active { box-shadow: 0 2px 0 #f39c12; }
+        #btn-profil { background-color: #e74c3c; box-shadow: 0 6px 0 #c0392b; }
+        #btn-profil:active { box-shadow: 0 2px 0 #c0392b; }
+        #btn-credit { background-color: #060fc1; box-shadow: 0 6px 0 #c0392b; }
+        #btn-credit:active { box-shadow: 0 2px 0 #c0392b; }		
+        #btn-homeBangbin { background-color: #1abc9c; box-shadow: 0 6px 0 #16a085; }
+        #btn-homeBangbin:active { box-shadow: 0 2px 0 #16a085; }
+
+        /* --- Section Materi --- */
+        #perisai-container { position: relative; width: 100%; max-width: 600px; margin: auto; }
+        .simbol-pancasila { position: absolute; cursor: pointer; transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out; filter: drop-shadow(0 4px 6px rgba(18, 6, 6, 0.2)); }
+        .simbol-pancasila:hover { transform: scale(1.8); filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3)); }
+        #simbol-1 { width: 12%; top: 46%; left: 50%; transform: translateX(-50%); }
+        #simbol-1:hover { transform: translateX(-50%) scale(1.8); }
+        #simbol-2 { width: 12%; bottom: 33%; right: 36%; }
+        #simbol-3 { width: 12%; top: 38%; right: 34%; }
+        #simbol-4 { width: 13%; top: 36%; left: 34%; }
+        #simbol-5 { width: 15%; bottom: 33%; left: 34%; }
+        #simbol-6 { width: 60%; bottom: 7%; left: 22%; }
+
+        /* --- Section Game --- */
+        #game-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            width: 100%;
+            max-width: 900px;
+        }
+        #game-board { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; align-items: center; }
+        .game-item {
+            padding: 15px; border-radius: 10px; background-color: #e0f7fa;
+            border: 3px solid #b2ebf2; cursor: pointer; transition: all 0.2s ease;
+            display: flex; align-items: center; justify-content: center; min-height: 80px;
+        }
+        .game-item.symbol-item { background-color: #fff3e0; border-color: #ffe0b2; }
+        .game-item:hover { transform: translateY(-3px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .game-item.selected { border-color: #4caf50; background-color: #c8e6c9; transform: scale(1.05); }
+        .game-item.matched {
+            border-color: #2e7d32; background-color: #a5d6a7;
+            cursor: not-allowed; opacity: 0.6; pointer-events: none;
+        }
+        .game-item.error {
+            border-color: #d32f2f; background-color: #ffcdd2;
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .symbol-item svg { width: 50px; height: 50px; }
+        #game-info {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; font-size: 1.5em; font-family: 'Fredoka One', cursive; color: #37474f;
+        }
+
+        /* --- Modal --- */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); display: none;
+            justify-content: center; align-items: center; z-index: 2000;
+            padding: 20px; box-sizing: border-box;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .modal-content {
+            background-color: white; padding: 30px; border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3); max-width: 600px;
+            width: 100%; text-align: left; position: relative; overflow: hidden;
+            animation: scaleUp 0.3s ease-out;
+        }
+        .modal-content h2 { margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+        .modal-content ul { padding-left: 20px; }
+        .close-modal, .back-button, #reset-game, #play-again, #continue-to-game2, #play-memory-again {
+            padding: 12px 28px; border: none; border-radius: 8px;
+            color: white; cursor: pointer; font-size: 1em; margin-top: 20px;
+            font-family: 'Fredoka One', sans-serif;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .close-modal { background-color: #e74c3c; float: right; }
+        .close-modal:hover { background-color: #c0392b; }
+        .back-button {
+			background-color: #3498db;
+			position: relative;
+			z-index: 10;
+		}
+		.back-button:active { box-shadow: 0 2px 0 #8e44ad; }
+
+        /* --- Profil Modal --- */
+        .profile-pic-container {
+            perspective: 1000px; border-radius: 80%; width: 100px; height: 200px;
+            flex-shrink: 0; margin-right: 20px; display: flex; justify-content: center; align-items: center;
+        }
+        .profile-pic-container img {
+            transition: transform 0.2s ease-out; width: 80%; height: 100%;
+            object-fit: cover;
+        }
+        .social-icons .fab { transition: transform 0.3s ease, color 0.3s ease; }
+        .social-icons .fab:hover { color: #F1C40F; animation: icon-wobble 0.6s ease-in-out; }
+        @keyframes icon-wobble {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-15deg) scale(1.1); }
+            50% { transform: rotate(10deg) scale(1.1); }
+            75% { transform: rotate(-5deg) scale(1.1); }
+        }
+        .modal-bg-image-profile {
+            position: absolute; right: -20px; top: -20px; height: 120%;
+            opacity: 0.15; pointer-events: none; z-index: 1; object-fit: cover; width: auto;
+        }
+        .modal-main-content {
+            position: relative; z-index: 2; display: flex; align-items: center;
+            width: 100%; padding: 10px; box-sizing: border-box; color: white;
+        }
+        #profilModal .modal-content { background: linear-gradient(135deg, #4e54c8, #8f94fb); }
+        #profilModal h2, #profilModal p { color: white; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
+        #profilModal h2 { border: none; padding: 0; }
+		
+		
+/* --- Section Memory Game --- */
+#memory-game-container {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    width: 100%;
+    max-width: 600px;
+}
+
+.memory-card {
+    background-color: #3498db;
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    cursor: pointer;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.memory-card.flipped, .memory-card.matched {
+    transform: rotateY(180deg);
+}
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+
+.card-front {
+    background-color: #3498db;
+}
+
+.card-back {
+    background-color: #ecf0f1;
+    transform: rotateY(180deg);
+    padding: 5px;
+}
+
+.card-back svg {
+    width: 80%;
+    height: 80%;
+}		
+
+/* --- Perbaikan untuk Tampilan Modal Simbol --- */
+#simbolModal .modal-content {
+    text-align: left; /* Membuat semua konten di modal rata kiri */
+}
+
+#simbolModal #modal-image {
+    /* Memperbesar ukuran ikon di dalam modal */
+    width: 100px;
+    height: 100px;
+}
+
+#simbolModal #modal-text {
+    text-align: left; /* Memastikan teks penjelasan juga rata kiri */
+}
+
+#simbolModal #modal-text h4 {
+    font-weight: bold;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.1em;
+}
+
+		
+    </style>
+</head>
+<body>
+	<audio id="materi-music" src="http://www.hamienet.com/65339_Garuda-Pancasila.mp3" loop></audio>
+	
+	
+	
+    <div id="threejs-container"></div>
+
+    <!-- Halaman Utama -->
+    <section id="home-section" class="page-section active">
+        <div>
+            <h1 class="welcome-title">SILA PANCASILA</h1>
+            <p class="welcome-subtitle">Jelajahi & Mainkan Lambang Sila Pancasila</p>
+            
+            <div class="home-buttons-wrapper">
+                <div class="top-buttons-container">
+                    <button id="btn-petunjuk" class="home-btn"><i class="fas fa-question-circle"></i> Petunjuk</button>
+                    <button id="btn-tujuan" class="home-btn"><i class="fas fa-bullseye"></i> Tujuan</button>
+                    <button id="btn-materi" class="home-btn"><i class="fas fa-book"></i> Materi</button>
+					<button id="btn-credit" class="home-btn"><i class="fas fa-pencil"></i> Credit</button>
+                    <button id="btn-profil" class="home-btn"><i class="fas fa-user"></i> Profil</button>
+                    <a href="index.html"><button id="btn-homeBangbin" class="home-btn"><i class="fa fa-home"></i> </button></a>
+                </div>
+                <button id="btn-mulai" class="home-btn">Mulai <i class="fas fa-play"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Halaman Materi -->
+    <section id="materi-section" class="page-section">
+        <div class="w-full max-w-4xl text-center">
+            <h2 class="text-3xl md:text-xl font-bold text-gray-800 mb-2">Klik pada setiap simbol untuk melihat maknanya.</h2>
+
+            <div id="perisai-container">
+                 <!-- Perisai SVG -->
+                 <div id="perisai-svg">
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.5" viewBox="0 0 1000 1000" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" xmlns:xlink="http://www.w3.org/1999/xlink"><g><path style="opacity:0.998" fill="#e2be44" d="M 656.5,627.5 C 662.17,613.986 666.337,599.986 669,585.5C 669.5,506.834 669.667,428.167 669.5,349.5C 559.167,349.5 448.833,349.5 338.5,349.5C 338.02,428.86 338.52,508.194 340,587.5C 348.883,634.032 373.716,669.198 414.5,693C 466.736,720.95 520.403,723.95 575.5,702C 609.261,686.735 635.594,663.235 654.5,631.5C 659.97,640.498 665.303,649.664 670.5,659C 668.038,660.216 665.371,660.882 662.5,661C 671.681,670.014 680.681,679.181 689.5,688.5C 684.82,689.478 680.153,689.645 675.5,689C 679.833,694 684.167,699 688.5,704C 684.129,707.516 679.129,709.683 673.5,710.5C 678.047,716.425 682.713,722.258 687.5,728C 683.104,729.94 678.437,730.94 673.5,731C 678.816,735.471 683.316,740.638 687,746.5C 693.271,763.049 701.605,778.382 712,792.5C 716.499,796.827 721.665,799.661 727.5,801C 738.673,791.919 750.339,783.586 762.5,776C 771.776,775.553 779.276,779.053 785,786.5C 798.619,766.537 814.119,748.037 831.5,731C 842.812,722.008 854.812,714.008 867.5,707C 869.165,706.212 870.831,705.878 872.5,706C 861.959,718.251 855.626,732.417 853.5,748.5C 866.107,746.771 878.441,747.938 890.5,752C 892.996,753.08 895.33,754.414 897.5,756C 881.16,762.662 867.326,772.829 856,786.5C 846.178,798.811 836.845,811.478 828,824.5C 823.5,829.667 819,834.833 814.5,840C 808.815,840.913 803.482,839.913 798.5,837C 793.658,833.324 789.325,829.158 785.5,824.5C 780.888,827.608 776.722,831.275 773,835.5C 773.556,842.781 773.556,850.114 773,857.5C 772.117,860.102 770.617,862.269 768.5,864C 761.624,866.545 754.957,869.545 748.5,873C 745.084,877.087 741.084,880.42 736.5,883C 734.167,883.667 731.833,883.667 729.5,883C 725.599,881.033 721.599,879.7 717.5,879C 692.711,895.064 666.711,909.064 639.5,921C 646.891,939.116 654.558,957.116 662.5,975C 644.433,978.422 628.933,973.589 616,960.5C 619.062,970.427 624.562,978.927 632.5,986C 612.942,987.306 596.109,981.139 582,967.5C 584.37,974.721 588.203,981.221 593.5,987C 581.231,988.433 569.897,985.766 559.5,979C 553.041,974.21 546.874,969.043 541,963.5C 544.333,975.5 549.833,986.5 557.5,996.5C 531.115,1000.44 511.615,990.775 499,967.5C 486.683,990.245 467.516,1000.24 441.5,997.5C 446.13,990.25 450.297,982.583 454,974.5C 455.445,970.85 456.445,967.183 457,963.5C 446.205,975.955 432.705,983.789 416.5,987C 412.789,987.825 409.122,987.659 405.5,986.5C 408.528,982.639 411.361,978.639 414,974.5C 415.59,972.35 416.257,970.017 416,967.5C 401.844,980.996 385.01,987.163 365.5,986C 374.012,978.775 379.845,969.942 383,959.5C 370.272,973.243 354.772,978.243 336.5,974.5C 344.224,956.995 351.557,939.329 358.5,921.5C 334.077,911.955 310.411,900.789 287.5,888C 284.167,885.667 280.833,883.333 277.5,881C 272.546,881.975 267.546,882.642 262.5,883C 257.835,881.174 254.168,878.174 251.5,874C 246.876,872.69 242.876,870.356 239.5,867C 233.449,866.561 228.949,863.728 226,858.5C 224.984,851.802 224.651,845.135 225,838.5C 220.299,834.134 215.966,829.467 212,824.5C 204.744,832.874 195.91,838.874 185.5,842.5C 179.52,838.354 174.354,833.354 170,827.5C 161.451,812.956 152.118,798.956 142,785.5C 129.437,772.609 114.937,762.442 98.5,755C 101.868,751.869 105.868,749.869 110.5,749C 121.083,747.093 131.749,746.26 142.5,746.5C 141.884,742.137 141.05,737.803 140,733.5C 135.515,723.536 130.848,713.869 126,704.5C 151.014,719.838 173.347,738.504 193,760.5C 199.493,768.818 205.493,777.485 211,786.5C 215.167,783.667 219.333,780.833 223.5,778C 230.408,775.863 237.075,776.529 243.5,780C 252.81,787.654 262.477,794.821 272.5,801.5C 276.586,799.04 280.753,796.707 285,794.5C 290,786.833 295,779.167 300,771.5C 304,762.833 308,754.167 312,745.5C 315.419,740.077 319.585,735.244 324.5,731C 319.826,730.886 315.493,729.72 311.5,727.5C 316.62,721.425 321.62,715.258 326.5,709C 322.416,708.769 318.416,708.102 314.5,707C 312.697,706.363 311.364,705.197 310.5,703.5C 314.311,698.521 318.311,693.688 322.5,689C 317.847,689.645 313.18,689.478 308.5,688.5C 317.959,679.542 327.292,670.375 336.5,661C 333.832,660.433 331.166,659.933 328.5,659.5C 334.409,647.856 340.742,636.356 347.5,625C 313.28,642.808 277.28,647.141 239.5,638C 235.888,636.861 232.554,635.194 229.5,633C 212.877,632.246 198.877,625.913 187.5,614C 176.868,610.703 168.535,604.37 162.5,595C 151.361,591.694 144.028,584.527 140.5,573.5C 128.777,568.107 121.443,559.107 118.5,546.5C 108.352,539.873 102.519,530.54 101,518.5C 91.211,510.592 85.8777,500.258 85,487.5C 78.7638,478.46 75.0971,468.46 74,457.5C 68.2158,448.482 65.0491,438.648 64.5,428C 64.5252,425.245 64.8586,422.578 65.5,420C 58.5337,407.705 56.0337,394.539 58,380.5C 51.5469,368.811 50.7135,356.977 55.5,345C 48.9089,327.792 48.9089,310.625 55.5,293.5C 50.8206,280.775 49.6539,267.775 52,254.5C 53.1395,250.888 54.8061,247.554 57,244.5C 57.1309,238.846 56.9642,233.179 56.5,227.5C 56.2434,216.189 59.2434,205.855 65.5,196.5C 62.5803,181.696 64.747,167.696 72,154.5C 73,153.5 74,152.5 75,151.5C 75.3333,142.167 75.6667,132.833 76,123.5C 76.4376,113.131 80.2709,104.298 87.5,97C 89.6504,95.5886 91.9837,94.7553 94.5,94.5C 95.3327,68.9667 104.333,46.9667 121.5,28.5C 119.25,72.6657 126.417,115.332 143,156.5C 165.126,203.841 200.626,237.008 249.5,256C 272.808,264.32 295.475,273.986 317.5,285C 322.301,288.799 326.801,292.966 331,297.5C 340.83,311.156 350.163,325.156 359,339.5C 360.833,341.333 362.667,343.167 364.5,345C 378.626,349.207 392.626,349.04 406.5,344.5C 404.506,339.41 405.506,335.077 409.5,331.5C 408.48,329.568 408.313,327.568 409,325.5C 410.827,323.698 411.994,321.532 412.5,319C 411.281,316.717 411.281,314.384 412.5,312C 410.158,309.147 408.491,305.981 407.5,302.5C 415.647,304.19 423.647,303.69 431.5,301C 432.5,300 433.5,299 434.5,298C 426.797,297.319 420.797,293.819 416.5,287.5C 421.521,286.756 426.521,285.923 431.5,285C 439.712,281.053 439.045,278.72 429.5,278C 426.156,276.106 424.822,273.273 425.5,269.5C 431.87,269.46 437.87,267.96 443.5,265C 438.432,263.462 434.432,260.462 431.5,256C 437.26,255.048 442.926,253.715 448.5,252C 457.492,247.017 459.659,239.85 455,230.5C 453.088,229.308 451.088,228.308 449,227.5C 438.464,232.122 427.464,235.122 416,236.5C 403.701,235.688 395.034,229.688 390,218.5C 389.333,216.833 389.333,215.167 390,213.5C 391.726,214.576 393.559,214.743 395.5,214C 392.039,211.925 390.706,209.092 391.5,205.5C 398.797,208.993 406.463,210.493 414.5,210C 420.469,207.016 426.469,204.016 432.5,201C 434.167,200.667 435.833,200.333 437.5,200C 416.576,193.659 396.576,195.659 377.5,206C 372.325,210.009 367.658,214.509 363.5,219.5C 359.673,206.468 362.173,194.801 371,184.5C 381.377,175.226 393.21,168.392 406.5,164C 405.377,162.956 404.044,162.29 402.5,162C 397.5,161.667 392.5,161.333 387.5,161C 391.477,153.504 397.81,149.838 406.5,150C 402.156,147.494 397.489,145.828 392.5,145C 394.221,143.473 396.221,142.473 398.5,142C 402.833,141.667 407.167,141.333 411.5,141C 401.785,134.968 402.785,132.635 414.5,134C 417.583,134.786 419.749,136.619 421,139.5C 421.869,130.969 426.202,124.969 434,121.5C 433.544,127.13 433.544,132.796 434,138.5C 434.667,139.833 435.333,141.167 436,142.5C 440.316,136.86 445.816,132.694 452.5,130C 477.157,130.482 501.824,130.482 526.5,130C 536.243,123.687 542.409,114.854 545,103.5C 548.149,109.447 549.982,115.78 550.5,122.5C 549.795,128.19 548.295,133.524 546,138.5C 550.51,134.316 553.843,129.316 556,123.5C 560.601,134.036 558.101,142.536 548.5,149C 552.811,148.926 556.311,147.093 559,143.5C 559.257,153.816 554.757,161.316 545.5,166C 550.958,171.68 554.125,178.514 555,186.5C 557.358,199.057 558.692,211.724 559,224.5C 559.796,231.608 563.296,236.775 569.5,240C 577.26,241.294 584.926,242.127 592.5,242.5C 586.374,254.497 576.708,258.664 563.5,255C 565.955,259.452 569.621,262.452 574.5,264C 578.931,265.046 583.264,265.546 587.5,265.5C 586.804,268.357 585.471,270.857 583.5,273C 578.723,274.98 573.723,275.98 568.5,276C 574.496,283.681 582.496,287.347 592.5,287C 588.436,293.705 582.436,297.371 574.5,298C 577.286,300.726 580.619,302.393 584.5,303C 590.167,303.333 595.833,303.667 601.5,304C 598.8,307.695 595.8,311.028 592.5,314C 593.833,315.667 593.833,317.333 592.5,319C 594.06,321.289 595.227,323.789 596,326.5C 596.581,332.906 597.581,339.239 599,345.5C 599.5,346 600,346.5 600.5,347C 611.891,348.617 623.224,347.95 634.5,345C 645.456,329.587 656.29,314.087 667,298.5C 675.862,288.657 686.362,281.157 698.5,276C 725.821,266.226 752.488,254.892 778.5,242C 825.516,213.947 855.349,173.114 868,119.5C 875.163,89.5409 878.163,59.2076 877,28.5C 894.126,47.0206 902.96,69.0206 903.5,94.5C 912.148,96.9827 917.648,102.649 920,111.5C 923.036,124.057 923.87,136.724 922.5,149.5C 932.976,163.115 936.643,178.448 933.5,195.5C 935.913,200.669 938.08,206.003 940,211.5C 943.078,221.79 943.245,232.123 940.5,242.5C 948.529,254.873 950.362,268.207 946,282.5C 945.215,286.477 944.049,290.311 942.5,294C 950.374,310.94 950.374,327.94 942.5,345C 946.827,352.741 947.66,360.908 945,369.5C 943.306,374.388 941.472,379.222 939.5,384C 942.063,396.916 940.063,409.082 933.5,420.5C 935.314,433.565 932.481,445.565 925,456.5C 923.901,467.467 920.234,477.467 914,486.5C 913.406,500.011 907.739,510.677 897,518.5C 896.368,530.771 890.868,540.105 880.5,546.5C 876.649,559.218 868.815,568.551 857,574.5C 854.202,585.298 847.369,592.131 836.5,595C 830.442,604.399 822.109,610.732 811.5,614C 800.028,625.733 786.028,632.067 769.5,633C 755.634,640.309 740.8,643.809 725,643.5C 700.865,643.442 678.032,638.109 656.5,627.5 Z M 419.5,707.5 C 419.679,721.361 418.846,735.361 417,749.5C 405.069,788.906 392.069,827.906 378,866.5C 362.961,859.064 348.128,851.23 333.5,843C 332.196,842.196 331.529,841.029 331.5,839.5C 333.215,831.862 332.382,824.528 329,817.5C 323.564,812.87 317.73,808.87 311.5,805.5C 316.677,799.472 320.844,792.805 324,785.5C 334.869,774.3 345.369,762.8 355.5,751C 363.002,748.825 369.502,744.991 375,739.5C 377.043,741.208 378.71,743.208 380,745.5C 386.224,739.94 390.89,733.273 394,725.5C 395.793,731.628 399.46,736.295 405,739.5C 404.204,726.103 409.038,715.436 419.5,707.5 Z M 578.5,708.5 C 583.789,710.456 587.456,714.123 589.5,719.5C 591.648,726.011 593.148,732.678 594,739.5C 598.388,735.778 602.055,731.445 605,726.5C 608.053,733.444 612.219,739.611 617.5,745C 618.167,745.667 618.833,745.667 619.5,745C 620.667,743.167 621.833,741.333 623,739.5C 628.498,744.991 634.998,748.825 642.5,751C 653.632,763.8 665.132,776.3 677,788.5C 678.333,791.833 679.667,795.167 681,798.5C 682.977,801.312 685.144,803.978 687.5,806.5C 680.38,809.477 674.213,813.81 669,819.5C 668.138,821.087 667.471,822.754 667,824.5C 666.807,829.75 666.307,834.917 665.5,840C 650.202,848.232 634.702,856.066 619,863.5C 605.524,825.072 592.857,786.405 581,747.5C 579.882,734.514 579.049,721.514 578.5,708.5 Z"/></g><g><path style="opacity:1" fill="#262020" d="M 656.5,627.5 C 655.326,628.514 654.66,629.847 654.5,631.5C 635.594,663.235 609.261,686.735 575.5,702C 520.403,723.95 466.736,720.95 414.5,693C 373.716,669.198 348.883,634.032 340,587.5C 338.52,508.194 338.02,428.86 338.5,349.5C 448.833,349.5 559.167,349.5 669.5,349.5C 669.667,428.167 669.5,506.834 669,585.5C 666.337,599.986 662.17,613.986 656.5,627.5 Z"/></g><g><path style="opacity:1" fill="#fe0000" d="M 499.5,365.5 C 499.5,396.833 499.5,428.167 499.5,459.5C 482.5,459.5 465.5,459.5 448.5,459.5C 448.5,478.833 448.5,498.167 448.5,517.5C 414.833,517.5 381.167,517.5 347.5,517.5C 346.501,466.669 346.168,415.669 346.5,364.5C 397.669,364.168 448.669,364.501 499.5,365.5 Z"/></g><g><path style="opacity:1" fill="#fefefe" d="M 499.5,365.5 C 553.167,365.5 606.833,365.5 660.5,365.5C 660.5,415.167 660.5,464.833 660.5,514.5C 625.833,514.5 591.167,514.5 556.5,514.5C 556.5,496.167 556.5,477.833 556.5,459.5C 537.5,459.5 518.5,459.5 499.5,459.5C 499.5,428.167 499.5,396.833 499.5,365.5 Z"/></g><g><path style="opacity:1" fill="#231f20" d="M 499.5,459.5 C 518.5,459.5 537.5,459.5 556.5,459.5C 556.5,477.833 556.5,496.167 556.5,514.5C 556.5,514.833 556.5,515.167 556.5,515.5C 556.5,515.833 556.5,516.167 556.5,516.5C 556.861,528.214 556.361,539.881 555,551.5C 546.296,578.365 527.796,592.032 499.5,592.5C 499.167,592.5 498.833,592.5 498.5,592.5C 471.696,588.864 455.196,573.864 449,547.5C 448.5,537.506 448.334,527.506 448.5,517.5C 448.5,498.167 448.5,478.833 448.5,459.5C 465.5,459.5 482.5,459.5 499.5,459.5 Z"/></g><g><path style="opacity:1" fill="#dbbfc3" d="M 660.5,365.5 C 661.499,415.331 661.832,465.331 661.5,515.5C 626.5,515.5 591.5,515.5 556.5,515.5C 556.5,515.167 556.5,514.833 556.5,514.5C 591.167,514.5 625.833,514.5 660.5,514.5C 660.5,464.833 660.5,415.167 660.5,365.5 Z"/></g><g><path style="opacity:1" fill="#f23955" d="M 556.5,516.5 C 556.5,516.167 556.5,515.833 556.5,515.5C 591.5,515.5 626.5,515.5 661.5,515.5C 661.831,536.34 661.497,557.007 660.5,577.5C 660.5,557.167 660.5,536.833 660.5,516.5C 625.833,516.5 591.167,516.5 556.5,516.5 Z"/></g><g><path style="opacity:1" fill="#fefefe" d="M 347.5,517.5 C 381.167,517.5 414.833,517.5 448.5,517.5C 448.334,527.506 448.5,537.506 449,547.5C 455.196,573.864 471.696,588.864 498.5,592.5C 498.5,629.167 498.5,665.833 498.5,702.5C 438.828,700.6 393.328,674.6 362,624.5C 355.126,610.877 350.459,596.544 348,581.5C 347.5,560.169 347.333,538.836 347.5,517.5 Z"/></g><g><path style="opacity:1" fill="#fa0e32" d="M 556.5,516.5 C 591.167,516.5 625.833,516.5 660.5,516.5C 660.5,536.833 660.5,557.167 660.5,577.5C 660.007,579.806 659.674,582.139 659.5,584.5C 658.087,587.219 657.42,590.219 657.5,593.5C 656.388,595.599 655.721,597.933 655.5,600.5C 653.926,602.102 653.259,604.102 653.5,606.5C 651.707,608.426 650.707,610.759 650.5,613.5C 648.992,615.181 647.992,617.181 647.5,619.5C 645.992,621.181 644.992,623.181 644.5,625.5C 643.662,625.842 643.328,626.508 643.5,627.5C 642.094,627.973 641.427,628.973 641.5,630.5C 640.662,630.842 640.328,631.508 640.5,632.5C 638.738,633.262 637.738,634.596 637.5,636.5C 636.094,636.973 635.427,637.973 635.5,639.5C 633.738,640.262 632.738,641.596 632.5,643.5C 630.413,644.585 629.08,646.251 628.5,648.5C 596.474,683.011 556.808,702.344 509.5,706.5C 506.167,706.5 502.833,706.5 499.5,706.5C 499.5,668.5 499.5,630.5 499.5,592.5C 527.796,592.032 546.296,578.365 555,551.5C 556.361,539.881 556.861,528.214 556.5,516.5 Z"/></g><g><path style="opacity:1" fill="#ca838b" d="M 659.5,584.5 C 659.58,587.781 658.913,590.781 657.5,593.5C 657.42,590.219 658.087,587.219 659.5,584.5 Z"/></g><g><path style="opacity:1" fill="#e2929c" d="M 655.5,600.5 C 655.405,602.786 654.738,604.786 653.5,606.5C 653.259,604.102 653.926,602.102 655.5,600.5 Z"/></g><g><path style="opacity:1" fill="#dba9b0" d="M 653.5,606.5 C 653.293,609.241 652.293,611.574 650.5,613.5C 650.707,610.759 651.707,608.426 653.5,606.5 Z"/></g><g><path style="opacity:1" fill="#988083" d="M 647.5,619.5 C 647.614,622.216 646.614,624.216 644.5,625.5C 644.992,623.181 645.992,621.181 647.5,619.5 Z"/></g><g><path style="opacity:1" fill="#bb9fa2" d="M 643.5,627.5 C 643.573,629.027 642.906,630.027 641.5,630.5C 641.427,628.973 642.094,627.973 643.5,627.5 Z"/></g><g><path style="opacity:1" fill="#c39ea2" d="M 640.5,632.5 C 640.262,634.404 639.262,635.738 637.5,636.5C 637.738,634.596 638.738,633.262 640.5,632.5 Z"/></g><g><path style="opacity:1" fill="#c99ba0" d="M 637.5,636.5 C 637.573,638.027 636.906,639.027 635.5,639.5C 635.427,637.973 636.094,636.973 637.5,636.5 Z"/></g><g><path style="opacity:1" fill="#a37b7f" d="M 632.5,643.5 C 631.92,645.749 630.587,647.415 628.5,648.5C 629.08,646.251 630.413,644.585 632.5,643.5 Z"/></g><g><path style="opacity:1" fill="#b84252" d="M 498.5,592.5 C 498.833,592.5 499.167,592.5 499.5,592.5C 499.5,630.5 499.5,668.5 499.5,706.5C 502.833,706.5 506.167,706.5 509.5,706.5C 506.038,707.482 502.371,707.815 498.5,707.5C 498.5,705.833 498.5,704.167 498.5,702.5C 498.5,665.833 498.5,629.167 498.5,592.5 Z"/></g></svg>
+                </div>
+
+                <!-- Simbol-simbol SVG (diposisikan secara absolut) -->
+                <div id="simbol-1" class="simbol-pancasila" data-sila="1"></div>
+                <div id="simbol-2" class="simbol-pancasila" data-sila="2"></div>
+                <div id="simbol-3" class="simbol-pancasila" data-sila="3"></div>
+                <div id="simbol-4" class="simbol-pancasila" data-sila="4"></div>
+                <div id="simbol-5" class="simbol-pancasila" data-sila="5"></div>
+                <div id="simbol-6" class="simbol-pancasila" data-sila="6"></div>
+            </div>
+            <button class="back-button" data-target="home-section"><i class="fas fa-arrow-left"></i> Kembali ke Menu</button>
+        </div>
+    </section>
+
+    <!-- Halaman Game -->
+    <section id="game-section" class="page-section">
+        <div id="game-container">
+            <h2 class="text-3xl text-center mb-4 text-gray-800">Jodohkan Lambang & Sila!</h2>
+            <div id="game-info">
+                <div id="timer">Waktu: <span id="time-left">60</span>s</div>
+                <div id="score">Skor: <span id="score-value">0</span></div>
+            </div>
+            <div id="game-board">
+                <div id="symbols-col" class="flex flex-col gap-3"></div>
+                <div id="texts-col" class="flex flex-col gap-3"></div>
+            </div>
+            <div class="flex justify-center mt-6 gap-4">
+                 <button id="reset-game" style="background-color: #f39c12;"><i class="fas fa-redo"></i> Ulangi</button>
+                 <button class="back-button" data-target="home-section"><i class="fas fa-arrow-left"></i> Kembali ke Menu</button>
+            </div>
+        </div>
+    </section>
+
+	<section id="memory-game-section" class="page-section">
+		<div id="memory-game-container" class="text-center">
+			<h2 class="text-3xl text-center mb-4 text-gray-800">Memory Game: Pasangkan Simbol!</h2>
+			<div id="memory-game-info" class="mb-4">
+				<span class="text-xl font-bold">Jumlah Langkah: <span id="moves-count">0</span></span>
+			</div>
+			<div id="memory-board" class="grid grid-cols-4 gap-4 mx-auto" style="max-width: 450px;">
+				</div>
+			<div class="flex justify-center mt-6 gap-4">
+				<button id="reset-memory-game" class="back-button" style="background-color: #f39c12;"><i class="fas fa-redo"></i> Ulangi</button>
+				<button class="back-button" data-target="home-section"><i class="fas fa-home"></i> Kembali ke Menu</button>
+			</div>
+		</div>
+	</section>
+
+
+    <!-- Modal untuk Simbol Pancasila -->
+    <div id="simbolModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px;">
+            <div id="modal-image" class="w-24 h-24 mx-auto mb-4"></div>
+            <h2 id="modal-title" class="text-2xl font-bold text-center text-gray-800 mb-2"></h2>
+            <p id="modal-text" class="text-center text-gray-600 mb-6"></p>
+            <button class="close-modal w-full">Tutup</button>
+        </div>
+    </div>
+
+    <!-- Modal untuk Petunjuk, Tujuan, Profil -->
+    <div id="petunjukModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Petunjuk Permainan</h2>
+            <h4>Level 1: Menjodohkan</h4>
+            <ul>
+                <li>Jodohkan lambang sila dengan bunyi sila yang benar.</li>
+                <li>Klik pada satu lambang di kolom kiri, lalu klik pada bunyi sila yang sesuai di kolom kanan.</li>
+                <li>Jika benar, pasangan akan ditandai. Jika salah, coba lagi!</li>
+                <li>Selesaikan semua pasangan sebelum waktu habis!</li>
+            </ul>
+			<h4>Level 2: Memory Game</h4>
+            <ul>
+                <li>Klik kotak yang tersedia, cari lambang.</li>
+                <li>Cari lambang sila yang sama.</li>
+            </ul>			
+            <button class="close-modal">Tutup</button>
+        </div>
+    </div>
+    <div id="tujuanModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Tujuan Pembelajaran</h2>
+            <p>Melalui permainan dan materi ini, murid diharapkan mampu untuk:</p>
+            <ul>
+                <li>Mengenal dan mengidentifikasi lambang dari setiap sila Pancasila.</li>
+                <li>Memahami makna singkat dari setiap lambang sila Pancasila.</li>
+                <li>Menjodohkan lambang sila dengan bunyi sila yang benar.</li>
+                <li>Meningkatkan daya ingat, ketelitian, dan konsentrasi.</li>
+            </ul>
+            <button class="close-modal">Tutup</button>
+        </div>
+    </div>
+    <div id="creditModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Sumber</h2>
+				<ul class="list-disc pl-5 text-left">
+					<li><strong>canva.com</strong> - asset gambar sila pancasila. diakses 12 Juli 2025.</li>
+					<li><strong>soundjay.com</strong> - Sound effect. diakses 13 Juli 2025.</li>
+					<li><strong>haminet.com</strong> - midi Garuda Pancasila. diakses 13 Juli 2025.</li>
+					<li><strong>three.js</strong> - effect 3d bendera merah putih.</li>
+					<li><strong>fonts.googleapis.com</strong> - sebagian besar font yang di gunakan.</li>
+				</ul>`,
+            <button class="close-modal">Tutup</button>
+        </div>
+    </div>	
+    <div id="profilModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-main-content">
+                <div class="profile-pic-container">
+                    <img src="https://lh3.googleusercontent.com/d/1tFGMHXxFlkz5Ij0nHbxddt4aF-MfnTio" alt="Foto Profil" onerror="this.onerror=null;this.src='https://placehold.co/150x150/4e54c8/ffffff?text=Profil';">
+                </div>
+                <div class="profile-text" style="text-align: left; flex-grow: 1;">
+                    <h2 style="margin: 0; font-size: 1.5em;">BINTANG ADHI PERMANA</h2>
+                    <p style="margin: 5px 0; font-size: 0.9em;">SDN Lubang Buaya 01, Jakarta Timur</p>
+                    <p style="margin: 10px 0 5px 0; font-weight: bold; font-size: 0.9em;">Kontak:</p>
+                    <div class="social-icons" style="font-size: 1.8em; display: flex; gap: 15px;">
+                        <a href="https://www.facebook.com/bintang.a.permana.1/" target="_blank" style="color: rgb(31, 11, 211); text-decoration: none;"><i class="fab fa-facebook"></i></a>
+                        <a href="https://www.youtube.com/@Bangbin_1" target="_blank" style="color: rgb(230, 12, 12); text-decoration: none;"><i class="fab fa-youtube"></i></a>
+                        <a href="https://wa.me/6281310051985" target="_blank" style="color: rgb(8, 195, 80); text-decoration: none;"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <img src="https://lh3.googleusercontent.com/d/1ivUN8B8xdd4R8Kef_-wEqNx56_eeUv4w" alt="Background" class="modal-bg-image-profile">
+            <button class="close-modal">Tutup</button>
+        </div>
+    </div>
+    
+    <!-- Modal untuk Hasil Game -->
+    <div id="resultModal" class="modal-overlay">
+        <div class="modal-content text-center">
+            <h2 id="result-title" class="text-3xl font-bold"></h2>
+            <p id="result-message" class="text-lg my-4"></p>
+			<div class="flex justify-center gap-4">
+				<button id="play-again" style="background-color: #2ecc71;"><i class="fas fa-redo"></i> Main Lagi</button>
+
+				<button id="continue-to-game2" style="background-color: #27ae60; display: none;"><i class="fas fa-arrow-right"></i> Lanjutkan</button>
+
+				<button class="back-button" data-target="home-section"><i class="fas fa-home"></i> Menu Utama</button>
+			</div>
+        </div>
+    </div>
+
+	<div id="memoryResultModal" class="modal-overlay">
+		<div class="modal-content text-center">
+			<h2 id="memory-result-title" class="text-3xl font-bold">🎉 Hebat! 🎉</h2>
+			<p id="memory-result-message" class="text-lg my-4"></p>
+			<div class="flex justify-center gap-4">
+				<button id="play-memory-again" style="background-color: #2ecc71;"><i class="fas fa-redo"></i> Ulangi</button>
+				<button class="back-button" data-target="home-section"><i class="fas fa-home"></i> Menu Utama</button>
+			</div>
+		</div>
+	</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // --- (BARU) OBJEK EFEK SUARA ---
+    // Menyiapkan semua file audio yang akan digunakan
+    const clickSound = new Audio('https://www.soundjay.com/buttons/sounds/button-17.mp3');
+    const correctSound = new Audio('https://www.soundjay.com/buttons/sounds/button-14.mp3');
+    const wrongSound = new Audio('https://www.soundjay.com/buttons/sounds/beep-10.mp3');
+    const winSound = new Audio('https://www.soundjay.com/human/sounds/applause-4.mp3');
+
+    // Fungsi untuk memainkan suara dengan aman
+    function playSound(sound) {
+        sound.currentTime = 0; // Ulangi dari awal jika diklik cepat
+        sound.play().catch(error => console.error("Gagal memutar suara:", error));
+    }
+
+    // --- DATA PANCASILA ---
+		const silaData = {
+			'1': { 
+				title: 'Sila 1: Ketuhanan Yang Maha Esa', 
+				text: `Dilambangkan dengan bintang emas. Ini melambangkan bahwa bangsa Indonesia mengakui adanya Tuhan Yang Maha Esa.
+					   <br><br>
+					   <h4>Contoh Pengamalan:</h4>
+					   <ul class="list-disc pl-5 text-left">
+						 <li><strong>Di Sekolah:</strong> Menghormati teman yang sedang beribadah sesuai agamanya.</li>
+						 <li><strong>Di Rumah:</strong> Berdoa bersama keluarga sebelum makan.</li>
+						 <li><strong>Di Masyarakat:</strong> Menjaga kerukunan dan toleransi dengan tetangga yang berbeda agama.</li>
+					   </ul>`,
+				symbol: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="440 460 120 120"><g><path fill="#ffde58" d="M 501.5,465.5 C 502.497,465.47 503.164,465.97 503.5,467C 507.2,479.266 511.2,491.432 515.5,503.5C 529.488,504.333 543.488,504.833 557.5,505C 546.448,513.719 535.114,522.053 523.5,530C 528.688,543.044 532.688,556.211 535.5,569.5C 524.5,561.5 513.5,553.5 502.5,545.5C 491.5,553.5 480.5,561.5 469.5,569.5C 472.312,556.211 476.312,543.044 481.5,530C 469.886,522.053 458.552,513.719 447.5,505C 461.512,504.833 475.512,504.333 489.5,503.5C 494.11,491.004 498.11,478.337 501.5,465.5 Z"/></g></svg>` 
+			},
+			'2': { 
+				title: 'Sila 2: Kemanusiaan yang Adil dan Beradab', 
+				text: `Dilambangkan dengan rantai emas. Mata rantai yang saling berkaitan melambangkan hubungan antarmanusia yang perlu bersatu dan saling membantu.
+					   <br><br>
+					   <h4>Contoh Pengamalan:</h4>
+					   <ul class="list-disc pl-5 text-left">
+						 <li><strong>Di Sekolah:</strong> Menolong teman yang sedang kesusahan atau terjatuh.</li>
+						 <li><strong>Di Rumah:</strong> Berbicara dengan sopan dan santun kepada orang tua dan saudara.</li>
+						 <li><strong>Di Masyarakat:</strong> Ikut serta dalam kegiatan bakti sosial untuk membantu sesama.</li>
+					   </ul>`,
+				symbol: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="510 520 150 160"><g><path fill="#fed14f" d="M 628.5,538.5 C 626.847,538.34 625.514,537.674 624.5,536.5C 624.5,535.833 624.167,535.5 623.5,535.5C 622.116,531.539 619.449,530.539 615.5,532.5C 614.295,533.577 613.628,534.91 613.5,536.5C 612.22,537.931 610.553,538.598 608.5,538.5C 609.281,529.102 614.281,525.602 623.5,528C 627.192,530.55 628.858,534.05 628.5,538.5 Z"/><path fill="#ffd14f" d="M 605.5,539.5 C 604.486,540.674 603.153,541.34 601.5,541.5C 600.998,539.915 599.998,539.415 598.5,540C 596.167,541.667 593.833,543.333 591.5,545C 592.044,545.717 592.711,546.217 593.5,546.5C 592.738,548.262 591.404,549.262 589.5,549.5C 588.284,547.52 587.451,545.52 587,543.5C 591.077,540.212 595.244,537.045 599.5,534C 600.167,533.333 600.833,533.333 601.5,534C 602.965,535.774 604.298,537.608 605.5,539.5 Z"/><path fill="#f4af17" d="M 623.5,535.5 C 624.167,535.5 624.5,535.833 624.5,536.5C 625.514,537.674 626.847,538.34 628.5,538.5C 628.833,538.5 629.167,538.5 629.5,538.5C 630.911,540.539 632.911,541.539 635.5,541.5C 637.518,546.815 635.852,548.482 630.5,546.5C 629.713,544.896 628.38,544.229 626.5,544.5C 625.341,542.75 623.674,541.75 621.5,541.5C 620.12,541.038 619.453,540.038 619.5,538.5C 620.1,536.532 621.433,535.532 623.5,535.5 Z"/><path fill="#f4b017" d="M 613.5,536.5 C 614.833,536.5 616.167,536.5 617.5,536.5C 617.675,538.621 617.341,540.621 616.5,542.5C 614.302,542.12 612.635,542.787 611.5,544.5C 610.833,544.5 610.167,544.5 609.5,544.5C 607.847,544.66 606.514,545.326 605.5,546.5C 599.975,547.349 598.642,545.682 601.5,541.5C 603.153,541.34 604.486,540.674 605.5,539.5C 606.609,539.443 607.609,539.11 608.5,538.5C 610.553,538.598 612.22,537.931 613.5,536.5 Z"/><path fill="#ffd14f" d="M 641.5,555.5 C 641.5,553.167 641.5,550.833 641.5,548.5C 642.593,543.904 640.593,541.571 635.5,541.5C 632.911,541.539 630.911,540.539 629.5,538.5C 642.697,534.343 647.864,539.01 645,552.5C 643.961,553.71 642.794,554.71 641.5,555.5 Z"/><path fill="#fed04e" d="M 621.5,541.5 C 623.674,541.75 625.341,542.75 626.5,544.5C 624.177,545.778 621.677,546.778 619,547.5C 616.352,546.786 613.852,545.786 611.5,544.5C 612.635,542.787 614.302,542.12 616.5,542.5C 618.415,542.784 620.081,542.451 621.5,541.5 Z"/><path fill="#fed04f" d="M 609.5,544.5 C 610.8,545.601 611.3,546.934 611,548.5C 606.492,552.084 601.826,555.418 597,558.5C 595.826,557.456 594.659,556.456 593.5,555.5C 593.738,553.596 594.738,552.262 596.5,551.5C 596.783,552.289 597.283,552.956 598,553.5C 600.934,551.482 603.434,549.148 605.5,546.5C 606.514,545.326 607.847,544.66 609.5,544.5 Z"/><path fill="#fed04f" d="M 626.5,544.5 C 628.38,544.229 629.713,544.896 630.5,546.5C 630.762,549.699 632.428,551.699 635.5,552.5C 636.434,553.568 636.768,554.901 636.5,556.5C 629.229,555.889 625.896,551.889 626.5,544.5 Z"/><path fill="#f4af16" d="M 596.5,551.5 C 594.738,552.262 593.738,553.596 593.5,555.5C 592.508,555.328 591.842,555.662 591.5,556.5C 589.596,556.738 588.262,557.738 587.5,559.5C 584.5,559.833 583.167,558.5 583.5,555.5C 585.341,554.598 586.674,553.264 587.5,551.5C 588.5,551.167 589.167,550.5 589.5,549.5C 591.404,549.262 592.738,548.262 593.5,546.5C 596.943,544.803 598.776,545.803 599,549.5C 598.292,550.381 597.458,551.047 596.5,551.5 Z"/><path fill="#f4af17" d="M 641.5,548.5 C 641.5,550.833 641.5,553.167 641.5,555.5C 641.5,556.5 641.5,557.5 641.5,558.5C 641.5,559.833 641.5,561.167 641.5,562.5C 641.65,566.161 640.15,567.161 637,565.5C 636.517,564.552 636.351,563.552 636.5,562.5C 636.5,561.167 636.5,559.833 636.5,558.5C 636.5,557.833 636.5,557.167 636.5,556.5C 636.768,554.901 636.434,553.568 635.5,552.5C 635.579,548.133 637.579,546.799 641.5,548.5 Z"/><path fill="#fed04e" d="M 587.5,551.5 C 586.674,553.264 585.341,554.598 583.5,555.5C 578.904,554.407 576.571,556.407 576.5,561.5C 576.262,563.404 575.262,564.738 573.5,565.5C 571.141,553.859 575.808,549.192 587.5,551.5 Z"/><path fill="#fed04e" d="M 591.5,556.5 C 592.715,566.948 588.049,571.281 577.5,569.5C 577.894,567.29 579.227,565.957 581.5,565.5C 585.5,565.5 587.5,563.5 587.5,559.5C 588.262,557.738 589.596,556.738 591.5,556.5 Z"/><path fill="#fed04f" d="M 636.5,558.5 C 636.5,559.833 636.5,561.167 636.5,562.5C 635.5,562.5 634.5,562.5 633.5,562.5C 633.185,566.371 633.518,570.038 634.5,573.5C 634.253,576.854 633.253,579.854 631.5,582.5C 627.477,583.88 626.143,586.546 627.5,590.5C 627.771,592.38 627.104,593.713 625.5,594.5C 621.899,590.573 621.565,586.239 624.5,581.5C 626.131,579.703 628.131,578.536 630.5,578C 629.522,571.59 629.189,565.09 629.5,558.5C 631.833,558.5 634.167,558.5 636.5,558.5 Z"/><path fill="#fed04f" d="M 641.5,558.5 C 643.5,558.5 645.5,558.5 647.5,558.5C 647.5,564.833 647.5,571.167 647.5,577.5C 644.833,577.5 642.167,577.5 639.5,577.5C 639.433,576.041 639.766,574.708 640.5,573.5C 641.5,573.5 642.5,573.5 643.5,573.5C 644.08,569.351 643.414,565.684 641.5,562.5C 641.5,561.167 641.5,559.833 641.5,558.5 Z"/><path fill="#f4af16" d="M 581.5,565.5 C 579.227,565.957 577.894,567.29 577.5,569.5C 575.856,569.81 574.856,570.81 574.5,572.5C 568.053,577.052 566.386,575.719 569.5,568.5C 571.5,568.5 572.5,567.5 572.5,565.5C 572.833,565.5 573.167,565.5 573.5,565.5C 575.262,564.738 576.262,563.404 576.5,561.5C 581.271,559.405 582.938,560.738 581.5,565.5 Z"/><path fill="#fed14f" d="M 572.5,565.5 C 572.5,567.5 571.5,568.5 569.5,568.5C 564.912,570.04 562.912,573.04 563.5,577.5C 562.833,578.833 561.833,579.833 560.5,580.5C 559.542,579.038 558.376,577.705 557,576.5C 559.192,571.269 562.692,566.769 567.5,563C 569.435,563.058 571.102,563.891 572.5,565.5 Z"/><path fill="#fed04f" d="M 577.5,569.5 C 578.649,571.149 579.982,572.649 581.5,574C 578.313,578.686 574.646,583.019 570.5,587C 568.565,586.942 566.898,586.109 565.5,584.5C 565.5,582.5 566.5,581.5 568.5,581.5C 571.298,580.294 573.465,578.294 575,575.5C 575.47,574.423 575.303,573.423 574.5,572.5C 574.856,570.81 575.856,569.81 577.5,569.5 Z"/><path fill="#f4b017" d="M 640.5,573.5 C 639.766,574.708 639.433,576.041 639.5,577.5C 639.443,578.609 639.11,579.609 638.5,580.5C 637.549,581.919 637.216,583.585 637.5,585.5C 636.221,586.968 634.554,587.635 632.5,587.5C 631.699,585.958 631.366,584.292 631.5,582.5C 633.253,579.854 634.253,576.854 634.5,573.5C 635.144,570.196 637.144,568.862 640.5,569.5C 640.5,570.833 640.5,572.167 640.5,573.5 Z"/><path fill="#f4b017" d="M 568.5,581.5 C 566.5,581.5 565.5,582.5 565.5,584.5C 564.5,584.833 563.833,585.5 563.5,586.5C 561.5,586.5 560.5,587.5 560.5,589.5C 559.18,590.942 557.514,591.608 555.5,591.5C 555.675,593.621 555.341,595.621 554.5,597.5C 552.016,599.8 550.016,602.467 548.5,605.5C 544.459,608.706 542.459,607.706 542.5,602.5C 544.262,601.738 545.262,600.404 545.5,598.5C 546.167,598.5 546.5,598.167 546.5,597.5C 548.262,596.738 549.262,595.404 549.5,593.5C 552.29,592.033 553.956,589.7 554.5,586.5C 556.773,586.043 558.106,584.71 558.5,582.5C 559.5,582.167 560.167,581.5 560.5,580.5C 561.833,579.833 562.833,578.833 563.5,577.5C 567.411,575.732 569.078,577.065 568.5,581.5 Z"/><path fill="#fed04f" d="M 638.5,580.5 C 643.82,585.506 643.82,590.672 638.5,596C 635.986,597.252 633.32,597.752 630.5,597.5C 631.026,595.77 632.026,594.436 633.5,593.5C 637.067,591.704 638.4,589.038 637.5,585.5C 637.216,583.585 637.549,581.919 638.5,580.5 Z"/><path fill="#fed14e" d="M 558.5,582.5 C 558.106,584.71 556.773,586.043 554.5,586.5C 550.648,587.187 548.981,589.521 549.5,593.5C 549.262,595.404 548.262,596.738 546.5,597.5C 543.118,586.597 547.118,581.597 558.5,582.5 Z"/><path fill="#fed14f" d="M 563.5,586.5 C 566.359,596.28 562.692,601.447 552.5,602C 553.672,602.419 554.672,603.085 555.5,604C 552.766,608.635 550.433,613.468 548.5,618.5C 546.01,619.632 543.676,619.299 541.5,617.5C 541.229,615.62 541.896,614.287 543.5,613.5C 544.397,614.598 545.23,614.598 546,613.5C 547.167,611.167 548.333,608.833 549.5,606.5C 549.376,605.893 549.043,605.56 548.5,605.5C 550.016,602.467 552.016,599.8 554.5,597.5C 559.119,596.873 561.119,594.206 560.5,589.5C 560.5,587.5 561.5,586.5 563.5,586.5 Z"/><path fill="#f4af17" d="M 632.5,587.5 C 633.341,589.379 633.675,591.379 633.5,593.5C 632.026,594.436 631.026,595.77 630.5,597.5C 629.89,598.391 629.557,599.391 629.5,600.5C 628.094,600.973 627.427,601.973 627.5,603.5C 625.223,606.205 623.223,605.872 621.5,602.5C 621.863,601.817 622.196,601.15 622.5,600.5C 623.674,599.486 624.34,598.153 624.5,596.5C 624.833,595.833 625.167,595.167 625.5,594.5C 627.104,593.713 627.771,592.38 627.5,590.5C 628.659,588.75 630.326,587.75 632.5,587.5 Z"/><path fill="#fed14f" d="M 624.5,596.5 C 624.34,598.153 623.674,599.486 622.5,600.5C 621.425,599.438 620.425,599.438 619.5,600.5C 618.42,602.996 617.086,605.33 615.5,607.5C 615.624,608.107 615.957,608.44 616.5,608.5C 616.771,610.38 616.104,611.713 614.5,612.5C 612.606,611.952 610.94,610.952 609.5,609.5C 612.468,604.036 615.634,598.703 619,593.5C 620.741,594.758 622.574,595.758 624.5,596.5 Z"/><path fill="#fed04f" d="M 545.5,598.5 C 545.262,600.404 544.262,601.738 542.5,602.5C 541.811,601.226 540.977,601.226 540,602.5C 538.833,604.833 537.667,607.167 536.5,609.5C 536.855,610.522 537.522,611.189 538.5,611.5C 538.144,613.19 537.144,614.19 535.5,614.5C 533.536,614.023 532.202,612.856 531.5,611C 533.808,605.548 536.475,600.381 539.5,595.5C 541.527,596.513 543.527,597.513 545.5,598.5 Z"/><path fill="#fed04f" d="M 629.5,600.5 C 631.394,601.048 633.06,602.048 634.5,603.5C 631.822,608.867 628.655,613.867 625,618.5C 623.2,617.68 621.366,617.014 619.5,616.5C 619.66,614.847 620.326,613.514 621.5,612.5C 622.496,612.414 623.329,612.748 624,613.5C 625.08,611.004 626.414,608.67 628,606.5C 628.74,605.251 628.573,604.251 627.5,603.5C 627.427,601.973 628.094,600.973 629.5,600.5 Z"/><path fill="#f4af16" d="M 621.5,612.5 C 620.326,613.514 619.66,614.847 619.5,616.5C 619.5,616.833 619.5,617.167 619.5,617.5C 617.259,618.3 616.259,619.966 616.5,622.5C 613.54,623.849 611.873,622.849 611.5,619.5C 612.441,617.95 613.107,616.284 613.5,614.5C 614.338,614.158 614.672,613.492 614.5,612.5C 616.104,611.713 616.771,610.38 616.5,608.5C 617.898,606.891 619.565,606.058 621.5,606C 623.773,608.038 623.773,610.205 621.5,612.5 Z"/><path fill="#f4af16" d="M 543.5,613.5 C 541.896,614.287 541.229,615.62 541.5,617.5C 540.833,617.5 540.5,617.833 540.5,618.5C 539.069,619.78 538.402,621.447 538.5,623.5C 535.131,626.6 533.131,625.933 532.5,621.5C 533.752,619.999 534.752,618.332 535.5,616.5C 535.5,615.833 535.5,615.167 535.5,614.5C 537.144,614.19 538.144,613.19 538.5,611.5C 539.072,608.756 540.738,607.923 543.5,609C 544.728,610.49 544.728,611.99 543.5,613.5 Z"/><path fill="#fed14f" d="M 613.5,614.5 C 613.107,616.284 612.441,617.95 611.5,619.5C 607.648,620.187 605.981,622.521 606.5,626.5C 606.262,628.404 605.262,629.738 603.5,630.5C 600.252,620.99 603.585,615.657 613.5,614.5 Z"/><path fill="#fed14f" d="M 535.5,616.5 C 534.752,618.332 533.752,619.999 532.5,621.5C 528.33,623.339 527.663,626.005 530.5,629.5C 530.795,631.735 530.461,633.735 529.5,635.5C 523.367,630.048 523.033,624.215 528.5,618C 530.677,616.798 533.011,616.298 535.5,616.5 Z"/><path fill="#fed04e" d="M 619.5,617.5 C 624.349,628.653 620.683,634.32 608.5,634.5C 608.738,632.596 609.738,631.262 611.5,630.5C 616.626,629.747 618.292,627.08 616.5,622.5C 616.259,619.966 617.259,618.3 619.5,617.5 Z"/><path fill="#fed04e" d="M 540.5,618.5 C 546.917,626.625 545.251,632.625 535.5,636.5C 535.216,634.585 535.549,632.919 536.5,631.5C 540.287,629.341 540.954,626.675 538.5,623.5C 538.402,621.447 539.069,619.78 540.5,618.5 Z"/><path fill="#f4af17" d="M 611.5,630.5 C 609.738,631.262 608.738,632.596 608.5,634.5C 607.833,634.5 607.5,634.833 607.5,635.5C 605.738,636.262 604.738,637.596 604.5,639.5C 600.164,640.539 598.831,638.872 600.5,634.5C 601.906,634.027 602.573,633.027 602.5,631.5C 603.167,631.5 603.5,631.167 603.5,630.5C 605.262,629.738 606.262,628.404 606.5,626.5C 612.543,623.059 614.209,624.392 611.5,630.5 Z"/><path fill="#f4af17" d="M 536.5,631.5 C 535.549,632.919 535.216,634.585 535.5,636.5C 535.5,636.833 535.5,637.167 535.5,637.5C 534.699,639.042 534.366,640.708 534.5,642.5C 534.516,644.484 533.516,645.484 531.5,645.5C 530.287,645.253 529.62,644.586 529.5,643.5C 529.5,641.833 529.5,640.167 529.5,638.5C 529.5,637.5 529.5,636.5 529.5,635.5C 530.461,633.735 530.795,631.735 530.5,629.5C 534.095,625.143 536.095,625.809 536.5,631.5 Z"/><path fill="#fed14f" d="M 602.5,631.5 C 602.573,633.027 601.906,634.027 600.5,634.5C 599.883,634.389 599.383,634.056 599,633.5C 596.5,636 594,638.5 591.5,641C 591.728,641.399 592.062,641.565 592.5,641.5C 592.5,643.5 591.5,644.5 589.5,644.5C 587.086,643.594 586.253,641.928 587,639.5C 591.035,635.8 594.702,631.8 598,627.5C 599.667,628.733 601.167,630.067 602.5,631.5 Z"/><path fill="#fed14f" d="M 607.5,635.5 C 608.81,637.148 610.143,638.814 611.5,640.5C 607.472,644.859 603.472,649.193 599.5,653.5C 597.479,652.145 595.812,650.479 594.5,648.5C 594.973,647.094 595.973,646.427 597.5,646.5C 598.423,647.303 599.423,647.47 600.5,647C 601.88,645.075 603.38,643.241 605,641.5C 605.692,640.563 605.525,639.897 604.5,639.5C 604.738,637.596 605.738,636.262 607.5,635.5 Z"/><path fill="#fed14f" d="M 529.5,638.5 C 529.5,640.167 529.5,641.833 529.5,643.5C 528.624,643.369 527.957,643.702 527.5,644.5C 528.213,646.776 528.713,649.109 529,651.5C 529.417,652.756 530.25,653.423 531.5,653.5C 532.674,654.514 533.34,655.847 533.5,657.5C 531.08,657.292 528.747,657.626 526.5,658.5C 524.742,652.286 523.742,645.953 523.5,639.5C 525.621,639.675 527.621,639.341 529.5,638.5 Z"/><path fill="#f4af16" d="M 597.5,646.5 C 595.973,646.427 594.973,647.094 594.5,648.5C 593.5,649.167 592.5,649.833 591.5,650.5C 589.833,651.5 588.5,652.833 587.5,654.5C 586.167,654.167 584.833,653.833 583.5,653.5C 583.366,651.708 583.699,650.042 584.5,648.5C 586.404,648.262 587.738,647.262 588.5,645.5C 589.167,645.5 589.5,645.167 589.5,644.5C 591.5,644.5 592.5,643.5 592.5,641.5C 598.87,639.198 600.537,640.865 597.5,646.5 Z"/><path fill="#fed04f" d="M 588.5,645.5 C 587.738,647.262 586.404,648.262 584.5,648.5C 579.442,647.046 576.775,649.046 576.5,654.5C 574.47,657.182 571.803,658.849 568.5,659.5C 565.576,659.626 562.909,660.959 560.5,663.5C 557.167,663.5 553.833,663.5 550.5,663.5C 549.599,661.273 547.933,660.273 545.5,660.5C 543.167,660.167 541.833,658.833 541.5,656.5C 543.85,655.89 543.517,655.556 540.5,655.5C 539.167,654.833 538.167,653.833 537.5,652.5C 538.478,652.189 539.145,651.522 539.5,650.5C 538.879,647.436 538.045,644.436 537,641.5C 536.329,642.252 535.496,642.586 534.5,642.5C 534.366,640.708 534.699,639.042 535.5,637.5C 537.262,637.643 538.929,637.309 540.5,636.5C 542.048,642.454 543.381,648.454 544.5,654.5C 548.561,655.858 551.895,658.191 554.5,661.5C 559.585,658.876 564.418,655.876 569,652.5C 570,653.833 571,655.167 572,656.5C 572.362,644.959 577.862,641.292 588.5,645.5 Z"/><path fill="#f4af16" d="M 537.5,652.5 C 538.167,653.833 539.167,654.833 540.5,655.5C 540.5,656.167 540.833,656.5 541.5,656.5C 541.833,658.833 543.167,660.167 545.5,660.5C 545.5,662.167 545.5,663.833 545.5,665.5C 543.142,665.747 541.142,665.081 539.5,663.5C 539.5,661.5 538.5,660.5 536.5,660.5C 535.833,659.167 534.833,658.167 533.5,657.5C 533.34,655.847 532.674,654.514 531.5,653.5C 531.5,652.5 531.5,651.5 531.5,650.5C 534.01,650.054 536.01,650.72 537.5,652.5 Z"/><path fill="#fed14f" d="M 591.5,650.5 C 591.875,661.12 586.875,665.12 576.5,662.5C 577.401,660.273 579.067,659.273 581.5,659.5C 584.732,659.228 586.732,657.562 587.5,654.5C 588.5,652.833 589.833,651.5 591.5,650.5 Z"/><path fill="#f4b017" d="M 583.5,653.5 C 583.747,655.858 583.081,657.858 581.5,659.5C 579.067,659.273 577.401,660.273 576.5,662.5C 576.167,662.5 575.833,662.5 575.5,662.5C 573.77,663.026 572.436,664.026 571.5,665.5C 566.294,665.541 565.294,663.541 568.5,659.5C 571.803,658.849 574.47,657.182 576.5,654.5C 578.764,653.781 581.097,653.448 583.5,653.5 Z"/><path fill="#fed04e" d="M 536.5,660.5 C 538.5,660.5 539.5,661.5 539.5,663.5C 539.093,668.034 541.093,670.701 545.5,671.5C 547.038,671.547 548.038,670.88 548.5,669.5C 550.653,668.427 552.653,668.427 554.5,669.5C 551.899,675.062 547.566,676.896 541.5,675C 535.704,671.669 534.037,666.836 536.5,660.5 Z"/><path fill="#fed14f" d="M 575.5,662.5 C 576.487,664.473 577.487,666.473 578.5,668.5C 573.762,671.898 568.762,674.898 563.5,677.5C 560.759,675.025 558.759,672.025 557.5,668.5C 559.167,668.5 560.833,668.5 562.5,668.5C 562.685,670.196 563.519,671.529 565,672.5C 567.748,670.542 570.582,668.709 573.5,667C 572.956,666.283 572.289,665.783 571.5,665.5C 572.436,664.026 573.77,663.026 575.5,662.5 Z"/><path fill="#f4af17" d="M 550.5,663.5 C 553.833,663.5 557.167,663.5 560.5,663.5C 562.167,663.5 563.833,663.5 565.5,663.5C 566.084,666.285 565.084,667.952 562.5,668.5C 560.833,668.5 559.167,668.5 557.5,668.5C 556.391,668.557 555.391,668.89 554.5,669.5C 552.653,668.427 550.653,668.427 548.5,669.5C 545.71,666.406 546.377,664.406 550.5,663.5 Z"/></g></svg>` 
+			},
+			'3': { 
+				title: 'Sila 3: Persatuan Indonesia', 
+				text: `Dilambangkan dengan pohon beringin. Pohon beringin yang besar dan rindang melambangkan negara Indonesia sebagai tempat berteduh bagi seluruh rakyatnya.
+					   <br><br>
+					   <h4>Contoh Pengamalan:</h4>
+					   <ul class="list-disc pl-5 text-left">
+						 <li><strong>Di Sekolah:</strong> Mengikuti upacara bendera dengan khidmat dan tidak membeda-bedakan teman.</li>
+						 <li><strong>Di Rumah:</strong> Menjaga kerukunan dan keharmonisan antar anggota keluarga.</li>
+						 <li><strong>Di Masyarakat:</strong> Bergotong royong membersihkan lingkungan dan bangga menggunakan produk Indonesia.</li>
+					   </ul>`,
+				symbol: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="520 380 130 140"><g><path fill="#007542" d="M 600.5,469.5 C 599.069,468.22 598.402,466.553 598.5,464.5C 598.949,462.023 598.283,460.023 596.5,458.5C 593.849,460.65 591.349,462.983 589,465.5C 588.57,462.808 588.737,460.141 589.5,457.5C 588.448,457.351 587.448,457.517 586.5,458C 585.881,459.757 584.714,460.924 583,461.5C 581.632,460.297 580.132,459.297 578.5,458.5C 577.852,460.149 576.852,461.482 575.5,462.5C 572.312,461.075 569.312,459.408 566.5,457.5C 563.572,458.591 561.406,460.591 560,463.5C 559.667,461.5 559.333,459.5 559,457.5C 557.951,456.483 556.784,456.316 555.5,457C 554.152,460.467 552.986,463.967 552,467.5C 551.125,466.127 550.625,464.627 550.5,463C 551.256,459.875 551.589,456.709 551.5,453.5C 550.07,453.421 548.736,453.754 547.5,454.5C 546.636,458.816 545.969,463.149 545.5,467.5C 543.042,467.773 541.375,466.773 540.5,464.5C 541.811,459.969 541.811,455.469 540.5,451C 539.5,450.333 538.5,450.333 537.5,451C 535.264,454.145 533.764,457.645 533,461.5C 532,462.833 531,462.833 530,461.5C 529.667,459.167 529.333,456.833 529,454.5C 525.582,450.891 523.748,446.557 523.5,441.5C 524.668,434.164 525.834,426.83 527,419.5C 528.473,415.221 530.473,411.221 533,407.5C 536.378,402.578 539.878,397.745 543.5,393C 551.158,391.004 558.158,387.67 564.5,383C 571.134,380.952 577.634,381.119 584,383.5C 587.827,382.761 591.66,382.594 595.5,383C 602.044,385.092 608.711,386.759 615.5,388C 620.688,393.852 626.521,399.019 633,403.5C 634.369,409.282 636.703,414.615 640,419.5C 640.994,422.961 641.827,426.461 642.5,430C 640.77,442.651 638.27,455.151 635,467.5C 634.632,468.91 633.799,469.91 632.5,470.5C 630.167,465.833 627.833,461.167 625.5,456.5C 623.977,460.311 622.311,463.978 620.5,467.5C 619.068,463.987 618.235,460.32 618,456.5C 617.535,460.848 617.035,465.181 616.5,469.5C 615.5,469.5 614.5,469.5 613.5,469.5C 613.25,465.898 612.25,462.565 610.5,459.5C 609.914,459.709 609.414,460.043 609,460.5C 608.503,462.81 608.337,465.143 608.5,467.5C 607.325,467.719 606.325,467.386 605.5,466.5C 604.985,464.775 604.318,463.108 603.5,461.5C 602.92,464.447 601.92,467.114 600.5,469.5 Z"/><path fill="#15a434" d="M 580.5,392.5 C 589.72,392.111 598.72,393.277 607.5,396C 608.935,398.267 608.602,400.267 606.5,402C 600.762,404.735 595.262,407.901 590,411.5C 589.333,412.167 589.333,412.833 590,413.5C 591.757,414.119 592.924,415.286 593.5,417C 591.72,419.784 589.553,422.284 587,424.5C 584.253,434.095 587.253,436.762 596,432.5C 597.791,429.007 599.124,425.341 600,421.5C 601.046,419.91 602.213,418.41 603.5,417C 622.055,415.384 622.055,413.551 603.5,411.5C 602.965,408.762 603.965,406.928 606.5,406C 611.013,405.254 615.346,404.088 619.5,402.5C 624.528,405.036 628.028,409.036 630,414.5C 630.667,416.5 630.667,418.5 630,420.5C 628.108,422.054 626.608,423.888 625.5,426C 626.615,427.393 627.115,428.893 627,430.5C 621.771,432.367 617.271,431.2 613.5,427C 612.5,426.333 611.5,426.333 610.5,427C 603.109,434.546 595.442,441.879 587.5,449C 585.105,451.145 582.938,450.978 581,448.5C 579.312,445.774 577.812,442.941 576.5,440C 572.075,439.044 570.408,440.877 571.5,445.5C 568.15,445.665 564.817,445.498 561.5,445C 558.71,442.79 557.877,439.956 559,436.5C 562.459,432.48 563.625,427.98 562.5,423C 557.877,423.226 553.21,423.393 548.5,423.5C 549.442,428.805 549.609,434.139 549,439.5C 543.694,441.946 538.194,442.113 532.5,440C 531.426,439.261 530.759,438.261 530.5,437C 533.985,431.51 537.485,426.01 541,420.5C 543.147,404.176 552.314,397.176 568.5,399.5C 569.143,403.401 568.143,406.734 565.5,409.5C 567.527,411.339 569.86,411.839 572.5,411C 576.811,406.986 577.811,402.486 575.5,397.5C 577.006,395.599 578.673,393.932 580.5,392.5 Z"/><path fill="#2d1923" d="M 566.5,457.5 C 569.312,459.408 572.312,461.075 575.5,462.5C 576.852,461.482 577.852,460.149 578.5,458.5C 580.132,459.297 581.632,460.297 583,461.5C 584.714,460.924 585.881,459.757 586.5,458C 587.448,457.517 588.448,457.351 589.5,457.5C 588.737,460.141 588.57,462.808 589,465.5C 591.349,462.983 593.849,460.65 596.5,458.5C 598.283,460.023 598.949,462.023 598.5,464.5C 593.306,469.553 587.973,469.719 582.5,465C 576.543,465.386 571.209,463.886 566.5,460.5C 566.5,459.5 566.5,458.5 566.5,457.5 Z"/><path fill="#533338" d="M 566.5,460.5 C 571.209,463.886 576.543,465.386 582.5,465C 587.973,469.719 593.306,469.553 598.5,464.5C 598.402,466.553 599.069,468.22 600.5,469.5C 600.568,474.076 602.568,477.576 606.5,480C 611.406,481.652 616.406,482.985 621.5,484C 623.62,485.523 623.953,487.356 622.5,489.5C 596.175,490.5 569.842,490.833 543.5,490.5C 543.244,488.208 543.577,486.041 544.5,484C 549.253,483.383 553.92,482.383 558.5,481C 560.286,480.215 561.786,479.049 563,477.5C 564.952,472.006 566.119,466.339 566.5,460.5 Z"/><path fill="#311924" d="M 570.5,466.5 C 574.435,468.551 574.435,470.884 570.5,473.5C 567.962,471.26 567.962,468.927 570.5,466.5 Z"/><path fill="#301823" d="M 578.5,468.5 C 580.818,468.818 582.152,470.152 582.5,472.5C 581.875,475.986 580.042,476.986 577,475.5C 576.167,472.829 576.667,470.496 578.5,468.5 Z"/></g></svg>` 
+			},
+			'4': { 
+				title: 'Sila 4: Kerakyatan yang Dipimpin oleh Hikmat Kebijaksanaan dalam Permusyawaratan/Perwakilan', 
+				text: `Dilambangkan dengan kepala banteng. Banteng adalah hewan sosial yang suka berkumpul, melambangkan musyawarah untuk mencapai mufakat.
+					   <br><br>
+					   <h4>Contoh Pengamalan:</h4>
+					   <ul class="list-disc pl-5 text-left">
+						 <li><strong>Di Sekolah:</strong> Melakukan musyawarah saat memilih ketua kelas.</li>
+						 <li><strong>Di Rumah:</strong> Mendengarkan dan menghargai pendapat anggota keluarga lain.</li>
+						 <li><strong>Di Masyarakat:</strong> Mengikuti pemilihan ketua RT/RW dan menghargai hasil keputusan bersama.</li>
+					   </ul>`,
+				symbol: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="350 370 120 125"><g><path fill="#5d3326" d="M 456.5,376.5 C 460.134,376.157 461.801,377.823 461.5,381.5C 460.577,386.483 460.41,391.483 461,396.5C 462.657,401.819 464.323,407.153 466,412.5C 469.311,424.912 465.145,433.746 453.5,439C 454.833,441 454.833,443 453.5,445C 448.601,448.058 443.268,449.558 437.5,449.5C 437.657,450.873 437.49,452.207 437,453.5C 434.713,456.78 432.88,460.28 431.5,464C 436.853,480.663 430.686,488.83 413,488.5C 407.768,488.966 402.934,487.799 398.5,485C 396.513,483.681 395.346,481.848 395,479.5C 394.7,473.814 394.7,468.147 395,462.5C 391.812,459.461 389.645,455.794 388.5,451.5C 382.734,451.061 377.4,449.394 372.5,446.5C 371.24,444.647 371.24,442.814 372.5,441C 363.513,437.519 358.513,431.019 357.5,421.5C 359.347,412.97 361.347,404.47 363.5,396C 362.555,390.833 362.055,385.667 362,380.5C 363.085,379.707 364.252,379.04 365.5,378.5C 375.491,383.895 380.157,392.395 379.5,404C 379.367,408.129 378.701,412.129 377.5,416C 380.408,421.091 384.742,422.757 390.5,421C 406.265,413.978 422.099,413.811 438,420.5C 440.8,419.872 443.467,418.872 446,417.5C 446.118,411.478 445.618,405.478 444.5,399.5C 444.622,389.582 448.622,381.915 456.5,376.5 Z"/><path fill="#010000" d="M 457.5,379.5 C 457.482,385.95 457.649,392.617 458,399.5C 459.389,403.944 461.056,408.277 463,412.5C 465.045,420.497 463.212,427.331 457.5,433C 454.508,435.11 451.175,436.443 447.5,437C 449.972,438.601 450.972,440.601 450.5,443C 445.442,445.431 440.109,446.598 434.5,446.5C 434.579,449.271 434.079,451.937 433,454.5C 430.435,456.963 428.935,459.963 428.5,463.5C 434.397,478.056 429.564,485.389 414,485.5C 408.309,485.825 403.309,484.159 399,480.5C 397.978,478.298 397.478,475.965 397.5,473.5C 399.999,466.094 398.499,459.761 393,454.5C 392.023,452.26 391.523,449.927 391.5,447.5C 385.437,448.162 379.77,446.996 374.5,444C 375.453,442.045 376.787,440.378 378.5,439C 365.069,436.228 359.569,428.061 362,414.5C 366.11,404.172 367.444,393.505 366,382.5C 370.452,384.955 373.452,388.621 375,393.5C 375.727,400.856 375.56,408.189 374.5,415.5C 374.648,418.63 375.982,421.13 378.5,423C 382.711,424.534 387.044,424.867 391.5,424C 398.049,420.447 405.049,418.947 412.5,419.5C 420.906,419.482 429.072,420.815 437,423.5C 441.74,423.488 445.74,421.822 449,418.5C 448.667,410.5 448.333,402.5 448,394.5C 449.165,388.155 452.332,383.155 457.5,379.5 Z"/></g></svg>` 
+			},
+			'5': { 
+				title: 'Sila 5: Keadilan Sosial bagi Seluruh Rakyat Indonesia', 
+				text: `Dilambangkan dengan padi dan kapas, melambangkan kebutuhan dasar (pangan dan sandang) untuk mencapai kemakmuran.
+					   <br><br>
+					   <h4>Contoh Pengamalan:</h4>
+					   <ul class="list-disc pl-5 text-left">
+						 <li><strong>Di Sekolah:</strong> Menjalankan kewajiban piket kelas secara adil dan bertanggung jawab.</li>
+						 <li><strong>Di Rumah:</strong> Hemat dalam menggunakan listrik dan air.</li>
+						 <li><strong>Di Masyarakat:</strong> Menghargai hasil karya orang lain dan tidak merusak fasilitas umum.</li>
+					   </ul>`,
+				symbol: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="360 540 130 120"><g><path fill="#61382b" d="M 405.5,581.5 C 405.5,580.833 405.167,580.5 404.5,580.5C 403.833,580.5 403.5,580.167 403.5,579.5C 404.833,579.167 404.833,578.833 403.5,578.5C 402.833,578.5 402.5,578.167 402.5,577.5C 403.833,577.167 403.833,576.833 402.5,576.5C 402.662,574.473 402.495,572.473 402,570.5C 399.672,569.001 397.505,567.334 395.5,565.5C 395.672,564.508 395.338,563.842 394.5,563.5C 392.382,557.594 392.549,551.928 395,546.5C 403.527,540.428 411.193,541.428 418,549.5C 420.304,553.381 421.304,557.381 421,561.5C 426.257,563.756 429.757,567.59 431.5,573C 437.783,575.114 441.783,579.281 443.5,585.5C 447.313,586.16 450.979,587.326 454.5,589C 456.557,591.626 458.723,594.126 461,596.5C 466.05,597.694 470.717,599.694 475,602.5C 476.805,606.386 478.305,610.386 479.5,614.5C 484.353,616.589 485.52,619.922 483,624.5C 482.044,625.894 480.711,626.561 479,626.5C 476.694,625.551 474.361,624.551 472,623.5C 461.945,626.718 454.445,623.718 449.5,614.5C 441.152,613.994 435.152,609.994 431.5,602.5C 423.225,601.222 418.225,596.555 416.5,588.5C 411.646,587.913 407.979,585.58 405.5,581.5 Z"/><path fill="#dedfe2" d="M 414.5,551.5 C 413.839,552.718 413.172,554.051 412.5,555.5C 411.264,554.754 409.93,554.421 408.5,554.5C 408.528,558.484 406.861,559.484 403.5,557.5C 403.504,561.33 401.838,562.33 398.5,560.5C 394.132,550.701 397.132,545.868 407.5,546C 410.595,546.935 412.929,548.769 414.5,551.5 Z"/><path fill="#11aa6d" d="M 414.5,551.5 C 415.79,552.058 416.623,553.058 417,554.5C 417.543,557.868 417.376,561.201 416.5,564.5C 413.805,568.011 410.138,569.344 405.5,568.5C 401.761,567.093 399.428,564.426 398.5,560.5C 401.838,562.33 403.504,561.33 403.5,557.5C 406.861,559.484 408.528,558.484 408.5,554.5C 409.93,554.421 411.264,554.754 412.5,555.5C 413.172,554.051 413.839,552.718 414.5,551.5 Z"/><path fill="#643828" d="M 394.5,563.5 C 394.328,564.492 394.662,565.158 395.5,565.5C 396.703,569.11 397.703,572.777 398.5,576.5C 399.833,576.5 401.167,576.5 402.5,576.5C 402.5,576.833 402.5,577.167 402.5,577.5C 402.5,578.167 402.833,578.5 403.5,578.5C 403.5,578.833 403.5,579.167 403.5,579.5C 403.5,580.167 403.833,580.5 404.5,580.5C 405.167,580.5 405.5,580.833 405.5,581.5C 405.687,583.564 406.187,585.564 407,587.5C 409.468,588.104 411.468,589.438 413,591.5C 414.838,595.176 416.671,598.842 418.5,602.5C 420.167,601.167 421.833,601.167 423.5,602.5C 425.916,605.663 428.082,608.996 430,612.5C 431.808,610.604 433.975,610.104 436.5,611C 438.543,612.708 440.21,614.708 441.5,617C 443.769,616.626 446.102,616.626 448.5,617C 456.971,623.445 461.638,631.945 462.5,642.5C 466.848,642.091 471.181,641.924 475.5,642C 477.703,644.76 478.036,647.76 476.5,651C 470.218,652.092 463.884,652.758 457.5,653C 448.298,662.093 438.298,663.76 427.5,658C 427.643,655.849 428.643,654.182 430.5,653C 424.006,652.932 417.673,651.932 411.5,650C 407.205,648.155 406.538,645.488 409.5,642C 403.181,641.505 397.514,639.339 392.5,635.5C 390.531,631.292 391.865,628.792 396.5,628C 389.633,625.81 383.8,621.977 379,616.5C 378.28,614.888 378.446,613.388 379.5,612C 373.639,608.972 369.306,604.472 366.5,598.5C 367.313,597.186 368.313,596.019 369.5,595C 363.762,590.549 361.428,584.882 362.5,578C 365.578,578.066 368.578,577.899 371.5,577.5C 368.903,570.288 368.903,563.121 371.5,556C 373.167,555.333 374.833,555.333 376.5,556C 379.691,559.69 382.691,563.523 385.5,567.5C 387.02,562.735 390.02,561.402 394.5,563.5 Z"/><path fill="#f8c832" d="M 375.5,560.5 C 381.782,566.409 384.782,573.743 384.5,582.5C 379.681,579.888 376.514,575.888 375,570.5C 374.192,566.973 374.359,563.64 375.5,560.5 Z"/><path fill="#dcdee0" d="M 416.5,564.5 C 418.703,564.604 420.703,565.27 422.5,566.5C 422.5,568.167 422.5,569.833 422.5,571.5C 421.167,571.5 419.833,571.5 418.5,571.5C 418.5,572.833 418.5,574.167 418.5,575.5C 416.833,575.5 415.167,575.5 413.5,575.5C 413.5,576.833 413.5,578.167 413.5,579.5C 412.041,579.433 410.708,579.766 409.5,580.5C 406.471,577.099 405.138,573.099 405.5,568.5C 410.138,569.344 413.805,568.011 416.5,564.5 Z"/><path fill="#f0931f" d="M 391.5,596.5 C 390.399,595.152 389.399,593.652 388.5,592C 391.385,585.83 392.218,579.33 391,572.5C 390.583,571.244 389.75,570.577 388.5,570.5C 389.32,568.86 390.153,567.193 391,565.5C 396.78,575.721 396.947,586.055 391.5,596.5 Z"/><path fill="#ee9420" d="M 375.5,560.5 C 374.359,563.64 374.192,566.973 375,570.5C 376.514,575.888 379.681,579.888 384.5,582.5C 384.5,583.5 384.5,584.5 384.5,585.5C 383.833,585.833 383.167,586.167 382.5,586.5C 378.249,584.03 375.416,580.364 374,575.5C 372.143,569.808 372.143,564.141 374,558.5C 374.717,559.044 375.217,559.711 375.5,560.5 Z"/><path fill="#13aa6e" d="M 422.5,566.5 C 426.277,568.721 427.944,572.054 427.5,576.5C 428.029,582.306 425.363,585.306 419.5,585.5C 415.054,585.944 411.721,584.277 409.5,580.5C 410.708,579.766 412.041,579.433 413.5,579.5C 413.5,578.167 413.5,576.833 413.5,575.5C 415.167,575.5 416.833,575.5 418.5,575.5C 418.5,574.167 418.5,572.833 418.5,571.5C 419.833,571.5 421.167,571.5 422.5,571.5C 422.5,569.833 422.5,568.167 422.5,566.5 Z"/><path fill="#f8c731" d="M 388.5,570.5 C 389.75,570.577 390.583,571.244 391,572.5C 392.218,579.33 391.385,585.83 388.5,592C 389.399,593.652 390.399,595.152 391.5,596.5C 392.657,598.138 393.824,599.804 395,601.5C 394.853,595.176 396.02,589.176 398.5,583.5C 401.092,590.687 401.092,598.021 398.5,605.5C 399.035,607.261 400.035,608.594 401.5,609.5C 403.168,611.34 404.668,613.34 406,615.5C 406.654,616.696 407.154,616.696 407.5,615.5C 404.953,609.178 404.953,602.844 407.5,596.5C 409.48,597.848 410.647,599.848 411,602.5C 411.728,607.533 411.561,612.533 410.5,617.5C 411.128,619.445 412.128,621.112 413.5,622.5C 416.13,624.628 418.63,626.961 421,629.5C 421.167,629.167 421.333,628.833 421.5,628.5C 418.49,622.413 417.824,616.08 419.5,609.5C 420.117,609.389 420.617,609.056 421,608.5C 425.169,615.699 426.502,623.366 425,631.5C 425.671,632.252 426.504,632.586 427.5,632.5C 429.827,635.092 432.661,637.092 436,638.5C 435.243,635.216 434.243,631.883 433,628.5C 432.238,624.413 432.404,620.413 433.5,616.5C 435.474,618.428 436.974,620.761 438,623.5C 439.106,628.769 439.773,634.103 440,639.5C 440.671,640.252 441.504,640.586 442.5,640.5C 445.623,643.151 449.29,644.318 453.5,644C 449.35,640.054 447.017,635.221 446.5,629.5C 446.337,627.143 446.503,624.81 447,622.5C 453.071,628.54 455.904,635.873 455.5,644.5C 456.959,644.433 458.292,644.766 459.5,645.5C 464.5,645.5 469.5,645.5 474.5,645.5C 474.5,646.5 474.5,647.5 474.5,648.5C 468.5,648.5 462.5,648.5 456.5,648.5C 452.422,650.057 448.422,651.89 444.5,654C 441.183,654.498 437.85,654.665 434.5,654.5C 437.567,651.121 441.234,648.454 445.5,646.5C 443.27,645.217 440.937,644.217 438.5,643.5C 437.85,643.196 437.183,642.863 436.5,642.5C 430.803,645.31 424.803,646.143 418.5,645C 416.881,644.764 415.881,643.931 415.5,642.5C 420.206,640.282 425.206,639.115 430.5,639C 427.941,637.223 425.274,635.723 422.5,634.5C 416.262,634.342 409.929,634.175 403.5,634C 401.509,633.626 399.842,632.793 398.5,631.5C 401.55,630.065 404.883,629.398 408.5,629.5C 411.546,629.839 414.546,630.005 417.5,630C 414.335,627.665 411.335,625.165 408.5,622.5C 407.711,622.217 407.044,621.717 406.5,621C 398.116,621.931 391.116,619.431 385.5,613.5C 390.945,613.532 396.278,614.032 401.5,615C 400.336,612.672 398.67,610.838 396.5,609.5C 396.047,608.542 395.381,607.708 394.5,607C 385.907,607.755 378.907,604.921 373.5,598.5C 380.084,598.14 386.084,599.807 391.5,603.5C 391.833,603.333 392.167,603.167 392.5,603C 391.035,601.226 389.702,599.392 388.5,597.5C 387.859,596.518 387.193,595.518 386.5,594.5C 377.684,593.33 371.017,588.997 366.5,581.5C 372.214,582.607 377.381,584.94 382,588.5C 382.464,587.906 382.631,587.239 382.5,586.5C 383.167,586.167 383.833,585.833 384.5,585.5C 384.987,586.473 385.487,587.473 386,588.5C 386.499,584.848 386.665,581.182 386.5,577.5C 386.767,575.035 387.434,572.701 388.5,570.5 Z"/><path fill="#dadedf" d="M 427.5,576.5 C 430.615,576.394 433.281,577.394 435.5,579.5C 435.785,581.288 435.452,582.955 434.5,584.5C 433.833,584.167 433.167,583.833 432.5,583.5C 431.548,585.045 431.215,586.712 431.5,588.5C 429.833,588.5 428.167,588.5 426.5,588.5C 426.5,589.833 426.5,591.167 426.5,592.5C 425.167,592.5 423.833,592.5 422.5,592.5C 420.166,590.824 419.166,588.491 419.5,585.5C 425.363,585.306 428.029,582.306 427.5,576.5 Z"/><path fill="#f2951f" d="M 401.5,609.5 C 400.035,608.594 399.035,607.261 398.5,605.5C 401.092,598.021 401.092,590.687 398.5,583.5C 398.987,582.527 399.487,581.527 400,580.5C 404.25,587.222 405.583,594.555 404,602.5C 403.153,604.854 402.32,607.188 401.5,609.5 Z"/><path fill="#13a96d" d="M 435.5,579.5 C 439.277,581.721 440.944,585.054 440.5,589.5C 440.706,594.116 438.706,597.116 434.5,598.5C 430.869,598.84 427.536,598.006 424.5,596C 423.177,595.184 422.511,594.017 422.5,592.5C 423.833,592.5 425.167,592.5 426.5,592.5C 426.5,591.167 426.5,589.833 426.5,588.5C 428.167,588.5 429.833,588.5 431.5,588.5C 431.215,586.712 431.548,585.045 432.5,583.5C 433.167,583.833 433.833,584.167 434.5,584.5C 435.452,582.955 435.785,581.288 435.5,579.5 Z"/><path fill="#b98b2e" d="M 386.5,577.5 C 386.665,581.182 386.499,584.848 386,588.5C 385.487,587.473 384.987,586.473 384.5,585.5C 385.167,582.833 385.833,580.167 386.5,577.5 Z"/><path fill="#f0941f" d="M 366.5,581.5 C 371.017,588.997 377.684,593.33 386.5,594.5C 387.193,595.518 387.859,596.518 388.5,597.5C 376.753,598.127 368.753,592.96 364.5,582C 365.031,580.282 365.698,580.115 366.5,581.5 Z"/><path fill="#dedfe2" d="M 440.5,589.5 C 443.754,589.207 446.754,589.874 449.5,591.5C 450.234,592.708 450.567,594.041 450.5,595.5C 449.167,595.5 447.833,595.5 446.5,595.5C 446.5,597.167 446.5,598.833 446.5,600.5C 445.5,600.5 444.5,600.5 443.5,600.5C 443.5,602.167 443.5,603.833 443.5,605.5C 442.041,605.433 440.708,605.766 439.5,606.5C 436.818,604.47 435.151,601.803 434.5,598.5C 438.706,597.116 440.706,594.116 440.5,589.5 Z"/><path fill="#1aa96e" d="M 449.5,591.5 C 454.213,592.552 456.88,595.552 457.5,600.5C 457.628,604.585 455.961,607.585 452.5,609.5C 449.531,610.329 446.531,610.495 443.5,610C 441.676,609.34 440.343,608.173 439.5,606.5C 440.708,605.766 442.041,605.433 443.5,605.5C 443.5,603.833 443.5,602.167 443.5,600.5C 444.5,600.5 445.5,600.5 446.5,600.5C 446.5,598.833 446.5,597.167 446.5,595.5C 447.833,595.5 449.167,595.5 450.5,595.5C 450.567,594.041 450.234,592.708 449.5,591.5 Z"/><path fill="#f1931f" d="M 413.5,622.5 C 412.128,621.112 411.128,619.445 410.5,617.5C 411.561,612.533 411.728,607.533 411,602.5C 410.647,599.848 409.48,597.848 407.5,596.5C 407.709,595.078 408.209,593.745 409,592.5C 415.704,601.651 417.204,611.651 413.5,622.5 Z"/><path fill="#f2941f" d="M 373.5,598.5 C 378.907,604.921 385.907,607.755 394.5,607C 395.381,607.708 396.047,608.542 396.5,609.5C 385.737,611.79 377.07,608.457 370.5,599.5C 371.325,598.614 372.325,598.281 373.5,598.5 Z"/><path fill="#dee1e3" d="M 457.5,600.5 C 461.085,600.152 464.418,600.819 467.5,602.5C 469.186,605.537 468.186,606.87 464.5,606.5C 464.5,608.167 464.5,609.833 464.5,611.5C 463.5,611.5 462.5,611.5 461.5,611.5C 461.5,613.167 461.5,614.833 461.5,616.5C 460.041,616.433 458.708,616.766 457.5,617.5C 454.167,615.841 452.5,613.175 452.5,609.5C 455.961,607.585 457.628,604.585 457.5,600.5 Z"/><path fill="#10a86c" d="M 467.5,602.5 C 473.052,604.924 475.552,609.257 475,615.5C 476.242,616.872 477.742,617.872 479.5,618.5C 480.429,619.689 480.762,621.022 480.5,622.5C 477.611,622.054 474.944,621.054 472.5,619.5C 468.958,621.091 465.291,621.591 461.5,621C 459.456,620.502 458.122,619.335 457.5,617.5C 458.708,616.766 460.041,616.433 461.5,616.5C 461.5,614.833 461.5,613.167 461.5,611.5C 462.5,611.5 463.5,611.5 464.5,611.5C 464.5,609.833 464.5,608.167 464.5,606.5C 468.186,606.87 469.186,605.537 467.5,602.5 Z"/><path fill="#f2931e" d="M 427.5,632.5 C 426.504,632.586 425.671,632.252 425,631.5C 426.502,623.366 425.169,615.699 421,608.5C 420.617,609.056 420.117,609.389 419.5,609.5C 419.628,607.91 420.295,606.577 421.5,605.5C 428.234,613.448 430.234,622.448 427.5,632.5 Z"/><path fill="#f0931f" d="M 385.5,613.5 C 391.116,619.431 398.116,621.931 406.5,621C 407.044,621.717 407.711,622.217 408.5,622.5C 397.973,626.362 389.306,623.696 382.5,614.5C 383.325,613.614 384.325,613.281 385.5,613.5 Z"/><path fill="#f4961e" d="M 442.5,640.5 C 441.504,640.586 440.671,640.252 440,639.5C 439.773,634.103 439.106,628.769 438,623.5C 436.974,620.761 435.474,618.428 433.5,616.5C 434.279,614.073 435.446,614.073 437,616.5C 442.927,623.735 444.761,631.735 442.5,640.5 Z"/><path fill="#ec9220" d="M 459.5,645.5 C 458.292,644.766 456.959,644.433 455.5,644.5C 455.904,635.873 453.071,628.54 447,622.5C 446.503,624.81 446.337,627.143 446.5,629.5C 443.633,619.74 445.466,618.073 452,624.5C 456.974,630.588 459.474,637.588 459.5,645.5 Z"/><path fill="#f1941f" d="M 398.5,631.5 C 399.842,632.793 401.509,633.626 403.5,634C 409.929,634.175 416.262,634.342 422.5,634.5C 412.968,640.138 403.635,639.638 394.5,633C 395.563,631.812 396.897,631.312 398.5,631.5 Z"/><path fill="#f0921f" d="M 415.5,642.5 C 415.888 415.5,642.5 Z"/><path fill="#f2961f" d="M 456.5,648.5 C 450.286,657.144 441.953,660.144 431.5,657.5C 432.188,656.145 433.188,655.145 434.5,654.5C 437.85,654.665 441.183,654.498 444.5,654C 448.422,651.89 452.422,650.057 456.5,648.5 Z"/></g></svg>` 
+			},
+'6': {
+    title: 'Bhinneka Tunggal Ika',
+    text: 'Semboyan bangsa Indonesia yang berarti “Berbeda-beda tetapi tetap satu jua”. Semboyan ini menekankan pentingnya persatuan dalam keragaman suku, agama, ras, dan budaya di Indonesia.',
+    symbol: `
+        <svg viewBox="250 815 550 120" xmlns="http://www.w3.org/2000/svg">
+          <g><path style="opacity:0.794" fill="#000000" d="M 710.5,829.5 C 719.306,833.95 727.64,839.283 735.5,845.5C 732.718,850.48 729.384,850.814 725.5,846.5C 722.684,848.225 720.35,850.392 718.5,853C 719.504,854.798 720.004,856.632 720,858.5C 716.747,860.543 713.58,862.71 710.5,865C 705.892,864.468 701.392,863.301 697,861.5C 697.899,864.632 699.399,867.632 701.5,870.5C 699.793,873.104 697.626,873.77 695,872.5C 690.5,865.5 686,858.5 681.5,851.5C 682.528,849.639 684.028,848.305 686,847.5C 688,850.167 690,852.833 692,855.5C 692.76,851.181 693.427,846.848 694,842.5C 695.242,841.128 696.742,840.128 698.5,839.5C 698.747,844.774 698.913,850.108 699,855.5C 704.034,858.023 709.2,859.357 714.5,859.5C 711.532,851.43 708.865,843.263 706.5,835C 707.55,832.971 708.884,831.137 710.5,829.5 Z M 713.5,839.5 C 716.025,839.423 718.358,840.59 720.5,843C 719.335,844.084 718.002,844.917 716.5,845.5C 715.482,843.406 714.482,841.406 713.5,839.5 Z"/></g>
+          <g><path style="opacity:0.802" fill="#000000" d="M 303.5,843.5 C 307.304,846.239 311.304,848.739 315.5,851C 318.819,856.141 317.986,860.308 313,863.5C 313.364,875.082 308.197,878.249 297.5,873C 294.328,871.248 291.328,869.248 288.5,867C 293.635,859.223 298.635,851.39 303.5,843.5 Z M 305.5,851.5 C 307.426,852.242 309.259,853.242 311,854.5C 311.722,856.661 311.055,858.328 309,859.5C 306.863,858.521 305.029,857.188 303.5,855.5C 304.63,854.378 305.297,853.044 305.5,851.5 Z M 300.5,860.5 C 302.907,861.794 305.074,863.461 307,865.5C 306.854,868.949 305.021,870.115 301.5,869C 296.643,866.817 296.309,863.984 300.5,860.5 Z"/></g>
+          <g><path style="opacity:0.774" fill="#000000" d="M 675.5,853.5 C 680.85,861.015 685.85,868.848 690.5,877C 689.183,878.659 687.517,879.826 685.5,880.5C 680.597,873.036 675.93,865.369 671.5,857.5C 672.549,855.784 673.882,854.451 675.5,853.5 Z"/></g>
+          <g><path style="opacity:0.792" fill="#000000" d="M 324.5,857.5 C 326.593,858.045 328.593,858.878 330.5,860C 328.903,862.527 327.57,865.194 326.5,868C 327.952,869.565 329.619,870.898 331.5,872C 332.759,872.982 334.092,873.315 335.5,873C 336.794,870.913 337.961,868.746 339,866.5C 341.672,865.241 343.839,865.908 345.5,868.5C 341.167,876.5 336.833,884.5 332.5,892.5C 330.453,891.815 328.786,890.649 327.5,889C 328.777,885.612 330.444,882.445 332.5,879.5C 330.098,877.211 327.265,875.545 324,874.5C 321.304,877.538 318.97,880.871 317,884.5C 315.197,883.687 313.697,882.52 312.5,881C 316.122,872.921 320.122,865.088 324.5,857.5 Z"/></g>
+          <g><path style="opacity:0.767" fill="#000000" d="M 648.5,867.5 C 649.496,867.414 650.329,867.748 651,868.5C 653.839,874.851 657.172,880.851 661,886.5C 664.207,885.264 667.374,883.931 670.5,882.5C 671.624,883.914 672.624,885.414 673.5,887C 668.064,890.228 662.398,892.562 656.5,894C 652.372,886.245 648.372,878.411 644.5,870.5C 645.901,869.479 647.235,868.479 648.5,867.5 Z"/></g>
+          <g><path style="opacity:0.781" fill="#000000" d="M 349.5,870.5 C 352.323,870.025 354.323,871.025 355.5,873.5C 352.441,881.949 348.607,889.949 344,897.5C 341.786,897.154 340.286,895.988 339.5,894C 342.984,886.203 346.317,878.37 349.5,870.5 Z"/></g>
+          <g><path style="opacity:0.814" fill="#000000" d="M 360.5,875.5 C 362.827,875.665 364.993,876.331 367,877.5C 368.461,883.806 369.794,890.139 371,896.5C 372.735,891.794 374.569,887.127 376.5,882.5C 378.401,881.769 380.401,881.769 382.5,882.5C 379.5,891.167 376.5,899.833 373.5,908.5C 371.139,908.326 368.806,907.993 366.5,907.5C 365.53,900.479 364.363,893.479 363,886.5C 360.859,891.756 359.026,897.09 357.5,902.5C 354.677,902.975 352.677,901.975 351.5,899.5C 354.507,891.477 357.507,883.477 360.5,875.5 Z"/></g>
+          <g><path style="opacity:0.811" fill="#000000" d="M 631.5,875.5 C 632.873,875.343 634.207,875.51 635.5,876C 641.686,882.685 647.686,889.518 653.5,896.5C 651.999,897.752 650.332,898.752 648.5,899.5C 646.517,898.018 644.684,896.351 643,894.5C 640.602,895.856 638.102,897.023 635.5,898C 634.582,900.133 634.416,902.3 635,904.5C 632.8,906.831 630.8,906.831 629,904.5C 628.666,896.988 628.166,889.488 627.5,882C 627.833,880.5 628.167,879 628.5,877.5C 629.739,877.058 630.739,876.391 631.5,875.5 Z M 633.5,883.5 C 635.6,885.498 637.6,887.665 639.5,890C 637.919,890.707 636.419,891.54 635,892.5C 634.047,889.568 633.547,886.568 633.5,883.5 Z"/></g>
+          <g><path style="opacity:0.794" fill="#000000" d="M 609.5,883.5 C 613.62,883.091 616.954,884.424 619.5,887.5C 617.604,891.799 614.937,892.466 611.5,889.5C 605.558,890.385 603.391,893.719 605,899.5C 606.801,906.652 610.801,908.318 617,904.5C 617.49,903.207 617.657,901.873 617.5,900.5C 615.194,900.993 612.861,901.326 610.5,901.5C 610.579,900.07 610.246,898.736 609.5,897.5C 613.297,895.398 617.297,894.232 621.5,894C 623.26,898.445 624.927,902.945 626.5,907.5C 624.446,909.256 622.279,909.59 620,908.5C 614,913.833 608,913.833 602,908.5C 598.734,903.262 597.734,897.595 599,891.5C 601.263,887.054 604.763,884.388 609.5,883.5 Z"/></g>
+          <g><path style="opacity:0.813" fill="#000000" d="M 386.5,885.5 C 389.272,885.22 391.772,885.887 394,887.5C 395.87,893.442 397.536,899.442 399,905.5C 400.501,900.828 402.001,896.161 403.5,891.5C 405.353,890.24 407.186,890.24 409,891.5C 407.358,900.764 404.691,909.764 401,918.5C 398.788,917.88 396.954,916.713 395.5,915C 394.198,908.945 392.365,903.112 390,897.5C 388.531,902.905 386.865,908.239 385,913.5C 382.824,913.012 380.991,912.012 379.5,910.5C 382.304,902.28 384.638,893.947 386.5,885.5 Z"/></g>
+          <g><path style="opacity:0.78" fill="#000000" d="M 580.5,891.5 C 583.518,891.335 586.518,891.502 589.5,892C 594.745,894.381 594.745,896.881 589.5,899.5C 586.035,896.878 582.535,896.878 579,899.5C 576.866,905.104 578.033,909.937 582.5,914C 587.21,915.121 589.877,913.288 590.5,908.5C 588.139,908.674 585.806,909.007 583.5,909.5C 582.862,907.54 582.862,905.707 583.5,904C 587.447,902.846 591.447,902.013 595.5,901.5C 596.102,906.075 597.102,910.575 598.5,915C 598.138,916.885 596.971,917.719 595,917.5C 593.674,917.245 592.674,916.578 592,915.5C 590.281,918.92 587.448,920.586 583.5,920.5C 576.949,919.785 573.116,916.118 572,909.5C 569.819,900.868 572.652,894.868 580.5,891.5 Z"/></g>
+          <g><path style="opacity:0.799" fill="#000000" d="M 414.5,892.5 C 419.833,893.6 425.166,894.767 430.5,896C 432.192,897.401 432.859,899.234 432.5,901.5C 428.14,900.993 423.807,900.327 419.5,899.5C 419.579,900.93 419.246,902.264 418.5,903.5C 422.233,904.682 425.899,906.015 429.5,907.5C 428.754,908.736 428.421,910.07 428.5,911.5C 425.09,911.218 421.757,910.551 418.5,909.5C 416.467,911.452 416.134,913.618 417.5,916C 420.919,916.521 424.252,917.355 427.5,918.5C 428.82,920.864 428.154,922.531 425.5,923.5C 419.734,922.314 414.067,920.814 408.5,919C 410.815,910.26 412.815,901.427 414.5,892.5 Z"/></g>
+          <g><path style="opacity:0.817" fill="#000000" d="M 559.5,896.5 C 561.5,896.5 563.5,896.5 565.5,896.5C 566.725,905.517 568.058,914.517 569.5,923.5C 567.181,924.167 564.847,924.334 562.5,924C 558.667,919.5 554.833,915 551,910.5C 550.947,915.861 551.447,921.195 552.5,926.5C 550.738,926.357 549.071,926.691 547.5,927.5C 544.76,918.398 543.094,909.064 542.5,899.5C 544.915,899.373 547.249,899.207 549.5,899C 553.333,903.5 557.167,908 561,912.5C 560.619,907.197 560.119,901.864 559.5,896.5 Z"/></g>
+          <g><path style="opacity:0.805" fill="#000000" d="M 436.5,897.5 C 438.467,897.261 440.301,897.594 442,898.5C 441.68,901.46 441.68,904.46 442,907.5C 444.739,904.882 447.573,902.382 450.5,900C 452.913,899.516 455.246,899.85 457.5,901C 453.8,905.035 449.8,908.702 445.5,912C 448.375,916.917 451.375,921.751 454.5,926.5C 458.159,918.535 461.826,910.535 465.5,902.5C 468.106,901.348 470.773,901.182 473.5,902C 476.544,911.339 478.711,920.839 480,930.5C 478.266,929.751 476.433,929.251 474.5,929C 473.019,923.476 469.353,921.476 463.5,923C 462.74,924.441 462.074,925.941 461.5,927.5C 456.85,928.341 452.184,928.175 447.5,927C 444.874,922.916 442.374,918.75 440,914.5C 439.452,918.17 438.952,921.837 438.5,925.5C 436.801,925.66 435.134,925.494 433.5,925C 432.903,923.938 432.57,922.772 432.5,921.5C 433.746,913.438 435.079,905.438 436.5,897.5 Z M 468.5,909.5 C 469.942,911.54 470.942,913.873 471.5,916.5C 469.579,917.641 467.579,917.808 465.5,917C 466.642,914.55 467.642,912.05 468.5,909.5 Z"/></g>
+          <g><path style="opacity:0.806" fill="#000000" d="M 531.5,900.5 C 533.5,900.5 535.5,900.5 537.5,900.5C 538.238,908.159 538.404,915.826 538,923.5C 535.738,927.931 532.071,929.931 527,929.5C 522.668,929.667 519.335,928.001 517,924.5C 515.836,917.202 515.003,909.869 514.5,902.5C 516.467,902.739 518.301,902.406 520,901.5C 521.051,908.149 522.051,914.815 523,921.5C 526,924.167 529,924.167 532,921.5C 532.002,914.513 531.835,907.513 531.5,900.5 Z"/></g>
+          <g><path style="opacity:0.848" fill="#000000" d="M 490.5,902.5 C 497.833,902.5 505.167,902.5 512.5,902.5C 512.5,904.167 512.5,905.833 512.5,907.5C 509.833,907.5 507.167,907.5 504.5,907.5C 504.5,915.167 504.5,922.833 504.5,930.5C 502.5,930.5 500.5,930.5 498.5,930.5C 498.5,922.833 498.5,915.167 498.5,907.5C 495.833,907.5 493.167,907.5 490.5,907.5C 490.5,905.833 490.5,904.167 490.5,902.5 Z"/></g>
+        </svg>
+    `
+}
+		};
+
+    const gameData = [
+        { id: 1, text: silaData['1'].title, symbol: silaData['1'].symbol },
+        { id: 2, text: silaData['2'].title, symbol: silaData['2'].symbol },
+        { id: 3, text: silaData['3'].title, symbol: silaData['3'].symbol },
+        { id: 4, text: silaData['4'].title, symbol: silaData['4'].symbol },
+        { id: 5, text: silaData['5'].title, symbol: silaData['5'].symbol },
+    ];
+
+    // --- ELEMEN DOM ---
+	const materiMusic = document.getElementById('materi-music');
+    const sections = document.querySelectorAll('.page-section');
+    const navButtons = document.querySelectorAll('#btn-mulai, #btn-materi');
+    const backButtons = document.querySelectorAll('.back-button');
+    const modalTriggerButtons = document.querySelectorAll('#btn-petunjuk, #btn-tujuan, #btn-profil, #btn-credit');
+    const closeModalButtons = document.querySelectorAll('.close-modal');
+    const simbolElements = document.querySelectorAll('.simbol-pancasila');
+    
+    // --- NAVIGASI ANTAR HALAMAN ---
+const switchPage = (targetId) => {
+        sections.forEach(section => {
+            section.classList.remove('active');
+        });
+        const targetSection = document.getElementById(targetId);
+        if (targetSection) {
+            targetSection.classList.add('active');
+        }
+
+        // --- KODE MUSIK DITAMBAHKAN DI SINI ---
+        // Cek apakah halaman tujuan adalah halaman materi
+        if (targetId === 'materi-section') {
+            // Jika ya, putar musik.
+            // .catch() untuk menangani error jika browser memblokir auto-play
+            materiMusic.play().catch(error => console.error("Gagal memutar musik:", error));
+        } else {
+            // Jika tidak (pindah ke halaman lain), hentikan musik
+            materiMusic.pause();
+            materiMusic.currentTime = 0; // Reset durasi agar mulai dari awal lagi
+        }
+        // --- AKHIR DARI KODE MUSIK ---
+
+        // Hentikan semua game saat pindah halaman
+        stopGame();
+        if (typeof stopMemoryGame === 'function') {
+            stopMemoryGame();
+        }
+    };
+
+navButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        playSound(clickSound);
+        if (button.id === 'btn-mulai') {
+            switchPage('game-section'); // 1. Pindah halaman dulu
+            startGame();                 // 2. Baru mulai game & timernya
+        } else if (button.id === 'btn-materi') {
+            switchPage('materi-section');
+        }
+    });
+});
+
+    backButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            playSound(clickSound);
+            const targetId = button.dataset.target;
+            const parentModal = button.closest('.modal-overlay');
+            if (parentModal) {
+                closeModal(parentModal);
+            }
+            if (targetId) {
+                switchPage(targetId);
+            }
+        });
+    });
+
+    // --- LOGIKA MODAL ---
+    const openModal = (modalId) => {
+        const modal = document.getElementById(modalId);
+        if (modal) modal.style.display = 'flex';
+    };
+
+    const closeModal = (modal) => {
+        modal.style.display = 'none';
+    };
+
+    modalTriggerButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            playSound(clickSound);
+            const modalId = button.id.replace('btn-', '') + 'Modal';
+            openModal(modalId);
+        });
+    });
+
+    closeModalButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            playSound(clickSound);
+            closeModal(button.closest('.modal-overlay'));
+        });
+    });
+
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', function(e) {
+            if (e.target === this) {
+                playSound(clickSound);
+                closeModal(this);
+            }
+        });
+    });
+
+    // Logika untuk Modal Simbol
+    simbolElements.forEach(simbol => {
+        const silaNumber = simbol.dataset.sila;
+        if (silaData[silaNumber]) {
+            simbol.innerHTML = silaData[silaNumber].symbol;
+        }
+        simbol.addEventListener('click', (e) => {
+            playSound(clickSound);
+            e.stopPropagation();
+            const data = silaData[silaNumber];
+            if (data) {
+                document.getElementById('modal-image').innerHTML = data.symbol;
+                document.getElementById('modal-title').textContent = data.title;
+                document.getElementById('modal-text').innerHTML = data.text;
+                const svgInModal = document.getElementById('modal-image').querySelector('svg');
+                if (svgInModal) svgInModal.setAttribute('class', 'w-full h-full');
+                openModal('simbolModal');
+            }
+        });
+    });
+
+    // --- LOGIKA GAME 1: MENJODOHKAN ---
+    const symbolsCol = document.getElementById('symbols-col');
+    const textsCol = document.getElementById('texts-col');
+    const timeLeftEl = document.getElementById('time-left');
+    const scoreEl = document.getElementById('score-value');
+    const resultModal = document.getElementById('resultModal');
+    const resultTitle = document.getElementById('result-title');
+    const resultMessage = document.getElementById('result-message');
+
+    let selectedSymbol = null;
+    let selectedText = null;
+    let score = 0;
+    let matchedPairs = 0;
+    let timer;
+    let timeLeft = 60;
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function startGame() {
+        stopGame();
+        score = 0;
+        matchedPairs = 0;
+        timeLeft = 60;
+        scoreEl.textContent = score;
+        timeLeftEl.textContent = timeLeft;
+        
+        let symbols = [...gameData];
+        let texts = [...gameData];
+        shuffleArray(symbols);
+        shuffleArray(texts);
+
+        symbolsCol.innerHTML = '';
+        textsCol.innerHTML = '';
+
+        symbols.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'game-item symbol-item';
+            div.dataset.id = item.id;
+            div.innerHTML = item.symbol;
+            div.addEventListener('click', () => selectItem(div, 'symbol'));
+            symbolsCol.appendChild(div);
+        });
+
+        texts.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'game-item text-item';
+            div.dataset.id = item.id;
+            div.textContent = item.text;
+            div.addEventListener('click', () => selectItem(div, 'text'));
+            textsCol.appendChild(div);
+        });
+
+        timer = setInterval(updateTimer, 1000);
+    }
+
+    function stopGame() {
+        clearInterval(timer);
+    }
+
+    function updateTimer() {
+        timeLeft--;
+        timeLeftEl.textContent = timeLeft;
+        if (timeLeft <= 0) {
+            stopGame();
+            showResult(false);
+        }
+    }
+
+    function selectItem(element, type) {
+        if (element.classList.contains('matched')) return;
+        playSound(clickSound);
+
+        if (type === 'symbol') {
+            if (selectedSymbol) selectedSymbol.classList.remove('selected');
+            selectedSymbol = element;
+        } else {
+            if (selectedText) selectedText.classList.remove('selected');
+            selectedText = element;
+        }
+        element.classList.add('selected');
+        checkMatch();
+    }
+
+    function checkMatch() {
+        if (selectedSymbol && selectedText) {
+            const symbolId = selectedSymbol.dataset.id;
+            const textId = selectedText.dataset.id;
+            
+            if (symbolId === textId) {
+                playSound(correctSound);
+                selectedSymbol.classList.add('matched');
+                selectedText.classList.add('matched');
+                selectedSymbol.classList.remove('selected');
+                selectedText.classList.remove('selected');
+                
+                score += 20;
+                matchedPairs++;
+                scoreEl.textContent = score;
+                
+                if (matchedPairs === gameData.length) {
+                    stopGame();
+                    showResult(true);
+                }
+            } else {
+                playSound(wrongSound);
+                selectedSymbol.classList.add('error');
+                selectedText.classList.add('error');
+                
+                setTimeout(() => {
+                    selectedSymbol.classList.remove('error', 'selected');
+                    selectedText.classList.remove('error', 'selected');
+                }, 500);
+            }
+            selectedSymbol = null;
+            selectedText = null;
+        }
+    }
+
+    function showResult(isWin) {
+        const playAgainBtn = document.getElementById('play-again');
+        const continueBtn = document.getElementById('continue-to-game2');
+
+        if (isWin) {
+            playSound(winSound);
+            resultTitle.textContent = "Selamat, Kamu Menang!";
+            resultMessage.textContent = `Kamu berhasil menjodohkan semua sila dengan skor akhir ${score}. Lanjutkan ke permainan berikutnya!`;
+            playAgainBtn.style.display = 'none';
+            continueBtn.style.display = 'inline-block';
+        } else {
+            resultTitle.textContent = "Waktu Habis!";
+            resultMessage.textContent = `Kamu berhasil menjodohkan ${matchedPairs} dari ${gameData.length} pasang. Coba lagi!`;
+            playAgainBtn.style.display = 'inline-block';
+            continueBtn.style.display = 'none';
+        }
+        openModal('resultModal');
+    }
+
+    document.getElementById('reset-game').addEventListener('click', () => {
+        playSound(clickSound);
+        startGame();
+    });
+    document.getElementById('play-again').addEventListener('click', () => {
+        playSound(clickSound);
+        closeModal(resultModal);
+        startGame();
+    });
+    document.getElementById('continue-to-game2').addEventListener('click', () => {
+        playSound(clickSound);
+        closeModal(resultModal);
+        switchPage('memory-game-section');
+        startMemoryGame();
+    });
+    
+    // --- LOGIKA GAME 2: MEMORY GAME ---
+    const memoryBoard = document.getElementById('memory-board');
+    const movesCountEl = document.getElementById('moves-count');
+    const resetMemoryGameBtn = document.getElementById('reset-memory-game');
+
+    let memoryCardsData = [];
+    let flippedCards = [];
+    let matchedMemoryPairs = 0;
+    let moves = 0;
+    let lockBoard = false;
+
+    function startMemoryGame() {
+        stopMemoryGame();
+        moves = 0;
+        matchedMemoryPairs = 0;
+        movesCountEl.textContent = moves;
+        memoryBoard.innerHTML = '';
+
+        let game1Data = [...gameData];
+        memoryCardsData = [...game1Data, ...game1Data];
+        shuffleArray(memoryCardsData);
+
+        memoryCardsData.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.classList.add('memory-card');
+            card.dataset.id = item.id;
+            card.dataset.index = index;
+            card.innerHTML = `<div class="card-face card-front"></div><div class="card-face card-back">${item.symbol}</div>`;
+            card.addEventListener('click', flipCard);
+            memoryBoard.appendChild(card);
+        });
+    }
+
+    function stopMemoryGame() {
+        lockBoard = false;
+        flippedCards = [];
+    }
+
+    function flipCard() {
+        if (lockBoard) return;
+        if (this === flippedCards[0]) return;
+        playSound(clickSound);
+        this.classList.add('flipped');
+        flippedCards.push(this);
+        if (flippedCards.length === 2) {
+            moves++;
+            movesCountEl.textContent = moves;
+            lockBoard = true;
+            checkForMemoryMatch();
+        }
+    }
+
+    function checkForMemoryMatch() {
+        const [card1, card2] = flippedCards;
+        const isMatch = card1.dataset.id === card2.dataset.id;
+        isMatch ? disableCards() : unflipCards();
+    }
+
+    function disableCards() {
+        playSound(correctSound);
+        flippedCards[0].classList.add('matched');
+        flippedCards[1].classList.add('matched');
+        matchedMemoryPairs++;
+        resetBoard();
+        if (matchedMemoryPairs === gameData.length) {
+            playSound(winSound);
+            setTimeout(() => {
+                showMemoryResult();
+            }, 500);
+        }
+    }
+
+    function unflipCards() {
+        playSound(wrongSound);
+        setTimeout(() => {
+            flippedCards[0].classList.remove('flipped');
+            flippedCards[1].classList.remove('flipped');
+            resetBoard();
+        }, 1000);
+    }
+
+    function resetBoard() {
+        [flippedCards, lockBoard] = [
+            [], false
+        ];
+    }
+    
+    function showMemoryResult() {
+        const messageEl = document.getElementById('memory-result-message');
+        messageEl.textContent = `Kamu menyelesaikan permainan dalam ${moves} langkah.`;
+        openModal('memoryResultModal');
+    }
+
+    resetMemoryGameBtn.addEventListener('click', () => {
+        playSound(clickSound);
+        startMemoryGame();
+    });
+    
+    document.getElementById('play-memory-again').addEventListener('click', () => {
+        playSound(clickSound);
+        closeModal(document.getElementById('memoryResultModal'));
+        startMemoryGame();
+    });
+
+    // --- 3D Profile Picture Logic ---
+    const profilModal = document.getElementById('profilModal');
+    const profilePicContainer = profilModal.querySelector('.profile-pic-container');
+    if (profilePicContainer) {
+        const profilePic = profilePicContainer.querySelector('img');
+        const maxRotate = 30;
+        profilePicContainer.addEventListener('mousemove', (e) => {
+            const rect = profilePicContainer.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            const rotateY = ((mouseX / rect.width) - 0.5) * 2 * maxRotate;
+            const rotateX = (((mouseY / rect.height) - 0.5) * 2 * maxRotate) * -1;
+            profilePic.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.7)`;
+        });
+        profilePicContainer.addEventListener('mouseleave', () => {
+            profilePic.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+        });
+    }
+
+    // Inisialisasi halaman awal
+    switchPage('home-section');
+});
+
+// --- THREE.JS SCRIPT UNTUK BENDERA BERKIBAR ---
+(function() {
+    const container = document.getElementById('threejs-container');
+    if (!container) return;
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    container.appendChild(renderer.domElement);
+    const flagWidth = 5, flagHeight = 2.5, segmentsW = 80, segmentsH = 40;
+    const flagGeometry = new THREE.PlaneGeometry(flagWidth, flagHeight, segmentsW, segmentsH);
+    const colors = [];
+    const colorTop = new THREE.Color(0xff0000);
+    const colorBottom = new THREE.Color(0xffffff);
+    for (let i = 0; i < flagGeometry.attributes.position.count; i++) {
+        const y = flagGeometry.attributes.position.getY(i);
+        const t = (y + flagHeight / 2) / flagHeight;
+        colors.push(t > 0.5 ? colorTop.r : colorBottom.r, t > 0.5 ? colorTop.g : colorBottom.g, t > 0.5 ? colorTop.b : colorBottom.b);
+    }
+    flagGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+    const flagMaterial = new THREE.MeshStandardMaterial({
+        vertexColors: true,
+        side: THREE.DoubleSide,
+        roughness: 0.8,
+        metalness: 0.4
+    });
+    const flag = new THREE.Mesh(flagGeometry, flagMaterial);
+    scene.add(flag);
+    const originalPositions = flagGeometry.attributes.position.clone();
+    camera.position.set(0, 0, 4.5);
+    camera.lookAt(0, 0, 0);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambientLight);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.9);
+    directionalLight.position.set(5, 5, 5);
+    scene.add(directionalLight);
+    const clock = new THREE.Clock();
+    const windSpeed = 1.9,
+        waveHeight = 0.8;
+
+    function animate() {
+        requestAnimationFrame(animate);
+        const time = clock.getElapsedTime();
+        const positions = flagGeometry.attributes.position;
+        for (let i = 0; i < positions.count; i++) {
+            const x = originalPositions.getX(i);
+            const waveX1 = Math.sin(x * 3.5 + time * windSpeed) * waveHeight;
+            const waveX2 = Math.sin(x * 4.5 + time * windSpeed * 0.8) * waveHeight * 0.7;
+            const flutter = (x + flagWidth / 2) / flagWidth;
+            positions.setZ(i, (waveX1 + waveX2) * flutter);
+        }
+        positions.needsUpdate = true;
+        flagGeometry.computeVertexNormals();
+        renderer.render(scene, camera);
+    }
+
+    function onWindowResize() {
+        const w = window.innerWidth,
+            h = window.innerHeight;
+        renderer.setSize(w, h);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        const distance = camera.position.z - flag.position.z;
+        const vFov = (camera.fov * Math.PI) / 180;
+        const visibleHeight = 2 * Math.tan(vFov / 2) * distance;
+        const flagAspect = flagWidth / flagHeight;
+        const screenAspect = w / h;
+        if (screenAspect > flagAspect) {
+            const visibleWidth = visibleHeight * camera.aspect;
+            flag.scale.set(visibleWidth / flagWidth, visibleWidth / flagAspect / flagHeight, 1);
+        } else {
+            flag.scale.set(visibleHeight * flagAspect / flagWidth, visibleHeight / flagHeight, 1);
+        }
+    }
+    window.addEventListener('resize', onWindowResize);
+    onWindowResize();
+    animate();
+})();
+</script>
