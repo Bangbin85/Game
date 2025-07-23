@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BANGBIN BOOK</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Mochiy+Pop+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <style>
+        /* Mengatur font dasar dan latar belakang halaman */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #1a1a2e; /* Warna biru malam yang lebih dalam */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #F9FAFB;
+            overflow: hidden;
+            /* Mencegah scrolling halaman saat drag di layar sentuh */
+            touch-action: none;
+        }
+
+        /* Kontainer utama untuk flipbook */
+        .book-container {
+            perspective: 2500px; /* Memberi efek 3D */
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Styling untuk buku. */
+        .book {
+            width: 95vw;
+            height: 60vh; 
+            max-width: 1000px;
+            max-height: 80%;
+            position: relative;
+            transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+            transform-style: preserve-3d;
+        }
+
+        /* Styling untuk setiap "kertas". */
+        .paper {
+            position: absolute;
+            width: 50%; /* Setiap kertas = 1 halaman = 50% lebar buku */
+            height: 100%;
+            top: 0;
+            left: 50%; /* Semua kertas dimulai dari sisi kanan */
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+            transform-origin: left; /* Titik putar di kiri (tengah buku) */
+        }
+
+        /* Sisi depan dan belakang setiap kertas */
+        .front, .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-color: #16213e;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0.5rem; /* Padding disesuaikan untuk layar kecil */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border: 1px solid #0f3460;
+            overflow-y: auto;
+        }
+        
+        /* Sisi depan adalah halaman kanan, sudutnya di kanan */
+        .front {
+             border-radius: 0 10px 10px 0;
+        }
+
+        /* Sisi belakang adalah halaman kiri, sudutnya di kiri */
+        .back {
+            transform: rotateY(180deg);
+            border-radius: 10px 0 0 10px;
+        }
+
+        /* Kelas 'flipped' akan memutar kertas ke sisi kiri */
+        .flipped {
+            transform: rotateY(-180deg);
+        }
+
+        /* Styling untuk konten di dalam halaman */
+        .page-content {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            gap: 0.5rem; /* Jarak antar elemen dikurangi */
+        }
+        .page-content h2 {
+            font-size: clamp(1rem, 4vw, 1.5rem); /* Ukuran font responsif */
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            margin: 0 0 0.25rem 0;
+            color: #e94560;
+        }
+        .page-content p, .page-content li {
+            font-size: clamp(0.7rem, 1.5vw, 0.9rem); /* Ukuran font responsif */
+            max-width: 95%;
+            line-height: 1.4;
+            margin: 0 auto;
+        }
+        .page-content ul {
+            list-style-position: inside;
+            text-align: left;
+            padding: 0 1rem;
+        }
+        
+        /* Styling untuk ikon hewan (sekarang menggunakan img) */
+        .animal-icon {
+            width: 50%;
+            max-height: 40%;
+            height: auto;
+            object-fit: contain; /* Memastikan gambar tidak terdistorsi */
+            transition: transform 0.3s ease-in-out; /* Transisi hanya untuk zoom */
+            cursor: pointer;
+            border-radius: 8px; /* Menambahkan sedikit radius pada gambar */
+        }
+
+        .animal-icon:hover {
+            transform: scale(1.15); /* Efek zoom saat mouse mendekat */
+        }
+        
+        /* Styling untuk sampul depan (kanan) dan belakang (kiri) */
+		#p1 .front, #p10 .back {
+			background-color: transparent;
+		}
+
+		/* BARU: Memastikan konten (teks & gambar) di sampul depan & belakang berada di lapisan atas */
+		#p1 .front .page-content, #p10 .back .page-content {
+			position: relative; /* Diperlukan agar z-index berfungsi */
+			z-index: 1;
+		}
+        
+        #p1 .front h2 {
+            color: #e0e7ff;
+        }
+
+        .wrapper {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+        }
+
+		.orange, .green, .blue {
+		  position: absolute;
+		  top: 0;
+		  bottom: 0;
+		  width: 100%;
+		}
+
+		.orange {
+		  background-color: #e7901e;
+		  clip-path: polygon(0, 0, 20% 0, 5% 100%, 0% 100%);
+		}
+
+		.green {
+		  background-color: #1ecc59;
+		  clip-path: polygon(30% 0, 80% 0, 95% 100%, 15% 100%);
+		}
+
+		.blue {
+		  background-color: #5ab3ff;
+		  clip-path: polygon(60% 0, 100% 0, 100% 100%, 85% 100%);
+		}
+
+        /* --- POSISI TOMBOL NAVIGASI --- */
+        .nav-btn {
+            background-color: #e94560;
+            color: white;
+            padding: 0.5rem; /* Ukuran tombol disesuaikan untuk mobile */
+            border-radius: 50%;
+            border: 2px solid #1a1a2e;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(233, 69, 96, 0.4);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+        .nav-btn svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+        .nav-btn:hover {
+            background-color: #ff6684;
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 6px 15px rgba(233, 69, 96, 0.5);
+        }
+        .nav-btn:disabled {
+            background-color: #4B5563;
+            cursor: not-allowed;
+            transform: translateY(-50%);
+            box-shadow: none;
+            opacity: 0.5;
+        }
+        #prev-btn {
+            left: 10px; /* Jarak dari tepi */
+        }
+        #next-btn {
+            right: 10px; /* Jarak dari tepi */
+        }
+        
+        .page-counter-container {
+            position: fixed;
+            bottom: 2vh;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+        }
+        #page-counter {
+            font-size: 1rem;
+            font-weight: 600;
+            min-width: 80px;
+            text-align: center;
+            background-color: rgba(0,0,0,0.2);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+        }
+
+        /* --- STYLING GAME --- */
+        .game-page .page-content {
+            gap: 0.25rem; /* Jarak antar elemen game dikurangi */
+            padding: 0.5rem;
+        }
+        .game-feedback {
+            font-weight: 600;
+            font-size: clamp(0.8rem, 3vw, 1rem);
+            height: 1.5rem;
+            transition: opacity 0.5s;
+        }
+
+        /* Drag & Drop */
+        /* Drag & Drop */
+        .drop-zones-container, .draggable-items-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            flex-grow: 1;
+        }
+        .dropzone {
+            position: relative;
+            overflow: hidden;
+            width: clamp(80px, 25vw, 120px); 
+            height: clamp(80px, 25vw, 120px); 
+            border: 2px dashed #4a5568; 
+            border-radius: 8px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: all 0.3s;
+            background-color: #16213e; /* Fallback background */
+        }
+        .habitat-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+            z-index: 1;
+        }
+        .dropzone.hovered { 
+            border-color: #a0aec0; 
+            background-color: #2a3a5e;
+        }
+        .dropzone.hovered .habitat-image {
+            opacity: 0.8;
+        }
+        .dropzone.dropped { 
+            border-style: solid; 
+            border-color: #48bb78; 
+        }
+        .dropzone.dropped .habitat-image {
+            opacity: 1;
+        }
+        .draggable { 
+            width: clamp(60px, 20vw, 100px); 
+            height: clamp(60px, 20vw, 100px); 
+            cursor: grab; 
+            transition: opacity 0.3s, transform 0.3s ease; 
+            touch-action: none; 
+        }
+        .draggable.dragging { 
+            opacity: 0.5; 
+            cursor: grabbing; 
+        }
+        .dropzone .draggable { 
+            width: 90%; 
+            height: 90%; 
+            cursor: default; 
+            position: relative;
+            z-index: 2;
+        }
+
+
+        /* Matching Game */
+		.matching-game-container {display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; /* Jarak dikurangi */
+			width: 100%; padding: 1rem 1.5rem; /* Perbaikan padding */
+		}
+
+		.matching-column {
+			display: flex; flex-direction: column; gap: 0.5rem;
+			align-items: center; /* BARU: Menengahkan item di dalam kolom */
+		}
+
+		.matching-column:first-child::before {
+			content: "Nama Tokoh";	text-align: center;	font-weight: bold;
+			color: #e94560;  margin-bottom: 0.5rem; /* Menambah jarak */
+		}
+
+		.matching-column:last-child::before {
+			content: "Tokoh"; text-align: center; font-weight: bold;
+			color: #e94560; margin-bottom: 0.5rem; /* Menambah jarak */
+		}
+
+		.match-item {
+			background-color: #2a3a5e;
+			border: 2px solid #4a5568;
+			padding: 0.2rem; /* Padding disesuaikan */
+			border-radius: 8px;
+			cursor: pointer;
+			transition: all 0.3s;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 80%; /* Lebar disesuaikan */
+			height: clamp(70px, 10vw, 80px);
+		}
+
+		.match-item img {
+			width: 100%;
+			height: 100%;
+			object-fit: contain;
+		}
+        
+        /* Quiz Game */
+       .quiz-container { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; width: 90%; max-width: 500px; }
+        #quiz-question { margin-bottom: 0.5rem; font-size: clamp(0.9rem, 3.5vw, 1.2rem); font-weight: 600;}
+        #quiz-options-container { display: grid; grid-template-columns: 1fr; gap: 0.75rem; width: 100%; }
+        
+        /* PERUBAHAN BARU: Gaya Tombol Kuis 3D */
+        .quiz-option-btn {
+            background-color: #6d28d9; /* purple-700 */
+            border: none;
+            border-bottom: 4px solid #4c1d95; /* purple-900 */
+            padding: 0.75rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.15s ease-out;
+            color: #ffffff;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-weight: 600;
+            text-align: center;
+            width: 100%;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+        }
+        .quiz-option-btn:hover:not(:disabled) {
+            background-color: #7c3aed; /* purple-600 */
+            transform: translateY(-2px);
+            border-bottom-width: 6px;
+        }
+        .quiz-option-btn:active:not(:disabled) {
+            transform: translateY(1px);
+            border-bottom-width: 3px;
+        }
+        .quiz-option-btn.correct {
+            background-color: #22c55e; /* green-500 */
+            border-bottom-color: #15803d; /* green-700 */
+        }
+        .quiz-option-btn.incorrect {
+            background-color: #ef4444; /* red-500 */
+            border-bottom-color: #b91c1c; /* red-700 */
+        }
+        .quiz-option-btn:disabled {
+            pointer-events: none;
+            filter: brightness(0.8);
+        }
+
+        #quiz-next-btn {
+            margin-top: 1rem; padding: 0.5rem 1.5rem; border-radius: 20px; background-color: #e94560; color: white;
+            font-weight: 600; cursor: pointer; transition: background-color 0.3s; border: none;
+        }
+        #quiz-next-btn:hover { background-color: #ff6684; }
+        .hidden { display: none !important; }
+
+        /* --- BARU: Memory Game --- */
+.memory-game-container {
+    display: grid;
+    /* PENYESUAIAN KUNCI: Membuat kolom lebih fleksibel */
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 0.5rem; /* Jarak antar kartu */
+    width: 100%;
+    max-width: 400px; /* Batasi lebar maksimum agar tidak terlalu besar di tablet */
+    margin: 0 auto; /* Menengahkan kontainer */
+    padding: 0.5rem;
+    justify-content: center;
+    align-content: center;
+}
+
+.memory-card {
+    width: 100%;
+    aspect-ratio: 1 / 1; /* Menjaga kartu tetap persegi */
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+    cursor: pointer;
+    /* BARU: Efek 3D pada tombol */
+    border-radius: 8px;
+    box-shadow: 0 4px 0 #3a4a7e, 0 6px 10px rgba(0,0,0,0.4);
+    transform: translateZ(0); /* Memicu hardware acceleration */
+}
+
+.memory-card:active {
+    /* BARU: Efek tombol ditekan */
+    transform: translateY(2px) rotateY(0deg);
+    box-shadow: 0 2px 0 #3a4a7e;
+}
+
+.memory-card.flipped {
+    transform: rotateY(180deg);
+    box-shadow: 0 4px 0 #1c4532, 0 6px 10px rgba(0,0,0,0.4); /* Bayangan saat dibalik */
+}
+
+.memory-card.flipped:active {
+    transform: translateY(2px) rotateY(180deg);
+    box-shadow: 0 2px 0 #1c4532;
+}
+
+
+.memory-card.matched {
+    cursor: default;
+    opacity: 0.6;
+    transform: rotateY(180deg) scale(0.95); /* Sedikit mengecil saat cocok */
+    box-shadow: none; /* Hilangkan bayangan saat cocok */
+}
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Mencegah gambar keluar dari border-radius */
+}
+
+.card-front {
+    background-color: #2a3a5e;
+    border: 2px solid #4a5568;
+    transform: rotateY(180deg);
+}
+
+.card-front img {
+    max-width: 85%; /* Sedikit lebih besar */
+    max-height: 85%;
+    object-fit: contain;
+}
+
+.card-back {
+    background-color: #4338ca;
+    border: 2px solid #63b3ed;
+    font-size: clamp(1.5rem, 8vw, 2.5rem); /* Ukuran font tanda tanya responsif */
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+        /* --- Word Search Game --- */
+        .word-search-page-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            gap: 0.5rem;
+            align-items: center;
+            justify-content: center;
+        }
+        #word-list { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;}
+        #word-list li { background-color: #2a3a5e; padding: 0.2rem 0.5rem; border-radius: 12px; font-size: clamp(0.7rem, 2.5vw, 0.9rem); transition: all 0.3s; } /* FONT DIUBAH */
+        #word-list li.found { text-decoration: line-through; background-color: #1c4532; color: #a0aec0; }
+        #word-search-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(10, 1fr);
+            gap: 1px;
+            background-color: #0f3460;
+            border-radius: 8px;
+            padding: 4px;
+            touch-action: none;
+            user-select: none;
+            width: 95%;
+            aspect-ratio: 1/1;
+            max-height: 100%;
+            flex-shrink: 1;
+            min-height: 0;
+        }
+        .grid-cell {
+            background-color: #16213e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: clamp(0.5rem, 2.3vw, 0.9rem); /* FONT DIUBAH */
+            text-transform: uppercase;
+            transition: background-color 0.2s;
+        }
+        .grid-cell.selected { background-color: #63b3ed; color: #1a1a2e; }
+        .grid-cell.found { background-color: #48bb78; color: #1a1a2e; } /* Memperbaiki typo } ekstra */
+
+        /* --- BARU: HALAMAN REFLEKSI --- */
+        .reflection-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .emoji-btn {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            cursor: pointer;
+            transition: transform 0.3s ease, filter 0.3s ease;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
+        }
+        .emoji-btn:hover {
+            transform: scale(1.2) translateY(-5px);
+            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.5));
+        }
+        #reflection-feedback {
+            font-style: italic;
+            height: 3em;
+            color: #c3e0e5;
+        }
+        
+        /* --- BARU: HALAMAN PENULIS --- */
+        .author-socials {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        .author-socials a {
+            fill: #c3e0e5;
+            transition: fill 0.3s, transform 0.3s;
+        }
+        .author-socials a:hover {
+            fill: #e94560;
+            transform: scale(1.1);
+        }
+
+        /* --- BARU: FITUR GEMINI --- */
+        .gemini-btn {
+            background-color: #8A2BE2; /* Warna ungu khas AI/sihir */
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(138, 43, 226, 0.4);
+            margin-top: 0.5rem;
+            font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+        }
+        .gemini-btn:hover {
+            background-color: #9932CC;
+            transform: scale(1.05);
+        }
+        #story-container {
+            margin-top: 1rem;
+            background-color: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            width: 95%;
+            max-height: 40vh;
+            overflow-y: auto;
+            text-align: left;
+            line-height: 1.6;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #8A2BE2;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #qa-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #qa-modal-content {
+            background-color: #1a1a2e;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #0f3460;
+            width: 90vw;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        #qa-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #qa-modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        #qa-input {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid #4a5568;
+            background-color: #16213e;
+            color: white;
+        }
+        #qa-answer {
+            background-color: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            min-height: 100px;
+            max-height: 40vh;
+            overflow-y: auto;
+        }
+        
+        /* --- BARU: Styling untuk Halaman Rangkuman & Pustaka --- */
+        .summary-list, .credits-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem; /* Jarak antar item disesuaikan */
+            width: 90%;
+            max-width: 90%; /* Batasi lebar agar tidak terlalu mepet */
+            margin-top: 0.2rem;
+        }
+
+        .summary-item, .credits-item {
+            display: flex;
+            align-items: center; /* Sejajarkan ikon dan teks */
+            text-align: left;
+            background-color: rgba(42, 58, 94, 0.4); /* Latar belakang item yang sedikit transparan */
+            padding: 0.3rem 0.5rem; /* Padding disesuaikan */
+            border-radius: 8px;
+            border-left: 4px solid #e94560; /* Aksen garis di kiri */
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .summary-item:hover, .credits-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 5px rgba(0,0,0,0.2);
+        }
+
+        .summary-item svg, .credits-item svg {
+            width: 0.6rem; /* Ukuran ikon disesuaikan */
+            height: 0.6rem;
+            margin-right: 0.75rem; /* Jarak ikon ke teks */
+            fill: #c3e0e5; /* Warna ikon lebih lembut */
+            flex-shrink: 0; /* Mencegah ikon menyusut */
+        }
+
+        .summary-item span, .credits-item span {
+            flex-grow: 1;
+            line-height: 1;
+			font-size: 0.7rem;
+        }
+
+        /* Khusus untuk item Gemini, atur emoji */
+        .credits-item .gemini-emoji {
+            font-size: 1.4rem;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+#p6 .front.game-page .page-content h2 {
+    font-size: clamp(1rem, 4vw, 1.3rem); /* Ukuran font judul game dikecilkan sedikit */
+    margin-bottom: 0.25rem;
+}
+#p6 .front.game-page .page-content p {
+    font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+    margin-bottom: 0.5rem; /* Jarak bawah dari paragraf ke game */
+}
+
+
+        /* Menyesuaikan layout konten khusus halaman ini */
+        #p7 .back .page-content,
+        #p8 .front .page-content {
+            justify-content: center;
+            padding: 1rem 0.75rem; /* Tambah padding */
+            gap: 1rem;
+        }
+
+
+@media (max-width: 400px) {
+    .memory-game-container {
+        /* Perkecil jarak antar kartu di layar sangat kecil */
+        gap: 0.25rem; 
+        padding: 0.25rem;
+    }
+
+            .book {
+                height: 50vh; /* Disesuaikan juga untuk desktop */
+                width: 90vw;
+            }
+
+    .card-back {
+        /* Perkecil ikon '?' di layar sangat kecil */
+        font-size: 1rem; 
+    }
+}
+
+
+        /* Media Query untuk layar yang lebih besar */
+        @media (min-width: 768px) {
+            .book {
+                height: 80vh; /* Disesuaikan juga untuk desktop */
+                width: 90vw;
+            }
+            .front, .back {
+                padding: 1.5rem; /* Padding lebih besar di desktop */
+            }
+            .page-content {
+                gap: 1rem;
+            }
+            .animal-icon {
+                width: 60%;
+                max-height: 40%;
+            }
+            .nav-btn {
+                padding: 1rem;
+            }
+            .nav-btn svg {
+                width: 1.5rem;
+                height: 1.5rem;
+            }
+            #prev-btn {
+                left: max(2vw, 15px);
+            }
+            #next-btn {
+                right: max(2vw, 15px);
+            }
+            .summary-list, .credits-list {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container flex flex-col items-center justify-center w-full h-full p-2 md:p-4">
+    <div class="book-container">
+        <div id="book" class="book">
+            <div id="p1" class="paper">
+				<div class="front">
+					<div class="wrapper">
+					  <div class="orange"></div>
+					  <div class="green"></div>
+					  <div class="blue"></div>
+					</div>				
+					<div class="page-content p-9">
+						
+							<img src="https://lh3.googleusercontent.com/d/1pbjvUemO15aFcYEz_Pf4FBrmafreGG1T" style="width: 40%; height: 60%; position: absolute; left: 10%; top: 38%; z-index: 5;" class="animate__animated animate__zoomIn" />
+							<img src="https://lh3.googleusercontent.com/d/1qElA5M8IYVkvhzo1NAYQSLBbpm4iBhxd" style="width: 45%; height: 60%; position: absolute; left: 131px; top: 134px; z-index: 5;" class="animate__animated animate__zoomIn animate__delay-1s animate__slow" />
+							<img src="https://lh3.googleusercontent.com/d/1gqQWCCI4BbtzHFTPnDehNOxmd7w5x0_6" style="width: 40%; height: 60%; position: absolute; left: 280px; top: 28%; z-index: 4;" class="animate__animated animate__zoomIn" />
+							<img src="https://lh3.googleusercontent.com/d/1cjGS4qHNTqOLLTvAhTve5j-TsLh-nfZr" style="width: 80%; height: 20%; position: absolute; left: 45px; top: 30px; z-index: 6;" onload="exeEvent('shake',$(this),1,'4');" />
+							<img src="https://lh3.googleusercontent.com/d/1F7c2u3QemAxyPToF5pkzx-mxlZuMPCer" style="width: 30%; height: 10%; position: absolute; left: 307px; top: 58%; z-index: 7;" onload="exeEvent('tada',$(this),1,'1');" />
+							<img src="https://lh3.googleusercontent.com/d/1W8pmckKLaD4QPnFJwCEUIY1g-ND9b1Zs" style="width: 30%; height: 10%; position: absolute; left: 10%; top: 68%; z-index: 8;" onload="exeEvent('tada',$(this),1,'1');" />
+							<img src="https://lh3.googleusercontent.com/d/1nZHoD9LJApKFpDX8iiiblO2HdW97UNt8" style="width: 218px; height: 60px; position: absolute; left: 25%; top: 58%; z-index: 9;" onload="exeEvent('tada',$(this),1,'1');" />						
+					</div>
+				</div>
+                <div class="back">
+                    <div class="page-content">
+							<img src="https://lh3.googleusercontent.com/d/1uP9ND0Ou3fIXfH55tDub6VwnnQdWp3lX" style="width: 100%; height: 100% position: absolute; left: -5px; top: -2px; z-index: 1;" />
+							<img src="https://lh3.googleusercontent.com/d/1rfGzQ_euHEZBUAT4lluYL2ioN46p9PaF" style="width: 80%; height: 90%; position: absolute; left: 10%; top: 10%; z-index: 2;" class="animate__animated animate__rubberBand animate__repeat-3" />
+							<img src="https://lh3.googleusercontent.com/d/17CeufEY01y56azBwUvyFpZgrjDTBSM8r" style="width: 30%; height: 50%; position: absolute; left: 35%; top: 20%; z-index: 3;" class="animate__animated animate__pulse animate__repeat-3" />
+							<img src="https://lh3.googleusercontent.com/d/1exi41DpDRMjWU9d9sKRH877hU6M5cITT" style="width: 40%; height: 40%; position: absolute; left: -1px; top: 63px; z-index: 4;" class="animate__animated animate__pulse animate__repeat-3" />
+							<img src="https://lh3.googleusercontent.com/d/1b0bEJnd47HqJ5rYUwhmSuJFFc3LGxCr2" style="width: 20%; height: 20%; position: absolute; left: 10%; top: 35%; z-index: 5;" class="animate__animated animate__tada animate__repeat-3" />
+							<img src="https://lh3.googleusercontent.com/d/1RXuRkKI-YejPGxRRwvLQjw8fdFJBogXH" style="width: 30%; height: 30%; position: absolute; left: 70%; top: 10%; z-index: 6;" class="animate__animated animate__shakeX animate__repeat-3" />
+							<img src="https://lh3.googleusercontent.com/d/1QWdgh5x61E6AuG-nl3FH5BM1MNtDHVZA" style="width: 30%; height: 30%; position: absolute; left: 50%; top: 5%; z-index: 7;" class="animate__animated animate__rubberBand animate__repeat-3" />
+                    
+                    </div>
+                </div>
+            </div>
+
+            <div id="p2" class="paper">
+                <div class="front">
+                    <div class="page-content">
+    <img src="https://lh3.googleusercontent.com/d/15F8Itoou96PaEPyQlNiabdzoo2B8iWJR" style="width: 100%; height: 100%; position: absolute; left: 0px; top: 1px; z-index: 1;" class="animate__animated animate__zoomIn" />
+    <img src="https://lh3.googleusercontent.com/d/1ysZHz4ADzcRlGB6efY0hJuwpIYA1n29L" style="width: 100%; height: 100%; position: absolute; left: 1px; top: -2px; z-index: 2;" class="animate__animated animate__pulse" />
+    <img src="https://lh3.googleusercontent.com/d/1kzMzyEMihLmzjmmCsl0DHDOvi6nPbkMU" style="width: 100%; height: 70%; position: absolute; left: 5%; top: 10%; z-index: 3;" class="animate__animated animate__shakeX animate__repeat-3" />
+
+                    </div>
+                </div>
+                <div class="back">
+                    <div class="page-content">
+    <img src="https://lh3.googleusercontent.com/d/1dWWPyKWgd8XU2RZmodWmTTLxWqcAJPUx" style="width: 100%; height: 100%; position: absolute; left: -2px; top: 1px; z-index: 1;" />
+    <img src="https://lh3.googleusercontent.com/d/14nyaJHd0Q_lspTicit2b6E6N0yt4eMuu" style="width: 40%; height: 40%; position: absolute; left: 18%; top: 0; z-index: 2;" class="animate__animated animate__rubberBand animate__repeat-3" />
+    <img src="https://lh3.googleusercontent.com/d/1C4ojc38IyY_1KSeQDvfdloKvrOx7lKNQ" style="width: 40%; height: 40%; position: absolute; left: 60%; top: 10%; z-index: 3;" class="animate__animated animate__rubberBand animate__repeat-3" />
+    <img src="https://lh3.googleusercontent.com/d/19ydg4gM7H_-LPJOqm3RmaZNHOFyznpZT" style="width: 20%; height: 20%; position: absolute; left: 5%; top: 35%; z-index: 4;" class="animate__animated animate__rubberBand animate__repeat-3" />
+    <img src="https://lh3.googleusercontent.com/d/15MY0rBT_cCn0qLC6BlNFbLn9IZNBXfB8" style="width: 30%; height: 30%; position: absolute; left: 30%; top: 50%; z-index: 5;" class="animate__animated animate__rubberBand animate__repeat-3" />
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="p3" class="paper">
+                <div class="front">
+                    <div class="page-content">
+    <img src="https://lh3.googleusercontent.com/d/1DHedcZ0ONHWyaLmpb4G_Wpm90wkQs0Eb" style="width: 100%; height: 100%; position: absolute; left: 0%; top: 5%; z-index: 2;" class="animate__animated animate__rubberBand animate__repeat-3" />
+    <img src="https://lh3.googleusercontent.com/d/1vnWI0soPP0sacYOpHtfQOsbX5FjTzfNH" style="width: 40%; height: 40%; position: absolute; left: 2%; top: 5%; z-index: 3;" class="animate__animated animate__rubberBand animate__repeat-3" />
+    <img src="https://lh3.googleusercontent.com/d/1ILlYxMahu2pw2b3YHxR_-zyDu9bOk7oP" style="width: 40%; height: 40%; position: absolute; left: 70%; top: 5%; z-index: 4;" class="animate__animated animate__rubberBand animate__repeat-3" />
+    <img src="https://lh3.googleusercontent.com/d/1qSuj4g7DyPTtaQ_KNygQpY_FGIH4DgWh" style="width: 40%; height: 40%; position: absolute; left: 40%; top: 15%; z-index: 5;" class="animate__animated animate__rubberBand animate__repeat-3" />
+    <img src="https://lh3.googleusercontent.com/d/1TqRvHz-cWmDX49SN5EJDiqChoVNla-2s" style="width: 70%; height: 70%; position: absolute; left: 15%; top: 40%; z-index: 6;" class="animate__animated animate__rubberBand animate__repeat-3" />
+
+                    </div>
+                </div>
+                <div class="back">
+                    <div class="page-content">
+		<img src="https://lh3.googleusercontent.com/d/1gt_d8dbYPzwnj1UDaknrSZqo4C8SOqEN" style="width: 100%; height: 100%; position: absolute; left: -39px; top: -5px; z-index: 1;" />
+				<div style="position: relative; width: 100%; height: 100vh; overflow: hidden;">
+				  <h6 style="
+					position:relative;
+					left: 0%;
+					top: 90%;
+					width: 100%;
+					height: auto;
+					margin-bottom: 0.5rem;
+					font-family: 'Mochiy Pop One', sans-serif;
+					font-size: clamp(1.5rem, 2vw, 1.5rem);
+					color: #000000;
+					text-shadow: 4px 4px 0px white, 8px 8px 0px rgba(0,0,0,0.1);
+					z-index: 1;">Lomba pun dimulai</h6>
+				</div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="p4" class="paper">
+                <div class="front">
+                    <div class="page-content">
+						<img src="https://lh3.googleusercontent.com/d/1rjsK_bQPW5rpQRy-UP9e9r9C1r7352X2" style="width: 100%; height: 100%; position: absolute; left: 0px; top: -6px; z-index: 1;" />
+						<img src="https://lh3.googleusercontent.com/d/1YsoGDGblSclHiTdtcxjbX9pEmmOWK5vm" style="width: 100%; height: 100%; position: absolute; left: 0px; top: -6px; z-index: 2;" />
+						<img src="https://lh3.googleusercontent.com/d/10RP9BWyej8yHqzEWwVJnWaMVhRbfYuZ1" style="width: 90%; height: 80%; position: absolute; left: 5%; top: 30%; z-index: 3;" />
+						<img src="https://lh3.googleusercontent.com/d/1ZIA7v71r1evJZ89pe7Fzyk-0tMza8fHn" style="width: 90%; height: 90%; position: absolute; left: 5%; top: -0; z-index: 4;" />
+						<img src="https://lh3.googleusercontent.com/d/1QJBIz9NLOXJwMR6nq2EEC7Tnas8uV2ps" style="width: 30%; height: 30%; position: absolute; left: 70%; top: 10%; z-index: 5;" />
+						<img src="https://lh3.googleusercontent.com/d/1qECWUCnbhppYtDxOUFTXApe-_VMg_aNi" style="width: 30%; height: 30%; position: absolute; left: 5%; top: 20%; z-index: 6;" />
+						<img src="https://lh3.googleusercontent.com/d/13vWUb573VtLA5BXqB1wnApSWfNMuNyLm" style="width: 30%; height: 30%; position: absolute; left: 40%; top: 30%; z-index: 7;" />
+                    </div>
+                </div>
+                <div class="back game-page">
+                    <div class="page-content">
+						<h2 data-animal-name="Elang">Latihan</h2>
+                        <img src="https://lh3.googleusercontent.com/d/1Z490qHlnFrF4Vcq9UTYCiuK_2Ts5rJQO" alt="Elang" class="w-64 h-64 rounded-full object-cover my-4 shadow-lg" onerror="this.onerror=null;this.src='https://placehold.co/128x256/CCCCCC/FFFFFF?text=Author';">
+					
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="p5" class="paper">
+                <div class="front">
+                    <div class="page-content">
+                        <h2>Permainan: Tarik & Lepas</h2>
+                        <p>Tarik gambar tokoh sesuai dengan namanya!</p>
+                        <div class="draggable-items-container">
+							<img
+								src="https://lh3.googleusercontent.com/d/17CeufEY01y56azBwUvyFpZgrjDTBSM8r"
+								alt="Burung Hantu"
+								id="owl" class="animal-icon draggable" draggable="true" onerror="this.onerror=null;this.src='https://placehold.co/100x100/663399/FFFFFF?text=Owl';">
+							<img
+								src="https://lh3.googleusercontent.com/d/1merDVRIy2i-t7g5QcusCZoDoAUyjS1Ox"
+								alt="Rubah"
+								id="fox" class="animal-icon draggable" draggable="true" onerror="this.onerror=null;this.src='https://placehold.co/100x100/FF8C00/FFFFFF?text=Fox';">							
+                        </div>
+                        <div class="drop-zones-container">
+                            <div class="dropzone" data-animal="owl">
+                                <img src="https://placehold.co/120x120/0c0a2c/FFFFFF?text=Bianka" alt="Habitat Burung Hantu" class="habitat-image">
+                            </div>
+                            <div class="dropzone" data-animal="fox">
+                                <img src="https://placehold.co/120x120/5a3825/FFFFFF?text=Buana" alt="Habitat Rubah" class="habitat-image">
+                            </div>
+                        </div>
+                        <p id="game-feedback-drop" class="game-feedback"></p>	
+
+                    </div>
+                </div>
+                <div class="back game-page">
+                    <div class="page-content">
+                        <h2>Jodohkan Gambar Tokoh & Namanya!</h2>
+                        <div id="matching-game" class="matching-game-container">
+                            </div>
+                        <p id="game-feedback-match" class="game-feedback"></p>					
+                    </div>
+                </div>
+            </div>
+
+            <div id="p6" class="paper">
+                <div class="front game-page">
+                    <div class="page-content">
+                        <h2>Game Ingatan Pasangan</h2>
+                        <p>Cocokkan nama tokoh!</p>
+                        <div id="memory-game-container" class="memory-game-container">
+                            </div>
+                        <p id="game-feedback-memory" class="game-feedback"></p>
+                    </div>
+                </div>
+                <div class="back game-page">
+                    <div class="page-content">
+                        <div class="word-search-page-container">
+                            <h2>Kata Kunci Cari Kata</h2>
+                            <div class="word-search-top-panel">
+                                <ul id="word-list">
+                                    </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="p7" class="paper">
+                <div class="front game-page">
+                    <div class="page-content">
+                        <h2>Cari Nama tokoh berdasarkan petunjuk!</h2>
+                        <div id="word-search-grid">
+                        </div>
+                        <p id="game-feedback-wordsearch" class="game-feedback"></p>
+                    </div>
+                </div>
+                <div class="back game-page">
+                    <div class="page-content">
+                        <div class="quiz-container">
+                            <h2 id="quiz-question"></h2>
+                            <div id="quiz-options-container">
+                                </div>
+                            <p id="game-feedback-quiz" class="game-feedback"></p>
+                            <button id="quiz-next-btn" class="hidden">Lanjut</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="p8" class="paper">
+                <div class="front game-page">
+                    <div class="page-content">
+                                <h2>Bagaimana Perasaanmu?</h2>
+                                <p>Klik salah satu emoji untuk berbagi perasaanmu setelah membaca buku ini!</p>
+                                <div class="reflection-container">
+                                    <div class="emoji-btn" data-feedback="Terima kasih! Senang kamu sangat menyukainya!">🤩</div>
+                                    <div class="emoji-btn" data-feedback="Yay! Kami senang kamu gembira.">😄</div>
+                                    <div class="emoji-btn" data-feedback="Oke, kami akan berusaha lebih baik lagi di petualangan selanjutnya!">🙂</div>
+                                    <div class="emoji-btn" data-feedback="Semoga petualangan berikutnya bisa membuatmu lebih tertarik.">🤔</div>
+                                </div>
+                                <p id="reflection-feedback">...</p>
+                    </div>
+                </div>
+                <div class="back">
+                    <div class="page-content">
+                        <h2>Rangkuman Cerita</h2>
+                        <p class="mt-4">Cerita tentang Bianka adalah cerminan dari konsep "Perbedaan sebagai Identitas Persatuan". Awalnya, perbedaan fisik Bianka (warna kulit dan jenis rambut) dijadikan alasan oleh teman-temannya untuk melakukan perundungan dan pengucilan. Perbedaan tersebut dilihat sebagai sesuatu yang negatif dan menjadi pemisah.</p>
+						<p class="mt-4">Namun, kemenangan Bianka dalam Lomba Melukis mengubah pandangan tersebut. Prestasinya menunjukkan bahwa setiap anak memiliki potensi dan keunikan yang berharga, terlepas dari penampilan fisiknya. Teman-temannya akhirnya menyadari bahwa menilai seseorang hanya dari luar adalah sebuah kesalahan.</p>
+						<p class="mt-4">Kejadian ini mengajarkan bahwa perbedaan bukanlah penghalang untuk bersatu, melainkan bagian dari identitas yang memperkaya sebuah kelompok. Ketika teman-temannya meminta maaf dan Bianka menerima mereka, terjadilah persatuan. Persatuan ini tidak menghilangkan perbedaan yang ada—Bianka tetaplah Bianka dengan ciri khasnya—namun dibangun di atas rasa saling menghargai dan pengakuan atas kelebihan masing-masing individu. Dengan demikian, identitas unik setiap orang justru menjadi pilar yang menguatkan persatuan di antara mereka.</p>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="p9" class="paper">
+                <div class="front">
+                    <div class="page-content">
+                        <h2>Sumber Pustaka</h2>
+                        <p>Buku ini dibuat dengan teknologi dan sumber daya hebat berikut:</p>
+                        <div class="credits-list">
+                            <div class="credits-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
+                                <span><strong>Fondasi Kode:</strong> Dibangun dengan HTML, CSS, dan JavaScript.</span>
+                            </div>
+                            <div class="credits-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.58 9.63l-4.21-4.21c-.8-1.21-2.28-1.9-3.87-1.95L3 3v13.04c.53 3.02 3.23 5.39 6.26 5.39h.24c2.86 0 5.3-2.02 5.96-4.71l2.31-1.25c2.46-.94 3.96-3.23 3.8-5.84zm-11.2 8.7c-1.92 0-3.5-1.58-3.5-3.5s1.58-3.5 3.5-3.5 3.5 1.58 3.5 3.5-1.58 3.5-3.5 3.5zM12 11.75c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25zm5-1.5c-.69 0-1.25-.56-1.25-1.25S16.31 7.5 17 7.5s1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/></svg>
+                                <span><strong>Desain Cantik:</strong> Dipercepat oleh Tailwind CSS.</span>
+                            </div>
+                            <div class="credits-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.93 13.5h4.14L12 7.98zM20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-4.05 16.5l-1.14-3H9.17l-1.12 3H5.96l5.11-13h1.86l5.11 13h-2.09z"/></svg>
+                                <span><strong>Tipografi Indah:</strong> Menggunakan font Poppins dari Google Fonts.</span>
+                            </div>
+                            <div class="credits-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                                <span><strong>Ilustrasi & Ikon:</strong> Dari berbagai kreator dan Placehold.co.</span>
+                            </div>
+                            <div class="credits-item">
+                                <span class="gemini-emoji">✨</span>
+                                <span><strong>Kecerdasan Buatan:</strong> Didukung oleh Google Gemini API.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="back">
+                        <div class="page-content">
+                        <h2>Buat Cerita Petualangan!</h2>
+                        <p>Klik tombol di bawah untuk membuat cerita baru tentang hewan-hewan di buku ini!</p>
+                        <button id="generate-story-btn" class="gemini-btn">✨ Buat Cerita Ajaib!</button>
+                        <div id="story-container" class="hidden"></div>
+                        </div>
+                </div>
+            </div>
+
+            <div id="p10" class="paper">
+                <div class="front">
+                    <div class="page-content">
+                        <h2>Tentang Penulis</h2>
+                        <img src="https://lh3.googleusercontent.com/d/1tFGMHXxFlkz5Ij0nHbxddt4aF-MfnTio" alt="Foto Penulis" class="w-32 h-64 rounded-full object-cover my-4 shadow-lg" onerror="this.onerror=null;this.src='https://placehold.co/128x256/CCCCCC/FFFFFF?text=Author';">
+                        <h3 class="text-xl font-bold">Bintang Adhi Permana</h3>
+                        <p class="max-w-md">SDN Lubang Buaya 01, Jakarta Timur.</p>
+							<div class="author-socials">
+								<a href="https://wa.me/6281310051985" target="_blank" title="WhatsApp"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10zm3.323-5.323c-.156-.078-1.094-.547-1.266-.609-.172-.063-.281-.078-.391.078-.109.156-.422.547-.516.656-.094.109-.188.125-.344.047-.156-.078-.688-.25-1.313-.813-.484-.422-.813-.969-.906-1.125-.094-.156-.016-.25.063-.328.063-.063.156-.172.234-.25.078-.078.109-.125.172-.219.063-.094.031-.172-.016-.25-.047-.078-.391-.938-.531-1.281-.141-.344-.297-.297-.391-.302-.094 0-.203-.016-.313-.016s-.266.031-.422.156c-.156.125-.563.547-.563 1.328 0 .781.578 1.547.656 1.672.078.125 1.125 1.766 2.734 2.422.391.156.703.25.938.313.313.094.594.078.797.047.219-.031.688-.281.781-.547.094-.266.094-.5.063-.547s-.094-.078-.156-.156z"/></svg></a>
+								<a href="https://www.facebook.com/bintang.a.permana.1/" target="_blank" title="Facebook"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm0 22c-5.514 0-10-4.486-10-10s4.486-10 10-10 10 4.486 10 10-4.486 10-10 10zm-1-11h-3v-2h3v-2.025c0-2.141 1.611-3.975 4-3.975h2v2h-2c-1.1 0-1 .489-1 1.025v2.975h3l-.5 2h-2.5v7h-3v-7z"/></svg></a>
+								<a href="https://www.youtube.com/@Bangbin_1" title="YouTube"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10zm-3.5-14v8l7-4-7-4z"/></svg></a>
+							</div>
+                    </div>
+                </div>
+                <div class="back">
+                    <div class="page-content">
+						<div class="wrapper">
+						  <div class="orange"></div>
+						  <div class="green"></div>
+						  <div class="blue"></div>
+						</div>						
+                        <h2>Akhir Cerita</h2>
+                        <p>Terima kasih telah membaca. Sampai jumpa di petualangan berikutnya!</p>
+                         <img src="https://placehold.co/250x250/4A90E2/FFFFFF?text=Buku" alt="Buku" class="animal-icon" onerror="this.onerror=null;this.src='https://placehold.co/250x250/CCCCCC/FFFFFF?text=Image+Not+Found';">
+                    </div>
+                </div>
+            </div>
+
+
+    </div>
+
+    <button id="prev-btn" class="nav-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+    </button>
+    <button id="next-btn" class="nav-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+    </button>
+    <div class="page-counter-container">
+        <span id="page-counter">1 / 20</span>
+    </div>
+</div>
+
+<div id="qa-modal-overlay" class="hidden">
+    <div id="qa-modal-content">
+        <div id="qa-modal-header">
+            <h3 id="qa-modal-title">Tanya Sesuatu!</h3>
+            <button id="qa-modal-close">×</button>
+        </div>
+        <p class="text-sm">Ketik pertanyaanmu di bawah ini dan biarkan Gemini menjawab!</p>
+        <input type="text" id="qa-input" placeholder="Contoh: Apa makanan kesukaan singa?">
+        <button id="qa-submit-btn" class="gemini-btn">✨ Kirim Pertanyaan</button>
+        <div id="qa-answer">
+            </div>
+    </div>
+</div>
+
+
+<script>
+    // --- LOGIKA FLIPBOOK ---
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const book = document.getElementById('book');
+    const papers = document.querySelectorAll('.paper');
+    const pageCounter = document.getElementById('page-counter');
+
+    const numOfPapers = 10; // DIUBAH: dari 9 menjadi 10
+    const totalPages = numOfPapers * 2;
+    let currentLocation = 1;
+    const maxLocation = numOfPapers + 1;
+
+    nextBtn.addEventListener('click', goNextPage);
+    prevBtn.addEventListener('click', goPrevPage);
+
+    function goNextPage() {
+        if (currentLocation < maxLocation) {
+            const paper = papers[currentLocation - 1];
+            paper.classList.add('flipped');
+            paper.style.zIndex = currentLocation;
+            
+            // Trigger game yang relevan
+            if (currentLocation === 3) { /* Halaman 8-9 */ }
+            if (currentLocation === 4) { /* Halaman 9-10 */ triggerMatchingGame(); triggerMemoryGame(); }
+            if (currentLocation === 5) { /* Halaman 11-12 */ triggerQuizGame(); }
+            if (currentLocation === 6) { /* Halaman 13-14 */ triggerWordSearchGame(); }
+
+            currentLocation++;
+            updateUI();
+        }
+    }
+
+    function goPrevPage() {
+        if (currentLocation > 1) {
+            currentLocation--;
+            const paper = papers[currentLocation - 1];
+            paper.classList.remove('flipped');
+            setTimeout(() => {
+                paper.style.zIndex = maxLocation - currentLocation;
+            }, 800);
+            updateUI();
+        }
+    }
+    
+    function updateUI() {
+        const isFirstPage = currentLocation === 1;
+        const isLastPage = currentLocation === maxLocation;
+
+        if (isFirstPage) {
+            book.style.transform = 'translateX(-25%)';
+            pageCounter.textContent = `1 / ${totalPages}`;
+        } else if (isLastPage) {
+            book.style.transform = 'translateX(25%)';
+            pageCounter.textContent = `${totalPages} / ${totalPages}`;
+        } else {
+            book.style.transform = 'translateX(0%)';
+            const leftPage = (currentLocation - 1) * 2;
+            const rightPage = leftPage + 1;
+            pageCounter.textContent = `${leftPage}-${rightPage} / ${totalPages}`;
+        }
+        
+        prevBtn.disabled = isFirstPage;
+        nextBtn.disabled = isLastPage;
+    }
+
+    function init() {
+        papers.forEach((paper, index) => {
+            paper.style.zIndex = maxLocation - (index + 1);
+        });
+        updateUI();
+    }
+    
+    init();
+
+    // --- FUNGSI BANTU ---
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+
+    // --- LOGIKA GAME DRAG & DROP (HALAMAN 8) ---
+    const draggables = document.querySelectorAll('.draggable');
+    const dropzones = document.querySelectorAll('.dropzone');
+    const gameFeedbackDrop = document.getElementById('game-feedback-drop');
+    
+    let draggedItem = null;
+    let correctDrops = 0;
+
+    draggables.forEach(draggable => {
+        draggable.addEventListener('dragstart', (e) => {
+            draggedItem = e.target;
+            setTimeout(() => e.target.classList.add('dragging'), 0);
+        });
+        draggable.addEventListener('dragend', () => {
+            if(draggedItem) draggedItem.classList.remove('dragging');
+            draggedItem = null;
+        });
+        
+        let initialX, initialY;
+        draggable.addEventListener('touchstart', (e) => {
+            draggedItem = e.target.closest('.draggable');
+            if (!draggedItem) return;
+            initialX = e.touches[0].clientX;
+            initialY = e.touches[0].clientY;
+            draggedItem.classList.add('dragging');
+        }, { passive: true });
+
+        draggable.addEventListener('touchmove', (e) => {
+            if (!draggedItem) return;
+            e.preventDefault();
+            let currentX = e.touches[0].clientX - initialX;
+            let currentY = e.touches[0].clientY - initialY;
+            draggedItem.style.transform = `translate(${currentX}px, ${currentY}px)`;
+            
+            const touch = e.touches[0];
+            const elementUnderTouch = document.elementFromPoint(touch.clientX, touch.clientY);
+            dropzones.forEach(dz => dz.classList.remove('hovered'));
+            if (elementUnderTouch && elementUnderTouch.classList.contains('dropzone')) {
+                elementUnderTouch.classList.add('hovered');
+            }
+        }, { passive: false });
+
+        draggable.addEventListener('touchend', (e) => {
+            if (!draggedItem) return;
+            draggedItem.style.transform = 'translate(0, 0)';
+            draggedItem.classList.remove('dragging');
+            dropzones.forEach(dz => dz.classList.remove('hovered'));
+            
+            const touch = e.changedTouches[0];
+            const elementUnderTouch = document.elementFromPoint(touch.clientX, touch.clientY);
+            if (elementUnderTouch && elementUnderTouch.classList.contains('dropzone')) {
+                handleDrop(elementUnderTouch);
+            }
+            draggedItem = null;
+        });
+    });
+
+    dropzones.forEach(dropzone => {
+        dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('hovered'); });
+        dropzone.addEventListener('dragleave', () => { dropzone.classList.remove('hovered'); });
+        dropzone.addEventListener('drop', e => { e.preventDefault(); handleDrop(dropzone); });
+    });
+
+    function handleDrop(dropzone) {
+        if (!draggedItem || !dropzone) return;
+        dropzone.classList.remove('hovered');
+        const feedbackEl = gameFeedbackDrop;
+
+        if (dropzone.dataset.animal === draggedItem.id && dropzone.children.length <= 1) { // Allow 1 child (habitat image)
+            dropzone.appendChild(draggedItem);
+            draggedItem.setAttribute('draggable', 'false');
+            draggedItem.style.cursor = 'default';
+            dropzone.classList.add('dropped');
+            correctDrops++;
+            if (correctDrops === 2) {
+                feedbackEl.textContent = "Hebat! Kamu berhasil!";
+                feedbackEl.style.color = "#48bb78";
+            } else {
+                feedbackEl.textContent = "Benar! Lanjutkan!";
+                feedbackEl.style.color = "#c3e0e5";
+            }
+        } else if (dropzone.children.length > 1) {
+             feedbackEl.textContent = "Kotak ini sudah terisi!";
+             feedbackEl.style.color = "#f56565";
+        } else {
+            feedbackEl.textContent = "Oops, bukan di situ!";
+            feedbackEl.style.color = "#f56565";
+        }
+    }
+
+
+    // --- LOGIKA GAME MENJODOHKAN (HALAMAN 9) ---
+    const matchContainer = document.getElementById('matching-game');
+    const matchFeedback = document.getElementById('game-feedback-match');
+    let selectedItem = null;
+    let matchedPairs = 0;
+    let matchingGameActive = false;
+
+    const matchingData = [
+        { id: 1, type: 'tokoh', img: 'https://lh3.googleusercontent.com/d/1ev8IsNjRj9bWEsq6oNL3WedOmCGrujwB', alt: 'Bianka' },
+        { id: 1, type: 'nama', img: 'https://placehold.co/80x80/FFFF00/000000?text=Bianka', alt: 'Bianka' },
+        { id: 2, type: 'tokoh', img: 'https://lh3.googleusercontent.com/d/1wj4ROEw3-UHsLFeRWx8JwTXIpsVpWN3M', alt: 'Nirmala' },
+        { id: 2, type: 'nama', img: 'https://placehold.co/80x80/FFA500/FFFFFF?text=Nirmala', alt: 'Nirmala' },
+        { id: 3, type: 'tokoh', img: 'https://lh3.googleusercontent.com/d/1JR473IdNgjVO-LgDf-ve3RbOE_dYAewB', alt: 'Bu Guru' },
+        { id: 3, type: 'nama', img: 'https://placehold.co/80x80/006400/FFFFFF?text=Bu-Guru', alt: 'Bu Guru' },
+        { id: 4, type: 'tokoh', img: 'https://lh3.googleusercontent.com/d/1merDVRIy2i-t7g5QcusCZoDoAUyjS1Ox', alt: 'Buana' },
+        { id: 4, type: 'nama', img: 'https://placehold.co/80x80/1E90FF/FFFFFF?text=Buana', alt: 'Buana' },
+    ];
+
+    function setupMatchingGame() {
+        matchingGameActive = true;
+        matchedPairs = 0;
+        selectedItem = null;
+        matchContainer.innerHTML = '';
+        matchFeedback.textContent = 'Jodohkan tokoh dengan namanya!';
+        matchFeedback.style.color = '#F9FAFB';
+
+        let characters = matchingData.filter(item => item.type === 'tokoh');
+        let names = matchingData.filter(item => item.type === 'nama');
+        shuffleArray(characters);
+        shuffleArray(names);
+
+        const leftColumn = document.createElement('div');
+        leftColumn.classList.add('matching-column');
+        names.forEach(name => {
+            leftColumn.appendChild(createMatchItem(name));
+        });
+
+        const rightColumn = document.createElement('div');
+        rightColumn.classList.add('matching-column');
+        characters.forEach(character => {
+            rightColumn.appendChild(createMatchItem(character));
+        });
+
+        matchContainer.appendChild(leftColumn);
+        matchContainer.appendChild(rightColumn);
+    }
+
+    function handleMatchItemClick(item) {
+        if (!matchingGameActive || item.classList.contains('matched')) { return; }
+        if (!selectedItem) {
+            selectedItem = item;
+            item.classList.add('selected');
+            matchFeedback.textContent = "Sekarang pilih pasangannya...";
+            matchFeedback.style.color = "#63b3ed";
+            return;
+        }
+        if (selectedItem === item) return;
+        if (selectedItem.dataset.type === item.dataset.type) {
+            selectedItem.classList.remove('selected');
+            item.classList.add('selected');
+            selectedItem = item;
+            return;
+        }
+        if (selectedItem.dataset.type !== item.dataset.type) {
+            if (selectedItem.dataset.match === item.dataset.match) {
+                item.classList.add('matched');
+                selectedItem.classList.add('matched');
+                item.classList.remove('selected');
+                selectedItem.classList.remove('selected');
+                matchedPairs++;
+                matchFeedback.textContent = "Cocok!";
+                matchFeedback.style.color = "#48bb78";
+                selectedItem = null;
+                if (matchedPairs === (matchingData.length / 2)) {
+                    matchFeedback.textContent = "Semua terjodohkan! Hebat!";
+                    matchingGameActive = false;
+                }
+            } else {
+                matchFeedback.textContent = "Bukan pasangannya! Coba lagi.";
+                matchFeedback.style.color = "#f56565";
+                const tempSelectedItem = selectedItem;
+                item.classList.add('selected');
+                setTimeout(() => {
+                    item.classList.remove('selected');
+                    tempSelectedItem.classList.remove('selected');
+                }, 800);
+                selectedItem = null;
+            }
+        }
+    }
+
+    function createMatchItem(data) {
+        const item = document.createElement('div');
+        item.classList.add('match-item');
+        item.dataset.match = data.id;
+        item.dataset.type = data.type;
+        const img = document.createElement('img');
+        img.src = data.img;
+        img.alt = data.alt;
+        img.onerror = () => { img.src = 'https://placehold.co/80x80/CCCCCC/FFFFFF?text=Error'; };
+        item.appendChild(img);
+        item.addEventListener('click', () => handleMatchItemClick(item));
+        return item;
+    }
+
+    function triggerMatchingGame() {
+        if (!matchingGameActive) { setupMatchingGame(); }
+    }
+
+
+    // --- LOGIKA GAME KUIS (HALAMAN 11) ---
+    const quizQuestionEl = document.getElementById('quiz-question');
+    const quizOptionsContainer = document.getElementById('quiz-options-container');
+    const quizFeedbackEl = document.getElementById('game-feedback-quiz');
+    const quizNextBtn = document.getElementById('quiz-next-btn');
+
+    const quizData = [
+        {
+            question: "Mengapa Bianka sering diejek oleh Buana dan Nirmala?",
+            options: [
+                { text: "Karena ia sombong", correct: false },
+                { text: "Karena penampilan fisiknya", correct: true },
+                { text: "Karena ia tidak punya teman", correct: false },
+                { text: "Karena ia pelit", correct: false }
+            ]
+        },
+        {
+            question: "Lomba apa yang dimenangkan oleh Bianka?",
+            options: [
+                { text: "Lomba Cerdas Cermat", correct: false },
+                { text: "Lomba Lari", correct: false },
+                { text: "Lomba Melukis", correct: true },
+                { text: "Lomba Menyanyi", correct: false }
+            ]
+        },
+        {
+            question: "Apa yang dilakukan Buana dan Nirmala setelah Bianka menang?",
+            options: [
+                { text: "Makin mengejeknya", correct: false },
+                { text: "Mendiamkannya", correct: false },
+                { text: "Menuduhnya curang", correct: false },
+                { text: "Memberi selamat dan minta maaf", correct: true }
+            ]
+        },
+        {
+            question: "Bagaimana sikap Bianka setelah teman-temannya meminta maaf?",
+            options: [
+                { text: "Memaafkan dengan tulus", correct: true },
+                { text: "Tidak mau memaafkan", correct: false },
+                { text: "Membalas dendam", correct: false },
+                { text: "Menjauhi mereka", correct: false }
+            ]
+        },
+        {
+            question: "Pesan utama dari cerita ini adalah...",
+            options: [
+                { text: "Harus selalu menang lomba", correct: false },
+                { text: "Jangan menilai orang dari penampilan", correct: true },
+                { text: "Punya banyak teman itu sulit", correct: false },
+                { text: "Melukis adalah hobi terbaik", correct: false }
+            ]
+        },
+    ];
+    let availableQuestions = [];
+    let score = 0;
+    let roundsPlayed = 0;
+    const totalRounds = 5;	
+    let quizActive = false;
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function loadQuizQuestion() {
+        if (!quizActive) return;
+        if (roundsPlayed >= totalRounds) {
+            quizQuestionEl.textContent = "Kuis Selesai!";
+            quizOptionsContainer.innerHTML = "";
+            quizFeedbackEl.textContent = `Skor akhir kamu: ${score} dari ${totalRounds}! Hebat!`;
+            quizNextBtn.classList.add('hidden');
+            quizActive = false;
+            return;
+        }
+        quizNextBtn.classList.add('hidden');
+        quizFeedbackEl.textContent = "";
+        
+        const currentQuestion = availableQuestions[roundsPlayed];
+        quizQuestionEl.textContent = currentQuestion.question;
+        quizOptionsContainer.innerHTML = "";
+        
+        let options = [...currentQuestion.options];
+        shuffleArray(options);
+        
+        options.forEach(option => {
+            const optionEl = document.createElement('button');
+            optionEl.classList.add('quiz-option-btn');
+            optionEl.textContent = option.text;
+            optionEl.dataset.correct = option.correct;
+            optionEl.addEventListener('click', () => { handleQuizAnswer(optionEl); });
+            quizOptionsContainer.appendChild(optionEl);
+        });
+    }
+
+    function handleQuizAnswer(selectedOption) {
+        if (!quizActive) return;
+        const allOptions = quizOptionsContainer.querySelectorAll('.quiz-option-btn');
+        allOptions.forEach(btn => btn.disabled = true);
+        
+        const isCorrect = selectedOption.dataset.correct === 'true';
+
+        if (isCorrect) {
+            selectedOption.classList.add('correct');
+            quizFeedbackEl.textContent = "Tepat sekali!";
+            quizFeedbackEl.style.color = "#48bb78";
+            score++;
+        } else {
+            selectedOption.classList.add('incorrect');
+            quizFeedbackEl.textContent = "Kurang tepat!";
+            quizFeedbackEl.style.color = "#f56565";
+            const correctOption = quizOptionsContainer.querySelector('[data-correct="true"]');
+            if (correctOption) {
+                correctOption.classList.add('correct');
+            }
+        }
+        
+        roundsPlayed++;
+        quizNextBtn.classList.remove('hidden');
+        if (roundsPlayed >= totalRounds) {
+            quizNextBtn.textContent = "Lihat Hasil";
+        }
+    }
+    
+    quizNextBtn.addEventListener('click', () => {
+        loadQuizQuestion();
+    });
+    
+    quizNextBtn.addEventListener('click', () => {
+        if (roundsPlayed >= totalRounds) { quizNextBtn.textContent = "Lanjut"; }
+        loadQuizQuestion();
+    });
+
+    function triggerQuizGame() {
+        if (!quizActive) {
+            quizActive = true;
+            availableQuestions = [...quizData];
+            score = 0;
+            roundsPlayed = 0;
+            loadQuizQuestion();
+        }
+    }
+    
+    // --- LOGIKA GAME INGATAN (HALAMAN 10) ---
+    const memoryContainer = document.getElementById('memory-game-container');
+    const memoryFeedback = document.getElementById('game-feedback-memory');
+    let memoryGameActive = false;
+    let flippedCards = [];
+    let matchedMemoryPairs = 0;
+    const memoryData = [
+        { id: 1, type: 'hewan', img: 'https://lh3.googleusercontent.com/d/1ev8IsNjRj9bWEsq6oNL3WedOmCGrujwB' }, { id: 1, type: 'rumah', img: 'https://placehold.co/80x80/F4A460/000000?text=Bianka' },
+        { id: 2, type: 'hewan', img: 'https://lh3.googleusercontent.com/d/1JR473IdNgjVO-LgDf-ve3RbOE_dYAewB' }, { id: 2, type: 'rumah', img: 'https://placehold.co/80x80/D2B48C/000000?text=Bu+Guru' },
+        { id: 3, type: 'hewan', img: 'https://lh3.googleusercontent.com/d/1wj4ROEw3-UHsLFeRWx8JwTXIpsVpWN3M' }, { id: 3, type: 'rumah', img: 'https://placehold.co/80x80/8B4513/FFFFFF?text=Nirmala' },
+        { id: 4, type: 'hewan', img: 'https://lh3.googleusercontent.com/d/1merDVRIy2i-t7g5QcusCZoDoAUyjS1Ox' }, { id: 4, type: 'rumah', img: 'https://placehold.co/80x80/ADD8E6/000000?text=Buana' },
+    ];
+
+    function setupMemoryGame() {
+        memoryGameActive = true;
+        matchedMemoryPairs = 0;
+        flippedCards = [];
+        memoryContainer.innerHTML = '';
+        memoryFeedback.textContent = '';
+        let cards = [...memoryData];
+        shuffleArray(cards);
+        cards.forEach(cardData => {
+            const cardElement = document.createElement('div');
+            cardElement.classList.add('memory-card');
+            cardElement.dataset.id = cardData.id;
+            cardElement.innerHTML = `<div class="card-face card-front"><img src="${cardData.img}" alt="${cardData.type}" onerror="this.src='https://placehold.co/80x80/CCCCCC/FFFFFF?text=Error'"></div><div class="card-face card-back">?</div>`;
+            cardElement.addEventListener('click', () => handleMemoryCardClick(cardElement));
+            memoryContainer.appendChild(cardElement);
+        });
+    }
+
+    function handleMemoryCardClick(card) {
+        if (!memoryGameActive || card.classList.contains('flipped') || card.classList.contains('matched') || flippedCards.length >= 2) { return; }
+        card.classList.add('flipped');
+        flippedCards.push(card);
+        if (flippedCards.length === 2) { checkForMemoryMatch(); }
+    }
+
+    function checkForMemoryMatch() {
+        const [card1, card2] = flippedCards;
+        if (card1.dataset.id === card2.dataset.id) {
+            memoryFeedback.textContent = "Cocok!";
+            memoryFeedback.style.color = "#48bb78";
+            card1.classList.add('matched');
+            card2.classList.add('matched');
+            matchedMemoryPairs++;
+            flippedCards = [];
+            if (matchedMemoryPairs === memoryData.length / 2) {
+                memoryFeedback.textContent = "Kamu berhasil menemukan semua pasangan!";
+                memoryGameActive = false;
+            }
+        } else {
+            memoryFeedback.textContent = "Coba lagi!";
+            memoryFeedback.style.color = "#f56565";
+            setTimeout(() => {
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                flippedCards = [];
+                memoryFeedback.textContent = "";
+            }, 1200);
+        }
+    }
+
+    function triggerMemoryGame() {
+        if (!memoryGameActive) { setupMemoryGame(); }
+    }
+    
+    // --- LOGIKA GAME CARI KATA (HALAMAN 12-13) ---
+    const wordSearchGrid = document.getElementById('word-search-grid');
+    const wordListEl = document.getElementById('word-list');
+    const wordSearchFeedback = document.getElementById('game-feedback-wordsearch');
+    let wordSearchActive = false;
+    let isSelecting = false;
+    let selectedCells = [];
+    const wordsToFind = ["Bianka", "Nirmala", "Buana"];
+    const grid_size = 10;
+    let gridArray = [];
+    let foundWords = [];
+
+    function setupWordSearchGame() {
+        wordSearchActive = true;
+        foundWords = [];
+        wordSearchGrid.innerHTML = '';
+        wordListEl.innerHTML = '';
+        wordSearchFeedback.textContent = '';
+        gridArray = Array(grid_size).fill().map(() => Array(grid_size).fill(''));
+        wordsToFind.forEach(word => placeWord(word));
+        fillRandomLetters();
+        renderGrid();
+        renderWordList();
+    }
+
+    function placeWord(word) {
+        const directions = [[0, 1], [1, 0]]; // Horizontal, Vertikal
+        let placed = false;
+        let attempts = 0;
+        while (!placed && attempts < 50) {
+            let dir = directions[Math.floor(Math.random() * directions.length)];
+            let row = Math.floor(Math.random() * grid_size);
+            let col = Math.floor(Math.random() * grid_size);
+            if (canPlaceWord(word, row, col, dir)) {
+                for (let i = 0; i < word.length; i++) {
+                    gridArray[row + i * dir[0]][col + i * dir[1]] = word[i];
+                }
+                placed = true;
+            }
+            attempts++;
+        }
+    }
+
+    function canPlaceWord(word, row, col, dir) {
+        for (let i = 0; i < word.length; i++) {
+            let newRow = row + i * dir[0];
+            let newCol = col + i * dir[1];
+            if (newRow >= grid_size || newCol >= grid_size || (gridArray[newRow][newCol] !== '' && gridArray[newRow][newCol] !== word[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function fillRandomLetters() {
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        for (let r = 0; r < grid_size; r++) {
+            for (let c = 0; c < grid_size; c++) {
+                if (gridArray[r][c] === '') {
+                    gridArray[r][c] = alphabet[Math.floor(Math.random() * alphabet.length)];
+                }
+            }
+        }
+    }
+
+    function renderGrid() {
+        for (let r = 0; r < grid_size; r++) {
+            for (let c = 0; c < grid_size; c++) {
+                const cell = document.createElement('div');
+                cell.classList.add('grid-cell');
+                cell.textContent = gridArray[r][c];
+                cell.dataset.row = r;
+                cell.dataset.col = c;
+                wordSearchGrid.appendChild(cell);
+            }
+        }
+    }
+
+	function renderWordList() {
+		const wordHints = { "SINGA": "Raja Hutan", "ELANG": "Penguasa Langit", "PAUS": "Raksasa Lautan", "RUSA": "Berlari lincah", "KOMODO": "Kadal Raksasa" };
+		wordsToFind.forEach(word => {
+			const li = document.createElement('li');
+			li.textContent = wordHints[word] || word;
+			li.id = `word-${word}`;
+			wordListEl.appendChild(li);
+		});
+	}
+
+    function handleSelectionStart(e) {
+        if (!wordSearchActive) return;
+        isSelecting = true;
+        selectedCells = [];
+        document.querySelectorAll('.grid-cell.selected').forEach(c => c.classList.remove('selected'));
+        const cell = e.target.closest('.grid-cell');
+        if (cell) {
+            cell.classList.add('selected');
+            selectedCells.push(cell);
+        }
+    }
+
+    function handleSelectionMove(e) {
+        if (!isSelecting || !wordSearchActive) return;
+        e.preventDefault();	
+        let element;
+        if (e.touches) {
+            element = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+        } else {
+            element = e.target;
+        }
+        const cell = element.closest('.grid-cell');
+        if (cell && !selectedCells.includes(cell)) {
+            cell.classList.add('selected');
+            selectedCells.push(cell);
+        }
+    }
+
+    function handleSelectionEnd() {
+        if (!isSelecting || !wordSearchActive) return;
+        isSelecting = false;
+        let selectedWord = selectedCells.map(c => c.textContent).join('');
+        let reversedWord = [...selectedWord].reverse().join('');
+        let matchFound = false;
+        if (wordsToFind.includes(selectedWord) && !foundWords.includes(selectedWord)) {
+            markWordAsFound(selectedWord);
+            matchFound = true;
+        } else if (wordsToFind.includes(reversedWord) && !foundWords.includes(reversedWord)) {
+            markWordAsFound(reversedWord);
+            matchFound = true;
+        }
+        if (!matchFound) {
+            selectedCells.forEach(c => c.classList.remove('selected'));
+        }
+    }
+
+    function markWordAsFound(word) {
+        foundWords.push(word);
+        selectedCells.forEach(c => {
+            c.classList.remove('selected');
+            c.classList.add('found');
+        });
+        document.getElementById(`word-${word}`).classList.add('found');
+        wordSearchFeedback.textContent = `Kamu menemukan "${word}"!`;
+        wordSearchFeedback.style.color = '#48bb78';
+        if (foundWords.length === wordsToFind.length) {
+            wordSearchFeedback.textContent = "Hebat! Semua kata ditemukan!";
+            wordSearchActive = false;
+        }
+    }
+
+    wordSearchGrid.addEventListener('mousedown', handleSelectionStart);
+    wordSearchGrid.addEventListener('mousemove', handleSelectionMove);
+    document.addEventListener('mouseup', handleSelectionEnd);
+    wordSearchGrid.addEventListener('touchstart', handleSelectionStart, { passive: true });
+    wordSearchGrid.addEventListener('touchmove', handleSelectionMove, { passive: false });
+    wordSearchGrid.addEventListener('touchend', handleSelectionEnd);
+
+    function triggerWordSearchGame() {
+        if (!wordSearchActive) { setupWordSearchGame(); }
+    }
+
+    // --- BARU: LOGIKA HALAMAN REFLEKSI (HALAMAN 16) ---
+    const emojiButtons = document.querySelectorAll('.emoji-btn');
+    const reflectionFeedback = document.getElementById('reflection-feedback');
+    emojiButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const feedbackText = button.dataset.feedback;
+            reflectionFeedback.textContent = feedbackText;
+        });
+    });
+
+
+    // --- BARU: LOGIKA FITUR GEMINI ---
+    const storyBtn = document.getElementById('generate-story-btn');
+    const storyContainer = document.getElementById('story-container');
+    const qaModalOverlay = document.getElementById('qa-modal-overlay');
+    const qaModalTitle = document.getElementById('qa-modal-title');
+    const qaModalCloseBtn = document.getElementById('qa-modal-close');
+    const qaSubmitBtn = document.getElementById('qa-submit-btn');
+    const qaInput = document.getElementById('qa-input');
+    const qaAnswerEl = document.getElementById('qa-answer');
+    const qaBtns = document.querySelectorAll('.qa-btn');
+
+    // Fungsi untuk memanggil Gemini API
+    async function callGemini(prompt) {
+        const apiKey = ""; // Dibiarkan kosong, akan diisi oleh environment
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+        
+        let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+        const payload = { contents: chatHistory };
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            
+            if (result.candidates && result.candidates.length > 0 &&
+                result.candidates[0].content && result.candidates[0].content.parts &&
+                result.candidates[0].content.parts.length > 0) {
+                return result.candidates[0].content.parts[0].text;
+            } else {
+                console.error("Struktur respons API tidak valid:", result);
+                return "Maaf, terjadi kesalahan saat mencoba mendapatkan jawaban. Struktur respons tidak valid.";
+            }
+        } catch (error) {
+            console.error("Error calling Gemini API:", error);
+            return "Maaf, ada masalah koneksi. Coba lagi nanti ya.";
+        }
+    }
+
+    // Fitur Generator Cerita
+    storyBtn.addEventListener('click', async () => {
+        storyContainer.classList.remove('hidden');
+        storyContainer.innerHTML = '<div class="loading-spinner"></div>';
+        
+        const animalList = "Singa, Elang, Paus, Komodo, dan Rusa";
+        const prompt = `Buatkan sebuah cerita petualangan pendek untuk anak-anak (sekitar 100-150 kata) yang tokohnya adalah ${animalList}. Ceritanya harus positif, imajinatif, dan menggunakan bahasa yang mudah dimengerti.`;
+        
+        const storyText = await callGemini(prompt);
+        storyContainer.innerHTML = storyText.replace(/\n/g, '<br>');
+    });
+
+    // Fitur Q&A Hewan
+    let currentAnimal = '';
+    qaBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const pageContent = e.target.closest('.page-content');
+            currentAnimal = pageContent.querySelector('h2').dataset.animalName;
+            qaModalTitle.textContent = `Tanya tentang ${currentAnimal}`;
+            qaAnswerEl.innerHTML = '';
+            qaInput.value = '';
+            qaModalOverlay.classList.remove('hidden');
+        });
+    });
+
+    qaModalCloseBtn.addEventListener('click', () => {
+        qaModalOverlay.classList.add('hidden');
+    });
+
+    qaSubmitBtn.addEventListener('click', async () => {
+        const question = qaInput.value;
+        if (!question.trim()) {
+            qaAnswerEl.textContent = 'Tolong ketik pertanyaanmu dulu ya.';
+            return;
+        }
+
+        qaAnswerEl.innerHTML = '<div class="loading-spinner"></div>';
+        const prompt = `Sebagai seorang ahli biologi yang berbicara kepada anak-anak, jawab pertanyaan ini tentang ${currentAnimal} dengan cara yang sederhana, menyenangkan, dan mudah dimengerti (maksimal 3-4 kalimat): "${question}"`;
+        
+        const answerText = await callGemini(prompt);
+        qaAnswerEl.innerHTML = answerText.replace(/\n/g, '<br>');
+    });
+
+    // Menutup modal jika klik di luar area konten
+    qaModalOverlay.addEventListener('click', (e) => {
+        if (e.target === qaModalOverlay) {
+            qaModalOverlay.classList.add('hidden');
+        }
+    });
+
+</script>
+
+
+
+
+</body>
+</html>

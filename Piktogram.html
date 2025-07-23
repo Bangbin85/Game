@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buku Interaktif: Belajar Piktogram</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Mengatur font dasar dan latar belakang halaman */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #1a1a2e; /* Warna biru malam yang lebih dalam */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #F9FAFB;
+            overflow: hidden;
+            /* Mencegah scrolling halaman saat drag di layar sentuh */
+            touch-action: none;
+        }
+
+        /* Kontainer utama untuk flipbook */
+        .book-container {
+            perspective: 2500px; /* Memberi efek 3D */
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Styling untuk buku. */
+        .book {
+            width: 95vw; /* Lebar disesuaikan untuk mobile */
+            height: 85vh;
+            max-width: 1000px;
+            max-height: 100%;
+            position: relative;
+            transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+            transform-style: preserve-3d;
+        }
+
+        /* Styling untuk setiap "kertas". */
+        .paper {
+            position: absolute;
+            width: 50%; /* Setiap kertas = 1 halaman = 50% lebar buku */
+            height: 100%;
+            top: 0;
+            left: 50%; /* Semua kertas dimulai dari sisi kanan */
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+            transform-origin: left; /* Titik putar di kiri (tengah buku) */
+        }
+
+        /* Sisi depan dan belakang setiap kertas */
+        .front, .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-color: #16213e;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0.5rem; /* Padding disesuaikan untuk layar kecil */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border: 1px solid #0f3460;
+            overflow-y: auto;
+        }
+        
+        /* Sisi depan adalah halaman kanan, sudutnya di kanan */
+        .front {
+             border-radius: 0 10px 10px 0;
+        }
+
+        /* Sisi belakang adalah halaman kiri, sudutnya di kiri */
+        .back {
+            transform: rotateY(180deg);
+            border-radius: 10px 0 0 10px;
+        }
+
+        /* Kelas 'flipped' akan memutar kertas ke sisi kiri */
+        .flipped {
+            transform: rotateY(-180deg);
+        }
+
+        /* Styling untuk konten di dalam halaman */
+        .page-content {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            gap: 0.5rem; /* Jarak antar elemen dikurangi */
+        }
+        .page-content h2 {
+            font-size: clamp(1rem, 4vw, 1.5rem); /* Ukuran font responsif */
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            margin: 0 0 0.25rem 0;
+            color: #e94560;
+        }
+        .page-content p, .page-content li {
+            font-size: clamp(0.7rem, 2.5vw, 0.9rem); /* Ukuran font responsif */
+            max-width: 95%;
+            line-height: 1.4;
+            margin: 0 auto;
+        }
+        .page-content ul {
+            list-style-position: inside;
+            text-align: left;
+            padding: 0 1rem;
+        }
+        
+        .content-image {
+            width: 50%;
+            max-height: 40%;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        
+        /* Styling untuk sampul depan (kanan) dan belakang (kiri) */
+		#p1 .front, #p10 .back {
+			background-color: transparent;
+		}
+
+		#p1 .front .page-content, #p10 .back .page-content {
+			position: relative;
+			z-index: 1;
+		}
+        
+        #p1 .front h2 {
+            color: #e0e7ff;
+        }
+
+        .wrapper {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+        }
+
+		.orange, .green, .blue {
+		  position: absolute;
+		  top: 0;
+		  bottom: 0;
+		  width: 100%;
+		}
+
+		.orange {
+		  background-color: #e7901e;
+		  clip-path: polygon(0, 0, 20% 0, 5% 100%, 0% 100%);
+		}
+
+		.green {
+		  background-color: #1ecc59;
+		  clip-path: polygon(30% 0, 80% 0, 95% 100%, 15% 100%);
+		}
+
+		.blue {
+		  background-color: #5ab3ff;
+		  clip-path: polygon(60% 0, 100% 0, 100% 100%, 85% 100%);
+		}
+
+        /* --- POSISI TOMBOL NAVIGASI --- */
+        .nav-btn {
+            background-color: #e94560;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 50%;
+            border: 2px solid #1a1a2e;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(233, 69, 96, 0.4);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+        .nav-btn svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+        .nav-btn:hover {
+            background-color: #ff6684;
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 6px 15px rgba(233, 69, 96, 0.5);
+        }
+        .nav-btn:disabled {
+            background-color: #4B5563;
+            cursor: not-allowed;
+            transform: translateY(-50%);
+            box-shadow: none;
+            opacity: 0.5;
+        }
+        #prev-btn {
+            left: 10px;
+        }
+        #next-btn {
+            right: 10px;
+        }
+        
+        .page-counter-container {
+            position: fixed;
+            bottom: 2vh;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+        }
+        #page-counter {
+            font-size: 1rem;
+            font-weight: 600;
+            min-width: 80px;
+            text-align: center;
+            background-color: rgba(0,0,0,0.2);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+        }
+
+        /* --- STYLING GAME --- */
+        .game-page .page-content {
+            gap: 0.5rem;
+            padding: 0.5rem;
+        }
+        .game-feedback {
+            font-weight: 600;
+            font-size: clamp(0.8rem, 3vw, 1rem);
+            height: 2.5rem; /* Increased height for longer feedback */
+            transition: opacity 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Game: Lengkapi Piktogram (Drag & Drop) */
+        .pictogram-completion-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+        }
+        .data-table {
+            background-color: #2a3a5e;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+        .pictogram-drop-area {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            width: 90%;
+        }
+        .pictogram-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .pictogram-label {
+            width: 60px;
+            font-weight: 600;
+            text-align: right;
+        }
+        .dropzone {
+            flex-grow: 1;
+            min-height: 50px;
+            border: 2px dashed #4a5568;
+            border-radius: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 4px;
+            gap: 4px;
+            transition: all 0.3s;
+        }
+        .dropzone.hovered {
+            border-color: #a0aec0;
+            background-color: #2a3a5e;
+        }
+        .draggable-items-container {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .draggable {
+            width: clamp(40px, 10vw, 45px);
+            height: clamp(40px, 10vw, 45px);
+            cursor: grab;
+            transition: opacity 0.3s, transform 0.3s ease;
+            touch-action: none;
+        }
+        .draggable.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+        .dropzone .draggable {
+            cursor: default;
+        }
+        
+        /* Game: Kuis Piktogram */
+        .pictogram-display {
+            border: 2px solid #4a5568;
+            padding: 0.5rem;
+            border-radius: 8px;
+            width: 90%;
+            margin-bottom: 0.5rem;
+        }
+        .quiz-container { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; height: 100%; padding: 0.5rem;}
+        #quiz-question { margin-bottom: 0.25rem; font-size: clamp(0.8rem, 3.5vw, 1.1rem); }
+        #quiz-options-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; width: 100%; }
+        .quiz-option {
+            background-color: #2a3a5e; border: 2px solid #4a5568; padding: 0.5rem; border-radius: 8px; cursor: pointer; transition: all 0.3s;
+            display: flex; align-items: center; justify-content: center; min-height: 50px;
+        }
+        .quiz-option:hover { background-color: #3a4a7e; border-color: #63b3ed; }
+        .quiz-option.correct { background-color: #1c4532; border-color: #48bb78; }
+        .quiz-option.incorrect { background-color: #5f2120; border-color: #f56565; }
+        #quiz-next-btn {
+            margin-top: 0.5rem; padding: 0.4rem 1.2rem; border-radius: 20px; background-color: #4338ca; color: white;
+            font-weight: 600; cursor: pointer; transition: background-color 0.3s; border: none;
+        }
+        .hidden { display: none !important; }
+
+        /* Game: Benar atau Salah */
+        .true-false-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .tf-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+        .true-btn { background-color: #2f855a; color: white; }
+        .true-btn:hover { background-color: #38a169; }
+        .false-btn { background-color: #c53030; color: white; }
+        .false-btn:hover { background-color: #e53e3e; }
+
+        /* --- HALAMAN REFLEKSI & PENULIS --- */
+        .reflection-container { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; justify-content: center; }
+        .emoji-btn { font-size: clamp(2.5rem, 8vw, 4rem); cursor: pointer; transition: transform 0.3s ease, filter 0.3s ease; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4)); }
+        .emoji-btn:hover { transform: scale(1.2) translateY(-5px); filter: drop-shadow(0 8px 12px rgba(0,0,0,0.5)); }
+        #reflection-feedback { font-style: italic; height: 3em; color: #c3e0e5; }
+        
+        .author-socials { display: flex; gap: 1.5rem; margin-top: 1rem; }
+        .author-socials a { fill: #c3e0e5; transition: fill 0.3s, transform 0.3s; }
+        .author-socials a:hover { fill: #e94560; transform: scale(1.1); }
+
+        /* --- FITUR GEMINI --- */
+        .gemini-btn {
+            background-color: #8A2BE2; /* Warna ungu khas AI/sihir */
+            color: white; padding: 0.5rem 1rem; border-radius: 20px; border: none;
+            cursor: pointer; font-weight: 600; transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(138, 43, 226, 0.4); margin-top: 0.5rem;
+            font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+        }
+        .gemini-btn:hover { background-color: #9932CC; transform: scale(1.05); }
+        #story-container {
+            margin-top: 1rem; background-color: rgba(0,0,0,0.2); padding: 1rem;
+            border-radius: 8px; width: 95%; max-height: 40vh; overflow-y: auto;
+            text-align: left; line-height: 1.6;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3; border-top: 4px solid #8A2BE2;
+            border-radius: 50%; width: 30px; height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #qa-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.7); z-index: 2000; display: flex;
+            justify-content: center; align-items: center;
+        }
+        #qa-modal-content {
+            background-color: #1a1a2e; padding: 1.5rem; border-radius: 12px;
+            border: 1px solid #0f3460; width: 90vw; max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex;
+            flex-direction: column; gap: 1rem;
+        }
+        #qa-modal-header { display: flex; justify-content: space-between; align-items: center; }
+        #qa-modal-close { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+        #qa-input {
+            width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #4a5568;
+            background-color: #16213e; color: white;
+        }
+        #qa-answer {
+            background-color: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px;
+            min-height: 100px; max-height: 40vh; overflow-y: auto;
+        }
+        
+        /* --- HALAMAN RANGKUMAN & PUSTAKA --- */
+        .summary-list, .credits-list {
+            display: flex; flex-direction: column; gap: 0.7rem;
+            width: 100%; max-width: 95%; margin-top: 1rem;
+        }
+        .summary-item, .credits-item {
+            display: flex; align-items: center; text-align: left;
+            background-color: rgba(42, 58, 94, 0.4); padding: 0.6rem 0.75rem;
+            border-radius: 8px; border-left: 4px solid #e94560;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .summary-item:hover, .credits-item:hover { transform: translateX(5px); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .summary-item svg, .credits-item svg {
+            width: 1.4rem; height: 1.4rem; margin-right: 0.75rem;
+            fill: #c3e0e5; flex-shrink: 0;
+        }
+        .summary-item span, .credits-item span { flex-grow: 1; line-height: 1.5; }
+        .credits-item .gemini-emoji { font-size: 1.4rem; margin-right: 0.75rem; flex-shrink: 0; line-height: 1; }
+
+        #p7 .back .page-content, #p8 .front .page-content {
+            justify-content: center; padding: 1rem 0.75rem; gap: 1rem;
+        }
+
+        /* Media Query untuk layar yang lebih besar */
+        @media (min-width: 768px) {
+            .book { height: 80vh; width: 90vw; }
+            .front, .back { padding: 1.5rem; }
+            .page-content { gap: 1rem; }
+            .content-image { width: 60%; max-height: 40%; }
+            .nav-btn { padding: 1rem; }
+            .nav-btn svg { width: 1.5rem; height: 1.5rem; }
+            #prev-btn { left: max(2vw, 15px); }
+            #next-btn { right: max(2vw, 15px); }
+            .summary-list, .credits-list { gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container flex flex-col items-center justify-center w-full h-full p-2 md:p-4">
+    <div class="book-container">
+        <div id="book" class="book">
+            <!-- Kertas 1: Sampul & Pengenalan Data -->
+            <div id="p1" class="paper">
+				<div class="front">
+					<div class="wrapper">
+					  <div class="orange"></div>
+					  <div class="green"></div>
+					  <div class="blue"></div>
+					</div>				
+					<div class="page-content p-9">
+						<h2 class="text-2xl md:text-4xl font-bold mb-2">Belajar Piktogram</h2>
+						<p class="mb-4">Menyajikan Data Jadi Lebih Seru!</p>
+						<img src="https://placehold.co/400x300/8A2BE2/FFFFFF?text=Piktogram"
+							 alt="Ilustrasi Piktogram"
+							 class="w-1/2 max-h-[50%] h-auto object-contain rounded-lg shadow-lg">
+					</div>
+				</div>
+                <div class="back">
+                    <div class="page-content">
+                        <h2 data-topic-name="Data">Apa itu Data?</h2>
+                        <p>Data adalah kumpulan informasi. Contohnya, jumlah siswa di kelasmu, atau jenis buah-buahan yang temanmu sukai. Kita kumpulkan data untuk mengetahui sesuatu!</p>
+                        <img src="https://placehold.co/300x300/4CAF50/FFFFFF?text=Anak-Anak+%26+Data" alt="Anak-anak mengumpulkan data" class="content-image" onerror="this.onerror=null;this.src='https://placehold.co/250x250/CCCCCC/FFFFFF?text=Image+Not+Found';">
+                        <button class="gemini-btn qa-btn">✨ Tanya Sesuatu!</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kertas 2: Pengenalan Piktogram & Contoh -->
+            <div id="p2" class="paper">
+                <div class="front">
+                    <div class="page-content">
+                        <h2 data-topic-name="Piktogram">Apa itu Piktogram?</h2>
+                        <p>Piktogram adalah cara menampilkan data menggunakan gambar atau simbol. Kata "Pikto" artinya gambar. Jadi, piktogram adalah diagram gambar!</p>
+                        <img src="https://placehold.co/350x250/2196F3/FFFFFF?text=Contoh+Piktogram" alt="Contoh Piktogram" class="content-image" onerror="this.onerror=null;this.src='https://placehold.co/250x250/CCCCCC/FFFFFF?text=Image+Not+Found';">
+                        <button class="gemini-btn qa-btn">✨ Tanya Sesuatu!</button>
+                    </div>
+                </div>
+                <div class="back">
+                    <div class="page-content">
+                        <h2>Contoh: Toko Roti</h2>
+                        <p>Pak Budi mencatat penjualan rotinya hari ini. Ayo kita lihat datanya sebelum dibuat menjadi piktogram!</p>
+                        <div class="data-table text-left p-4 rounded-lg bg-gray-700">
+                            <p class="font-bold text-lg">Penjualan Roti Pak Budi:</p>
+                            <ul>
+                                <li>Roti Cokelat: 5</li>
+                                <li>Roti Keju: 7</li>
+                                <li>Roti Stroberi: 4</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kertas 3: Piktogram & Kunci -->
+            <div id="p3" class="paper">
+                <div class="front">
+                    <div class="page-content">
+                        <h2>Piktogram Toko Roti</h2>
+                        <p>Ini adalah piktogram dari data penjualan roti Pak Budi. Lebih mudah dibaca, kan?</p>
+                        <img src="https://lh3.googleusercontent.com/d/1B-1H2C-L75x_I9e-7G3Xl4k8tY7o7p-m" alt="Piktogram Roti" class="content-image w-full max-w-sm" onerror="this.onerror=null;this.src='https://placehold.co/400x300/CCCCCC/FFFFFF?text=Piktogram+Roti';">
+                    </div>
+                </div>
+                <div class="back">
+                    <div class="page-content">
+                        <h2 data-topic-name="Kunci Piktogram">Pentingnya Kunci!</h2>
+                        <p>Setiap piktogram harus punya "kunci" atau "keterangan". Kunci memberitahu kita nilai dari satu gambar.</p>
+                        <img src="https://lh3.googleusercontent.com/d/1p-eXy7V5b7x-Z8c-Z5q-Y6a-X4x-X4x-" alt="Kunci Piktogram" class="content-image w-full max-w-sm" onerror="this.onerror=null;this.src='https://placehold.co/400x200/CCCCCC/FFFFFF?text=Kunci+Piktogram';">
+                         <p class="mt-2">Jika satu gambar mewakili 2 benda, maka setengah gambar mewakili 1 benda.</p>
+                        <button class="gemini-btn qa-btn">✨ Tanya Sesuatu!</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kertas 4: Game - Lengkapi Piktogram -->
+            <div id="p4" class="paper">
+                <div class="front game-page">
+                    <div class="page-content">
+                        <h2>Game: Lengkapi Piktogram!</h2>
+                        <p>Tarik gambar mobil dan motor ke baris yang benar sesuai data di bawah ini.</p>
+                        <div class="pictogram-completion-container">
+                             <div class="data-table">
+                                <p>Kendaraan di Parkiran:</p>
+                                <p>Mobil: 4, Motor: 6</p>
+                            </div>
+                            <div class="pictogram-drop-area">
+                                <div class="pictogram-row">
+                                    <span class="pictogram-label">Mobil:</span>
+                                    <div class="dropzone" data-vehicle="mobil"></div>
+                                </div>
+                                <div class="pictogram-row">
+                                    <span class="pictogram-label">Motor:</span>
+                                    <div class="dropzone" data-vehicle="motor"></div>
+                                </div>
+                            </div>
+                            <div class="draggable-items-container">
+                                <img src="https://placehold.co/50x50/f44336/FFFFFF?text=Mobil" alt="Mobil" id="mobil1" class="draggable" data-vehicle="mobil" draggable="true">
+                                <img src="https://placehold.co/50x50/9c27b0/FFFFFF?text=Motor" alt="Motor" id="motor1" class="draggable" data-vehicle="motor" draggable="true">
+                            </div>
+                        </div>
+                        <p id="game-feedback-drag" class="game-feedback"></p>
+                    </div>
+                </div>
+                <div class="back game-page">
+                    <div class="page-content">
+                        <div class="quiz-container">
+                            <h2>Game: Kuis Piktogram!</h2>
+                            <div id="pictogram-display-quiz1" class="pictogram-display">
+                                <!-- Konten piktogram untuk kuis akan dimuat oleh JS -->
+                            </div>
+                            <h3 id="quiz-question"></h3>
+                            <div id="quiz-options-container"></div>
+                            <p id="game-feedback-quiz" class="game-feedback"></p>
+                            <button id="quiz-next-btn" class="hidden">Lanjut</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kertas 5: Game - Benar atau Salah -->
+            <div id="p5" class="paper">
+                <div class="front game-page">
+                     <div class="page-content">
+                        <h2>Game: Benar atau Salah?</h2>
+                        <p>Perhatikan piktogram mainan di bawah ini.</p>
+                        <div id="pictogram-display-tf1" class="pictogram-display">
+                            <!-- Konten piktogram untuk game B/S akan dimuat oleh JS -->
+                        </div>
+                        <p id="tf-statement" class="my-2">Apakah pernyataan ini benar atau salah?</p>
+                        <div id="true-false-container" class="true-false-container">
+                            <!-- Tombol Benar/Salah akan dimuat oleh JS -->
+                        </div>
+                        <p id="game-feedback-tf" class="game-feedback"></p>
+                    </div>
+                </div>
+                <div class="back">
+                     <div class="page-content">
+                        <h2>Ayo Berlatih Lagi!</h2>
+                        <p>Sekarang, coba jawab pertanyaan ini dari piktogram yang sama.</p>
+                         <div id="pictogram-display-tf2" class="pictogram-display">
+                            <!-- Konten piktogram akan disalin oleh JS -->
+                        </div>
+                        <p class="my-2">Berapa jumlah semua mainan yang ada?</p>
+                        <div id="quiz-container-2" class="quiz-container">
+                             <!-- Opsi jawaban akan dimuat oleh JS -->
+                        </div>
+                        <p id="game-feedback-quiz2" class="game-feedback"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kertas 6: Rangkuman -->
+            <div id="p6" class="paper">
+                <div class="front">
+                    <div class="page-content">
+                        <h2>Rangkuman Belajar</h2>
+                        <p>Hebat! Kamu sudah belajar banyak tentang piktogram hari ini.</p>
+                        <div class="summary-list">
+                            <div class="summary-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 2h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2zm0 2v12h16V4H4zm2 9h4v2H6v-2zm6 0h4v2h-4v-2zm-6-4h4v2H6V9zm6 0h4v2h-4V9zM6 5h4v2H6V5zm6 0h4v2h-4V5z"/></svg>
+                                <span><b>Data</b> adalah kumpulan informasi atau fakta.</span>
+                            </div>
+                            <div class="summary-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                                <span><b>Piktogram</b> menyajikan data dengan gambar.</span>
+                            </div>
+                            <div class="summary-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58s1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41s-.22-1.05-.59-1.42zM13 20.01L4 11V4h7l9 9-7 7.01zM6.5 8C7.33 8 8 7.33 8 6.5S7.33 5 6.5 5 5 5.67 5 6.5 5.67 8 6.5 8z"/></svg>
+                                <span><b>Kunci</b> atau <b>Keterangan</b> sangat penting untuk tahu nilai setiap gambar.</span>
+                            </div>
+                        </div>
+                        <p class="mt-4">Teruslah berlatih agar makin pintar membaca data!</p>
+                    </div>
+                </div>
+                <div class="back">
+                    <div class="page-content">
+                        <h2>Buat Cerita Piktogram!</h2>
+                        <p>Klik tombol di bawah untuk membuat cerita baru tentang data dan piktogram!</p>
+                        <button id="generate-story-btn" class="gemini-btn">✨ Buat Cerita Ajaib!</button>
+                        <div id="story-container" class="hidden"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kertas 7: Refleksi -->
+             <div id="p7" class="paper">
+                <div class="front">
+                    <div class="page-content">
+                        <h2>Bagaimana Perasaanmu?</h2>
+                        <p>Klik salah satu emoji untuk berbagi perasaanmu setelah belajar piktogram!</p>
+                        <div class="reflection-container">
+                            <div class="emoji-btn" data-feedback="Terima kasih! Senang kamu sangat menyukainya!">🤩</div>
+                            <div class="emoji-btn" data-feedback="Yay! Kami senang kamu gembira.">😄</div>
+                            <div class="emoji-btn" data-feedback="Oke, kami akan berusaha lebih baik lagi.">🙂</div>
+                            <div class="emoji-btn" data-feedback="Semoga materi berikutnya bisa membuatmu lebih tertarik.">🤔</div>
+                        </div>
+                        <p id="reflection-feedback">...</p>
+                    </div>
+                </div>
+                <div class="back">
+                     <div class="page-content">
+                        <h2>Tentang Penulis</h2>
+                        <img src="https://lh3.googleusercontent.com/d/1tFGMHXxFlkz5Ij0nHbxddt4aF-MfnTio" alt="Foto Penulis" class="w-32 h-32 rounded-full object-cover my-4 shadow-lg" onerror="this.onerror=null;this.src='https://placehold.co/128x128/CCCCCC/FFFFFF?text=Author';">
+                        <h3 class="text-xl font-bold">BangBin</h3>
+                        <p class="max-w-md">Seorang kreator yang bersemangat dalam menggabungkan teknologi dan pendidikan untuk menciptakan pengalaman belajar yang menyenangkan.</p>
+                        <div class="author-socials">
+                            <a href="#" title="Website"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm0 22c-5.514 0-10-4.486-10-10s4.486-10 10-10 10 4.486 10 10-4.486 10-10 10zm-1-11h-3v-2h3v-2.025c0-2.141 1.611-3.975 4-3.975h2v2h-2c-1.1 0-1 .489-1 1.025v2.975h3l-.5 2h-2.5v7h-3v-7z"/></svg></a>
+                            <a href="#" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm6.066 9.645c.183 4.59-3.142 9.56-9.33 9.56-1.854 0-3.579-.543-5.032-1.475 1.742.205 3.48-.278 4.86-1.359-1.437-.027-2.649-.976-3.066-2.28.515.098.991.062 1.46-.056-1.511-.308-2.64-1.64-2.64-3.253 0-.013 0-.025 0-.037.453.246.976.394 1.53.425-1.449-.968-2.39-2.62-2.39-4.445 0-.976.268-1.881.743-2.643 1.657 2.025 4.151 3.348 6.891 3.49-.1-.246-.154-.515-.154-.787 0-1.881 1.527-3.406 3.406-3.406.976 0 1.854.411 2.471 1.073.769-.15 1.49-.425 2.16-.824-.251.79-.79 1.46-1.49 1.881.677-.081 1.32-.261 1.9-.515-.453.666-.991 1.243-1.616 1.69z"/></svg></a>
+                            <a href="#" title="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm0 22c-5.514 0-10-4.486-10-10s4.486-10 10-10 10 4.486 10 10-4.486 10-10 10zm-6.945-10.375c.011 3.25 2.626 5.864 5.876 5.864h2.138c3.25 0 5.863-2.614 5.863-5.864v-2.125c0-3.25-2.613-5.865-5.863-5.865h-2.138c-3.25 0-5.865 2.615-5.876 5.865v2.125zm8.945-3.375c.553 0 1 .448 1 1s-.447 1-1 1-1-.448-1-1 .447-1 1-1zm-2 1.25c-1.381 0-2.5 1.119-2.5 2.5s1.119 2.5 2.5 2.5 2.5-1.119 2.5-2.5-1.119-2.5-2.5-2.5z"/></svg></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kertas 8 (Dummy) -->
+            <div id="p8" class="paper">
+                <div class="front"></div>
+                <div class="back"></div>
+            </div>
+            <!-- Kertas 9 (Dummy) -->
+            <div id="p9" class="paper">
+                <div class="front"></div>
+                <div class="back"></div>
+            </div>
+
+            <!-- Kertas 10: Sampul Belakang -->
+            <div id="p10" class="paper">
+                <div class="front"></div>
+                <div class="back">
+                    <div class="wrapper">
+                      <div class="orange"></div>
+                      <div class="green"></div>
+                      <div class="blue"></div>
+                    </div>	
+                    <div class="page-content">
+                        <h2>Akhir Cerita</h2>
+                        <p>Terima kasih telah belajar bersama. Sampai jumpa di petualangan ilmu berikutnya!</p>
+                        <img src="https://placehold.co/250x250/4A90E2/FFFFFF?text=Selesai!" alt="Buku Selesai" class="content-image" onerror="this.onerror=null;this.src='https://placehold.co/250x250/CCCCCC/FFFFFF?text=Image+Not+Found';">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <button id="prev-btn" class="nav-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+    </button>
+    <button id="next-btn" class="nav-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+    </button>
+    <div class="page-counter-container">
+        <span id="page-counter">1 / 14</span>
+    </div>
+</div>
+
+<div id="qa-modal-overlay" class="hidden">
+    <div id="qa-modal-content">
+        <div id="qa-modal-header">
+            <h3 id="qa-modal-title">Tanya Sesuatu!</h3>
+            <button id="qa-modal-close">×</button>
+        </div>
+        <p class="text-sm">Ketik pertanyaanmu di bawah ini dan biarkan Gemini menjawab!</p>
+        <input type="text" id="qa-input" placeholder="Contoh: Kenapa piktogram itu berguna?">
+        <button id="qa-submit-btn" class="gemini-btn">✨ Kirim Pertanyaan</button>
+        <div id="qa-answer"></div>
+    </div>
+</div>
+
+
+<script>
+    // --- LOGIKA FLIPBOOK ---
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const book = document.getElementById('book');
+    const papers = Array.from(document.querySelectorAll('.paper')).filter(p => p.id !== 'p8' && p.id !== 'p9'); // Filter out dummy pages
+    const pageCounter = document.getElementById('page-counter');
+
+    const numOfPapers = papers.length;
+    const totalPages = numOfPapers * 2 - 2; // Adjusted for 2 dummy pages removed from count
+    let currentLocation = 1;
+    const maxLocation = numOfPapers + 1;
+
+    nextBtn.addEventListener('click', goNextPage);
+    prevBtn.addEventListener('click', goPrevPage);
+
+    function goNextPage() {
+        if (currentLocation < maxLocation) {
+            const paper = papers[currentLocation - 1];
+            paper.classList.add('flipped');
+            paper.style.zIndex = currentLocation;
+            
+            // Trigger game yang relevan
+            if (currentLocation === 4) { // Page 7-8
+                triggerQuizGame();
+            }
+            if (currentLocation === 5) { // Page 9-10
+                triggerTrueFalseGame();
+                triggerSecondQuiz();
+            }
+
+            currentLocation++;
+            updateUI();
+        }
+    }
+
+    function goPrevPage() {
+        if (currentLocation > 1) {
+            currentLocation--;
+            const paper = papers[currentLocation - 1];
+            paper.classList.remove('flipped');
+            setTimeout(() => {
+                paper.style.zIndex = maxLocation - currentLocation;
+            }, 800);
+            updateUI();
+        }
+    }
+    
+    function updateUI() {
+        const isFirstPage = currentLocation === 1;
+        const isLastPage = currentLocation === maxLocation;
+        const currentVisiblePage = (currentLocation - 1) * 2;
+
+        if (isFirstPage) {
+            book.style.transform = 'translateX(-25%)';
+            pageCounter.textContent = `1 / ${totalPages}`;
+        } else if (isLastPage) {
+            book.style.transform = 'translateX(25%)';
+            pageCounter.textContent = `${totalPages} / ${totalPages}`;
+        } else {
+            book.style.transform = 'translateX(0%)';
+            pageCounter.textContent = `${currentVisiblePage}-${currentVisiblePage + 1} / ${totalPages}`;
+        }
+        
+        prevBtn.disabled = isFirstPage;
+        nextBtn.disabled = isLastPage;
+    }
+
+    function init() {
+        papers.forEach((paper, index) => {
+            paper.style.zIndex = maxLocation - (index + 1);
+        });
+        updateUI();
+        setupDragDropGame(); // Setup the first game initially
+    }
+    
+    init();
+
+    // --- GAME 1: LENGKAPI PIKTOGRAM (DRAG & DROP) ---
+    function setupDragDropGame() {
+        const draggables = document.querySelectorAll('.draggable');
+        const dropzones = document.querySelectorAll('.dropzone');
+        const gameFeedback = document.getElementById('game-feedback-drag');
+        const data = { mobil: 4, motor: 6 };
+        let draggedItem = null;
+
+        draggables.forEach(draggable => {
+            // Mouse events
+            draggable.addEventListener('dragstart', (e) => {
+                draggedItem = e.target;
+                setTimeout(() => e.target.classList.add('dragging'), 0);
+            });
+            draggable.addEventListener('dragend', () => {
+                if(draggedItem) draggedItem.classList.remove('dragging');
+                draggedItem = null;
+            });
+
+            // Touch events
+            let initialX, initialY, currentX, currentY;
+            draggable.addEventListener('touchstart', (e) => {
+                draggedItem = e.target.closest('.draggable');
+                if (!draggedItem) return;
+                initialX = e.touches[0].clientX;
+                initialY = e.touches[0].clientY;
+                draggedItem.classList.add('dragging');
+            }, { passive: true });
+
+            draggable.addEventListener('touchmove', (e) => {
+                if (!draggedItem) return;
+                e.preventDefault();
+                currentX = e.touches[0].clientX - initialX;
+                currentY = e.touches[0].clientY - initialY;
+                draggedItem.style.transform = `translate(${currentX}px, ${currentY}px)`;
+                
+                const touch = e.touches[0];
+                const elementUnderTouch = document.elementFromPoint(touch.clientX, touch.clientY);
+                dropzones.forEach(dz => dz.classList.remove('hovered'));
+                if (elementUnderTouch && elementUnderTouch.closest('.dropzone')) {
+                    elementUnderTouch.closest('.dropzone').classList.add('hovered');
+                }
+            }, { passive: false });
+
+            draggable.addEventListener('touchend', (e) => {
+                if (!draggedItem) return;
+                draggedItem.style.transform = 'translate(0, 0)';
+                draggedItem.classList.remove('dragging');
+                dropzones.forEach(dz => dz.classList.remove('hovered'));
+                
+                const touch = e.changedTouches[0];
+                const dropzone = document.elementFromPoint(touch.clientX, touch.clientY)?.closest('.dropzone');
+                if (dropzone) {
+                    handleDrop(dropzone);
+                }
+                draggedItem = null;
+            });
+        });
+
+        dropzones.forEach(dropzone => {
+            dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('hovered'); });
+            dropzone.addEventListener('dragleave', () => { dropzone.classList.remove('hovered'); });
+            dropzone.addEventListener('drop', e => { e.preventDefault(); handleDrop(e.currentTarget); });
+        });
+
+        function handleDrop(dropzone) {
+            if (!draggedItem || !dropzone) return;
+            dropzone.classList.remove('hovered');
+            
+            const vehicleType = dropzone.dataset.vehicle;
+            const draggedVehicleType = draggedItem.dataset.vehicle;
+
+            if (vehicleType === draggedVehicleType) {
+                const maxItems = data[vehicleType];
+                if (dropzone.children.length < maxItems) {
+                    const newItem = draggedItem.cloneNode(true);
+                    newItem.classList.remove('dragging');
+                    newItem.draggable = false;
+                    newItem.style.cursor = 'default';
+                    dropzone.appendChild(newItem);
+                    checkCompletion();
+                } else {
+                    setFeedback(`Jumlah ${vehicleType} sudah cukup!`, '#f56565');
+                }
+            } else {
+                setFeedback('Bukan tempatnya!', '#f56565');
+            }
+        }
+
+        function checkCompletion() {
+            const mobilZone = document.querySelector('.dropzone[data-vehicle="mobil"]');
+            const motorZone = document.querySelector('.dropzone[data-vehicle="motor"]');
+            if (mobilZone.children.length === data.mobil && motorZone.children.length === data.motor) {
+                setFeedback('Hebat! Piktogramnya sudah lengkap!', '#48bb78');
+            } else {
+                setFeedback('Benar! Lanjutkan!', '#c3e0e5');
+            }
+        }
+        
+        function setFeedback(message, color) {
+            gameFeedback.textContent = message;
+            gameFeedback.style.color = color;
+        }
+    }
+
+
+    // --- GAME 2: KUIS PIKTOGRAM ---
+    const quizData = [
+        {
+            pictogram: {
+                title: "Hewan Peliharaan Siswa Kelas 1",
+                key: "1 🐾 = 1 siswa",
+                data: { "Kucing": 5, "Ikan": 8, "Burung": 3 }
+            },
+            question: "Hewan apa yang paling banyak dipelihara?",
+            options: ["Kucing", "Ikan", "Burung"],
+            answer: "Ikan"
+        },
+        {
+            pictogram: {
+                title: "Skor Tim Basket",
+                key: "1 🏀 = 2 poin",
+                data: { "Tim Merah": 4, "Tim Biru": 5, "Tim Hijau": 3 } // Represents 8, 10, 6 points
+            },
+            question: "Berapa total poin yang dicetak Tim Merah?",
+            options: ["4 poin", "6 poin", "8 poin"],
+            answer: "8 poin"
+        }
+    ];
+    let currentQuizQuestion = 0;
+    let quizActive = false;
+
+    function triggerQuizGame() {
+        if (!quizActive) {
+            quizActive = true;
+            loadQuizQuestion(0, 'pictogram-display-quiz1', 'quiz-question', 'quiz-options-container', 'game-feedback-quiz', 'quiz-next-btn');
+        }
+    }
+
+    function loadQuizQuestion(index, displayId, questionId, optionsId, feedbackId, nextBtnId) {
+        const quiz = quizData[index];
+        const displayEl = document.getElementById(displayId);
+        const questionEl = document.getElementById(questionId);
+        const optionsEl = document.getElementById(optionsId);
+        const feedbackEl = document.getElementById(feedbackId);
+        const nextBtn = document.getElementById(nextBtnId);
+
+        // Render pictogram
+        let pictogramHTML = `<p class="font-bold">${quiz.pictogram.title}</p>`;
+        for (const [key, value] of Object.entries(quiz.pictogram.data)) {
+            pictogramHTML += `<div class="flex items-center"><span class="w-20 text-right mr-2">${key}:</span><div class="flex">`;
+            const icon = key === "Kucing" ? '🐾' : (key === "Ikan" ? '🐠' : (key === "Burung" ? '🐦' : '🏀'));
+            for(let i = 0; i < value; i++) {
+                pictogramHTML += `<span class="text-2xl">${icon}</span>`;
+            }
+            pictogramHTML += `</div></div>`;
+        }
+        pictogramHTML += `<p class="text-sm mt-2 font-bold">Keterangan: ${quiz.pictogram.key}</p>`;
+        displayEl.innerHTML = pictogramHTML;
+
+        questionEl.textContent = quiz.question;
+        optionsEl.innerHTML = '';
+        feedbackEl.textContent = '';
+        nextBtn.classList.add('hidden');
+
+        quiz.options.forEach(optionText => {
+            const optionEl = document.createElement('button');
+            optionEl.classList.add('quiz-option');
+            optionEl.textContent = optionText;
+            optionEl.onclick = () => handleQuizAnswer(optionEl, optionText === quiz.answer, feedbackId, nextBtnId, index);
+            optionsEl.appendChild(optionEl);
+        });
+    }
+    
+    function handleQuizAnswer(selectedOption, isCorrect, feedbackId, nextBtnId, quizIndex) {
+        const feedbackEl = document.getElementById(feedbackId);
+        const nextBtn = document.getElementById(nextBtnId);
+        const optionsContainer = selectedOption.parentElement;
+
+        Array.from(optionsContainer.children).forEach(btn => {
+            btn.disabled = true;
+            if (btn.textContent === quizData[quizIndex].answer) {
+                btn.classList.add('correct');
+            }
+        });
+
+        if (isCorrect) {
+            feedbackEl.textContent = "Jawabanmu Benar! Hebat!";
+            feedbackEl.style.color = "#48bb78";
+        } else {
+            selectedOption.classList.add('incorrect');
+            feedbackEl.textContent = "Oops, coba perhatikan lagi piktogramnya.";
+            feedbackEl.style.color = "#f56565";
+        }
+        
+        if (quizIndex < quizData.length - 1) {
+             nextBtn.classList.remove('hidden');
+             nextBtn.onclick = () => loadQuizQuestion(quizIndex + 1, 'pictogram-display-quiz1', 'quiz-question', 'quiz-options-container', 'game-feedback-quiz', 'quiz-next-btn');
+        }
+    }
+
+    // --- GAME 3: BENAR ATAU SALAH ---
+    const tfData = {
+        pictogram: {
+            title: "Jumlah Mainan di Kotak",
+            key: "1 gambar = 1 mainan",
+            data: { "Boneka": 6, "Robot": 4, "Bola": 7 }
+        },
+        statement: "Jumlah bola lebih sedikit dari boneka.",
+        answer: false
+    };
+    let tfGameActive = false;
+
+    function triggerTrueFalseGame() {
+        if (tfGameActive) return;
+        tfGameActive = true;
+        const displayEl = document.getElementById('pictogram-display-tf1');
+        const statementEl = document.getElementById('tf-statement');
+        const container = document.getElementById('true-false-container');
+        const feedbackEl = document.getElementById('game-feedback-tf');
+
+        // Render pictogram
+        let pictogramHTML = `<p class="font-bold">${tfData.pictogram.title}</p>`;
+        for (const [key, value] of Object.entries(tfData.pictogram.data)) {
+            pictogramHTML += `<div class="flex items-center"><span class="w-20 text-right mr-2">${key}:</span><div class="flex flex-wrap">`;
+            const icon = key === "Boneka" ? '🧸' : (key === "Robot" ? '🤖' : '⚽');
+            for(let i = 0; i < value; i++) {
+                pictogramHTML += `<span class="text-2xl">${icon}</span>`;
+            }
+            pictogramHTML += `</div></div>`;
+        }
+        pictogramHTML += `<p class="text-sm mt-2 font-bold">Keterangan: ${tfData.pictogram.key}</p>`;
+        displayEl.innerHTML = pictogramHTML;
+        document.getElementById('pictogram-display-tf2').innerHTML = pictogramHTML; // Salin ke halaman belakang
+
+        statementEl.textContent = tfData.statement;
+        feedbackEl.textContent = '';
+        container.innerHTML = `
+            <button class="tf-btn true-btn">Benar</button>
+            <button class="tf-btn false-btn">Salah</button>
+        `;
+
+        container.querySelector('.true-btn').onclick = () => handleTfAnswer(true, feedbackEl, container);
+        container.querySelector('.false-btn').onclick = () => handleTfAnswer(false, feedbackEl, container);
+    }
+
+    function handleTfAnswer(userAnswer, feedbackEl, btnContainer) {
+        Array.from(btnContainer.children).forEach(btn => btn.disabled = true);
+        if (userAnswer === tfData.answer) {
+            feedbackEl.textContent = "Tepat sekali!";
+            feedbackEl.style.color = "#48bb78";
+        } else {
+            feedbackEl.textContent = "Kurang tepat, coba hitung lagi!";
+            feedbackEl.style.color = "#f56565";
+        }
+    }
+    
+    // --- GAME 4: KUIS LANJUTAN ---
+    let quiz2Active = false;
+    function triggerSecondQuiz() {
+        if(quiz2Active) return;
+        quiz2Active = true;
+        
+        const container = document.getElementById('quiz-container-2');
+        const feedbackEl = document.getElementById('game-feedback-quiz2');
+        const correctAnswer = "17";
+        const options = ["15", "17", "16"];
+        
+        container.innerHTML = '';
+        feedbackEl.textContent = '';
+        
+        options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.textContent = opt;
+            btn.classList.add('quiz-option');
+            btn.onclick = () => {
+                Array.from(container.children).forEach(b => {
+                    b.disabled = true;
+                    if(b.textContent === correctAnswer) b.classList.add('correct');
+                });
+                if(opt === correctAnswer){
+                    btn.classList.add('correct');
+                    feedbackEl.textContent = 'Benar! Kamu teliti sekali!';
+                    feedbackEl.style.color = '#48bb78';
+                } else {
+                    btn.classList.add('incorrect');
+                    feedbackEl.textContent = 'Jawaban yang benar adalah 17.';
+                    feedbackEl.style.color = '#f56565';
+                }
+            };
+            container.appendChild(btn);
+        });
+    }
+
+    // --- LOGIKA HALAMAN REFLEKSI ---
+    const emojiButtons = document.querySelectorAll('.emoji-btn');
+    const reflectionFeedback = document.getElementById('reflection-feedback');
+    emojiButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const feedbackText = button.dataset.feedback;
+            reflectionFeedback.textContent = feedbackText;
+        });
+    });
+
+    // --- LOGIKA FITUR GEMINI ---
+    const storyBtn = document.getElementById('generate-story-btn');
+    const storyContainer = document.getElementById('story-container');
+    const qaModalOverlay = document.getElementById('qa-modal-overlay');
+    const qaModalTitle = document.getElementById('qa-modal-title');
+    const qaModalCloseBtn = document.getElementById('qa-modal-close');
+    const qaSubmitBtn = document.getElementById('qa-submit-btn');
+    const qaInput = document.getElementById('qa-input');
+    const qaAnswerEl = document.getElementById('qa-answer');
+    const qaBtns = document.querySelectorAll('.qa-btn');
+
+    async function callGemini(prompt) {
+        const apiKey = ""; // Dibiarkan kosong, akan diisi oleh environment
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+        
+        let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+        const payload = { contents: chatHistory };
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+            const result = await response.json();
+            
+            if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                return result.candidates[0].content.parts[0].text;
+            } else {
+                console.error("Struktur respons API tidak valid:", result);
+                return "Maaf, terjadi kesalahan saat mencoba mendapatkan jawaban.";
+            }
+        } catch (error) {
+            console.error("Error calling Gemini API:", error);
+            return "Maaf, ada masalah koneksi. Coba lagi nanti ya.";
+        }
+    }
+
+    storyBtn.addEventListener('click', async () => {
+        storyContainer.classList.remove('hidden');
+        storyContainer.innerHTML = '<div class="loading-spinner"></div>';
+        
+        const prompt = `Buatkan sebuah cerita petualangan pendek untuk anak-anak (sekitar 100-150 kata) tentang data dan piktogram. Misalnya, tentang angka-angka yang ingin menampilkan hobi mereka menggunakan piktogram. Ceritanya harus positif, imajinatif, dan menggunakan bahasa yang mudah dimengerti.`;
+        
+        const storyText = await callGemini(prompt);
+        storyContainer.innerHTML = storyText.replace(/\n/g, '<br>');
+    });
+
+    let currentTopic = '';
+    qaBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const pageContent = e.target.closest('.page-content');
+            currentTopic = pageContent.querySelector('h2').dataset.topicName;
+            qaModalTitle.textContent = `Tanya tentang ${currentTopic}`;
+            qaAnswerEl.innerHTML = '';
+            qaInput.value = '';
+            qaModalOverlay.classList.remove('hidden');
+        });
+    });
+
+    qaModalCloseBtn.addEventListener('click', () => qaModalOverlay.classList.add('hidden'));
+    qaModalOverlay.addEventListener('click', (e) => {
+        if (e.target === qaModalOverlay) qaModalOverlay.classList.add('hidden');
+    });
+
+    qaSubmitBtn.addEventListener('click', async () => {
+        const question = qaInput.value;
+        if (!question.trim()) {
+            qaAnswerEl.textContent = 'Tolong ketik pertanyaanmu dulu ya.';
+            return;
+        }
+
+        qaAnswerEl.innerHTML = '<div class="loading-spinner"></div>';
+        const prompt = `Sebagai seorang guru yang menjelaskan kepada anak SD, jawab pertanyaan ini tentang ${currentTopic} dengan cara yang sederhana, menyenangkan, dan mudah dimengerti (maksimal 3-4 kalimat): "${question}"`;
+        
+        const answerText = await callGemini(prompt);
+        qaAnswerEl.innerHTML = answerText.replace(/\n/g, '<br>');
+    });
+
+</script>
+
+</body>
+</html>

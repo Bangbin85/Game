@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biotik & Abiotik</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(to right top, #6DD5FA, #FF758C);
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -ms-touch-action: none;
+            touch-action: none;
+        }
+        body.modal-open { overflow: hidden; }
+
+        h1, h2 {
+            font-family: 'Fredoka One', cursive;
+            color: #0056b3;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h5 {
+            font-family: 'Fredoka One', cursive;
+            color: #0056b3;
+            text-shadow: 5px 5px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Halaman Depan (Home Section) */
+        #home-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 40px);
+        }
+        #home-section .welcome-title {
+            font-size: 4.5em;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        #home-section .welcome-subtitle {
+            font-size: 1.2em;
+            color: #555;
+            margin-top: 0;
+            margin-bottom: 50px;
+        }
+
+        /* --- Tata Letak Tombol Baru --- */
+        .home-buttons-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            width: 100%;
+        }
+        .top-buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        /* --- Efek Tombol 3D Baru --- */
+        .home-btn {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 700;
+            border-radius: 12px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            text-shadow: 0px 1px 2px rgba(0,0,0,0.3);
+        }
+        .home-btn:active {
+            transform: translateY(4px); /* Efek ditekan */
+        }
+
+        #btn-mulai { 
+            background-color: #2ecc71; /* Hijau */
+            box-shadow: 0 6px 0 #27ae60; /* Bayangan lebih gelap */
+            font-size: 1.5em;
+            padding: 20px 45px;
+			border-radius: 40px;
+        }
+        #btn-mulai:active { box-shadow: 0 2px 0 #27ae60; }
+
+        #btn-petunjuk {
+            background-color: #3498db; /* Biru */
+            box-shadow: 0 6px 0 #2980b9; 
+        }
+        #btn-petunjuk:active { box-shadow: 0 2px 0 #2980b9; }
+
+        #btn-tujuan {
+            background-color: #f1c40f; /* Kuning */
+            box-shadow: 0 6px 0 #f39c12; 
+        }
+        #btn-tujuan:active { box-shadow: 0 2px 0 #f39c12; }
+
+        #btn-profil {
+            background-color: #e74c3c; /* Merah */
+            box-shadow: 0 6px 0 #c0392b; 
+        }
+        #btn-profil:active { box-shadow: 0 2px 0 #c0392b; }
+
+        #btn-homeBangbin {
+            background-color: #f1c40f; /* Kuning */
+            box-shadow: 0 6px 0 #f39c12; 
+        }
+        #btn-homeBangbin:active { box-shadow: 0 2px 0 #f39c12; }
+
+        /* Modal Styling */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); display: none;
+            justify-content: center; align-items: center; z-index: 2000;
+            padding: 20px; box-sizing: border-box;
+        }
+        .modal-content {
+            background-color: white; padding: 30px; border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3); max-width: 600px;
+            width: 100%; text-align: left; position: relative; overflow: hidden;
+        }
+        .modal-content h2 {
+            margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px;
+        }
+        .modal-content ul { padding-left: 20px; }
+        .close-modal {
+            padding: 10px 25px; border: none; border-radius: 5px; background-color: #dc3545;
+            color: white; cursor: pointer; font-size: 1em; margin-top: 20px;
+            float: right; position: relative; z-index: 3;
+        }
+        .blue-modal {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+        }
+
+        /* --- Style BARU untuk Efek Profil --- */
+        .profile-pic-container {
+            perspective: 2000px;
+            border-radius: 50%;
+            width: 100px;
+            height: 200px;
+            flex-shrink: 0;
+            margin-right: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .profile-pic-container img {
+            transition: transform 0.1s ease-out;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .social-icons .fab {
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+        .social-icons .fab:hover {
+            color: #F1C40F;
+            animation: icon-wobble 0.6s ease-in-out;
+        }
+        @keyframes icon-wobble {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-15deg) scale(1.1); }
+            50% { transform: rotate(10deg) scale(1.1); }
+            75% { transform: rotate(-5deg) scale(1.1); }
+            100% { transform: rotate(0deg) scale(1); }
+        }
+        .modal-bg-image-profile {
+            position: absolute;
+            right: -20px;
+            top: -20px;
+            height: 120%;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 1;
+            object-fit: cover;
+            width: auto;
+        }
+        .modal-main-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            color: white;
+        }
+        .modal-main-content h2, .modal-main-content p {
+            color: white; /* Pastikan teks di dalam modal profil berwarna putih */
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5); /* Tambah shadow agar mudah dibaca */
+        }
+
+
+        /* Sisa CSS Game (Tidak berubah) */
+        .game-container { max-width: 900px; margin: auto; background-color: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        #level1 { margin-bottom: 40px; }
+        .drag-area { display: flex; justify-content: space-around; align-items: flex-start; flex-wrap: wrap; gap: 20px; margin-top: 20px; }
+        #items-container { padding: 15px; background-color: #e9ecef; border-radius: 10px; min-height: 150px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .drop-box { width: 45%; min-height: 200px; padding: 15px; border: 3px dashed #ccc; border-radius: 10px; transition: background-color 0.3s, border-color 0.3s; }
+        .drop-box h3 { margin-top: 0; }
+        .drop-box.hover { background-color: #e0f7fa; border-color: #007bff; }
+        .draggable-item { width: 80px; height: 80px; cursor: grab; transition: transform 0.2s; touch-action: none; }
+        .dragging { opacity: 0.6; transform: scale(1.1); z-index: 1000; position: absolute; transition: none; }
+        #word-search-container { position: relative; display: flex; justify-content: center; align-items: flex-start; gap: 30px; margin-top: 20px; flex-wrap: wrap; }
+        #word-search-grid { display: grid; gap: 2px; background-color: #ccc; border: 3px solid #007bff; padding: 2px; }
+        .grid-cell { width: 35px; height: 35px; background-color: #fff; display: flex; justify-content: center; align-items: center; font-size: 1.2em; font-weight: bold; cursor: pointer; transition: background-color 0.3s; }
+        .grid-cell.selected { background-color: #ffc107; }
+        .grid-cell.found { background-color: #28a745; color: white; }
+        .grid-cell.hint { background-color: #17a2b8; color: white; }
+        #grid-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255, 255, 255, 0.8); display: none; justify-content: center; align-items: center; font-size: 2em; color: #dc3545; font-weight: bold; text-align: center; }
+        #word-list ul { list-style: none; padding: 0; margin: 0; text-align: left; }
+        #word-list li { font-size: 1.2em; margin-bottom: 10px; transition: color 0.3s; }
+        #word-list li.found { text-decoration: line-through; color: #999; }
+        .timer-container { font-size: 1.5em; font-weight: bold; color: #dc3545; margin: 15px 0; }
+        .feedback { margin-top: 20px; font-size: 1.2em; font-weight: bold; min-height: 30px; }
+        #feedback-level1 { color: #28a745; }
+        #feedback-level2 { color: #007bff; }
+        .control-buttons { margin-top: 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .btn { padding: 12px 25px; font-size: 1.1em; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s, opacity 0.3s; }
+        .btn:disabled { background-color: #cccccc; color: #666666; cursor: not-allowed; opacity: 0.7; }
+        #next-level-btn { display: none; background-color: #28a745; }
+        #next-level-btn:hover:not(:disabled) { background-color: #218838; }
+        #restart-btn { display: none; background-color: #007bff; }
+        #restart-btn:hover:not(:disabled) { background-color: #0069d9; }
+        #show-answer-btn { display: none; background-color: #ffc107; color: #333; }
+        #show-answer-btn:hover:not(:disabled) { background-color: #e0a800; }
+    </style>
+</head>
+<body>
+
+    <section id="home-section">
+        <h5 class="welcome-title">SELAMAT DATANG</h5>
+        <p class="welcome-subtitle">Di Game Edukasi Komponen Biotik & Abiotik</p>
+        
+        <div class="home-buttons-wrapper">
+            <div class="top-buttons-container">
+                <button id="btn-petunjuk" class="home-btn"><i class="fas fa-question-circle"></i> Petunjuk</button>
+                <button id="btn-tujuan" class="home-btn"><i class="fas fa-bullseye"></i> Tujuan</button>
+                <button id="btn-profil" class="home-btn"><i class="fas fa-user"></i> Profil</button>
+				<a href="https://sites.google.com/view/bangbinedu/home" target="_blank"><button id="btn-homeBangbin" class="home-btn" ><i style="color: red; text-decoration: none;"><i class="fa fa-home"></i></button></a>
+            </div>
+            <button id="btn-mulai" class="home-btn">Go <i class="fas fa-play"></i></button>
+        </div>
+    </section>
+
+    <section id="game-section" style="display: none;">
+        <div class="game-container">
+            <div id="level1">
+                <h2>Level 1: Kelompokkan Komponen!</h2>
+                <p>Seret dan lepas gambar ke dalam kotak yang benar dalam 45 detik!</p>
+                <div id="timer-container-level1" class="timer-container"> Sisa Waktu: <span id="timer-level1">45</span> detik</div>
+                <div id="items-container"><img id="item1" class="draggable-item" data-type="biotik" src="https://cdn-icons-png.flaticon.com/512/489/489969.png" alt="Pohon" title="Pohon"><img id="item2" class="draggable-item" data-type="biotik" src="https://cdn-icons-png.flaticon.com/512/877/877270.png" alt="Ikan" title="Ikan"><img id="item3" class="draggable-item" data-type="biotik" src="https://cdn-icons-png.flaticon.com/512/12541/12541324.png" alt="Burung" title="Burung"><img id="item4" class="draggable-item" data-type="biotik" src="https://cdn-icons-png.flaticon.com/512/2926/2926754.png" alt="Bunga" title="Bunga"><img id="item5" class="draggable-item" data-type="biotik" src="https://cdn-icons-png.flaticon.com/512/1864/1864469.png" alt="Gajah" title="Gajah"><img id="item6" class="draggable-item" data-type="biotik" src="https://cdn-icons-png.flaticon.com/512/12541/12541334.png" alt="Singa" title="Singa"><img id="item7" class="draggable-item" data-type="abiotik" src="https://cdn-icons-png.flaticon.com/128/831/831682.png" alt="Matahari" title="Matahari"><img id="item8" class="draggable-item" data-type="abiotik" src="https://cdn-icons-png.flaticon.com/512/3105/3105807.png" alt="Air" title="Air"><img id="item9" class="draggable-item" data-type="abiotik" src="https://cdn-icons-png.flaticon.com/512/932/932620.png" alt="Batu" title="Batu"><img id="item10" class="draggable-item" data-type="abiotik" src="https://cdn-icons-png.flaticon.com/512/9073/9073903.png" alt="Awan" title="Awan"></div>
+                <div class="drag-area">
+                    <div id="biotik-box" class="drop-box" data-type="biotik"><h3>🌿 Biotik (Makhluk Hidup)</h3></div>
+                    <div id="abiotik-box" class="drop-box" data-type="abiotik"><h3>💧 Abiotik (Benda Mati)</h3></div>
+                </div>
+                <div id="feedback-level1" class="feedback"></div>
+                <button id="next-level-btn" class="btn">Lanjut ke Level 2 →</button>
+            </div>
+            <div id="level2" style="display:none;">
+                <h2>Level 2: Cari Kata Tersembunyi</h2>
+                <p>Temukan semua kata dalam 40 detik! Kata bisa horizontal atau vertikal.</p>
+                <div id="timer-container-level2" class="timer-container"> Sisa Waktu: <span id="timer-level2">40</span> detik</div>
+                <div id="word-search-container">
+                    <div id="grid-overlay">Waktu Habis!</div><div id="word-search-grid"></div>
+                    <div id="word-list"><h3>Kata untuk dicari:</h3><ul></ul></div>
+                </div>
+                <div id="feedback-level2" class="feedback"></div>
+                <div class="control-buttons">
+                    <button id="show-answer-btn" class="btn">Tampilkan Kunci Jawaban</button>
+                    <button id="restart-btn" class="btn">Main Lagi</button>
+					<button id="home-btn-ingame" class="btn" style="display: none;"><i class="fas fa-home"></i> Home</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="petunjukModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Petunjuk Permainan</h2>
+            <h4>Level 1: Kelompokkan Komponen</h4>
+            <ul><li>Seret (drag) setiap gambar dari kotak atas.</li><li>Lepaskan (drop) gambar tersebut ke dalam kotak "Biotik" atau "Abiotik" yang sesuai.</li><li>Selesaikan sebelum waktu habis!</li></ul>
+            <h4>Level 2: Cari Kata</h4>
+            <ul><li>Temukan kata-kata yang tertera di daftar pada kotak teka-teki.</li><li>Klik dan seret pada huruf untuk membentuk kata. Kata hanya ada dalam arah mendatar atau menurun.</li><li>Temukan semua kata sebelum waktu habis!</li></ul>
+            <button class="close-modal">Tutup</button>
+        </div>
+    </div>
+    <div id="tujuanModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Tujuan Pembelajaran</h2>
+            <p>Melalui permainan ini, siswa diharapkan mampu untuk:</p>
+            <ul><li>Membedakan antara komponen biotik (makhluk hidup) dan abiotik (benda mati) dalam suatu ekosistem.</li><li>Mengidentifikasi contoh-contoh komponen biotik seperti tumbuhan dan hewan.</li><li>Mengidentifikasi contoh-contoh komponen abiotik seperti air, batu, dan cahaya matahari.</li><li>Meningkatkan ketelitian dan kecepatan dalam mengambil keputusan.</li></ul>
+            <button class="close-modal">Tutup</button>
+        </div>
+    </div>
+    
+    <div id="profilModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-main-content">
+                <div class="profile-pic-container">
+                    <img src="https://lh3.googleusercontent.com/d/1tFGMHXxFlkz5Ij0nHbxddt4aF-MfnTio" alt="Foto Profil">
+                </div>
+                <div class="profile-text" style="text-align: left; flex-grow: 1;">
+                    <h2 style="margin: 0; font-size: 1.5em; border:none; padding:0; text-shadow: none;">BINTANG ADHI PERMANA</h2>
+                    <p style="margin: 5px 0; font-size: 0.9em;">SDN Lubang Buaya 01, Jakarta Timur</p>
+                    <p style="margin: 10px 0 5px 0; font-weight: bold; font-size: 0.9em;">Kontak:</p>
+                    <div class="social-icons" style="font-size: 1.8em; display: flex; gap: 15px;">
+                        <a href="https://www.facebook.com/bintang.a.permana.1/" target="_blank" style="color: white; text-decoration: none;"><i class="fab fa-facebook"></i></a>
+                        <a href="https://www.youtube.com/@Bangbin_1" target="_blank" style="color: white; text-decoration: none;"><i class="fab fa-youtube"></i></a>
+                        <a href="https://wa.me/6281310051985" target="_blank" style="color: white; text-decoration: none;"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <img src="https://lh3.googleusercontent.com/d/1ivUN8B8xdd4R8Kef_-wEqNx56_eeUv4w" alt="Background" class="modal-bg-image-profile">
+            <button class="close-modal">Tutup</button>
+        </div>
+    </div>
+
+
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- HOME & MODAL LOGIC ---
+    const homeSection = document.getElementById('home-section');
+    const gameSection = document.getElementById('game-section');
+    const btnMulai = document.getElementById('btn-mulai');
+    const modalButtons = { 'btn-petunjuk': 'petunjukModal', 'btn-tujuan': 'tujuanModal', 'btn-profil': 'profilModal' };
+
+    btnMulai.addEventListener('click', () => {
+        homeSection.style.display = 'none';
+        gameSection.style.display = 'block';
+        startTimerLvl1();
+    });
+
+    Object.keys(modalButtons).forEach(btnId => {
+        document.getElementById(btnId).addEventListener('click', () => {
+            const modalId = modalButtons[btnId];
+            document.getElementById(modalId).style.display = 'flex';
+            document.body.classList.add('modal-open');
+        });
+    });
+
+    document.querySelectorAll('.modal-overlay').forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+                document.body.classList.remove('modal-open');
+            }
+        });
+    });
+
+    document.querySelectorAll('.close-modal').forEach(button => {
+        button.addEventListener('click', function() {
+            this.closest('.modal-overlay').style.display = 'none';
+            document.body.classList.remove('modal-open');
+        });
+    });
+
+    // --- 3D Profile Picture Logic ---
+    const profilModal = document.getElementById('profilModal');
+    const profilePicContainer = profilModal.querySelector('.profile-pic-container');
+    if (profilePicContainer) {
+        const profilePic = profilePicContainer.querySelector('img');
+        const maxRotate = 30;
+
+        profilePicContainer.addEventListener('mousemove', (e) => {
+            const rect = profilePicContainer.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            const rotateY = ((mouseX / rect.width) - 1) * 2 * maxRotate;
+            const rotateX = (((mouseY / rect.height) - 1) * 2 * maxRotate) * -1;
+            profilePic.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(2.1)`;
+        });
+
+        profilePicContainer.addEventListener('mouseleave', () => {
+            profilePic.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+        });
+    }
+
+    // --- Sisa Game Logic (Tidak Berubah) ---
+    function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[array[i], array[j]] = [array[j], array[i]]; } }
+    const itemsContainer = document.getElementById('items-container');
+    const feedbackLevel1 = document.getElementById('feedback-level1');
+    const nextLevelBtn = document.getElementById('next-level-btn');
+    const dropBoxes = document.querySelectorAll('.drop-box');
+    const timerDisplayLvl1 = document.getElementById('timer-level1');
+    let timerIntervalLvl1 = null; let timeLeftLvl1 = 45; let isTimeUpLvl1 = false;
+    const draggableItemsArray = Array.from(itemsContainer.querySelectorAll('.draggable-item'));
+    shuffleArray(draggableItemsArray);
+    itemsContainer.innerHTML = '';
+    draggableItemsArray.forEach(item => itemsContainer.appendChild(item));
+    const draggables = document.querySelectorAll('.draggable-item');
+    const totalItems = draggables.length; let correctlyPlaced = 0; let draggedItem = null; let offsetX, offsetY;
+    function startTimerLvl1() { isTimeUpLvl1 = false; timeLeftLvl1 = 45; timerDisplayLvl1.textContent = timeLeftLvl1; timerIntervalLvl1 = setInterval(() => { timeLeftLvl1--; timerDisplayLvl1.textContent = timeLeftLvl1; if (timeLeftLvl1 <= 0) { handleTimeUpLvl1(); } }, 1000); }
+    function handleTimeUpLvl1() { clearInterval(timerIntervalLvl1); isTimeUpLvl1 = true; showFeedback('Waktu Habis! Silakan lanjut ke level berikutnya.', 'error'); nextLevelBtn.style.display = 'inline-block'; }
+    draggables.forEach(item => { item.addEventListener('dragstart', (e) => { if(isTimeUpLvl1) return e.preventDefault(); draggedItem = item; setTimeout(() => item.classList.add('dragging'), 0); e.dataTransfer.setData('text/plain', item.id); }); item.addEventListener('dragend', () => { if (draggedItem) draggedItem.classList.remove('dragging'); draggedItem = null; }); item.addEventListener('touchstart', (e) => { if(isTimeUpLvl1) return; e.preventDefault(); draggedItem = item; draggedItem.classList.add('dragging'); const touch = e.touches[0]; const rect = draggedItem.getBoundingClientRect(); offsetX = touch.clientX - rect.left; offsetY = touch.clientY - rect.top; draggedItem.style.left = `${touch.clientX - offsetX}px`; draggedItem.style.top = `${touch.clientY - offsetY}px`; document.addEventListener('touchmove', touchMoveHandler, { passive: false }); document.addEventListener('touchend', touchEndHandler); }); });
+    dropBoxes.forEach(box => { box.addEventListener('dragover', e => { e.preventDefault(); if(!isTimeUpLvl1) box.classList.add('hover'); }); box.addEventListener('dragleave', () => box.classList.remove('hover')); box.addEventListener('drop', e => { e.preventDefault(); box.classList.remove('hover'); if(isTimeUpLvl1) return; const droppedItem = document.getElementById(e.dataTransfer.getData('text')); handleDrop(droppedItem, box); }); });
+    function touchMoveHandler(e) { if (!draggedItem) return; e.preventDefault(); const touch = e.touches[0]; draggedItem.style.left = `${touch.clientX - offsetX}px`; draggedItem.style.top = `${touch.clientY - offsetY}px`; let overElement = document.elementFromPoint(touch.clientX, touch.clientY); let dropTarget = overElement ? overElement.closest('.drop-box') : null; dropBoxes.forEach(box => box.classList.toggle('hover', box === dropTarget)); }
+    function touchEndHandler(e) { if (!draggedItem) return; const touch = e.changedTouches[0]; let dropTarget = document.elementFromPoint(touch.clientX, touch.clientY); dropTarget = dropTarget ? dropTarget.closest('.drop-box') : null; handleDrop(draggedItem, dropTarget); draggedItem.classList.remove('dragging'); draggedItem.style.position = ''; draggedItem.style.left = ''; draggedItem.style.top = ''; dropBoxes.forEach(box => box.classList.remove('hover')); draggedItem = null; document.removeEventListener('touchmove', touchMoveHandler); document.removeEventListener('touchend', touchEndHandler); }
+    function handleDrop(item, targetBox) { if (!item || isTimeUpLvl1) return; const isCorrectDrop = targetBox && targetBox.dataset.type === item.dataset.type; if (isCorrectDrop) { targetBox.appendChild(item); item.setAttribute('draggable', 'false'); correctlyPlaced++; showFeedback('Benar! ✔️', 'success'); } else { itemsContainer.appendChild(item); showFeedback('Salah tempat! Coba lagi. ❌', 'error'); } if (correctlyPlaced === totalItems) { clearInterval(timerIntervalLvl1); showFeedback('Selamat! Level 1 Selesai! 🎉', 'success'); nextLevelBtn.style.display = 'inline-block'; } }
+    function showFeedback(message, type) { feedbackLevel1.textContent = message; feedbackLevel1.style.color = type === 'success' ? '#28a745' : '#dc3545'; if (type === 'success') setTimeout(() => feedbackLevel1.textContent = '', 2000); }
+    const gridContainer = document.getElementById('word-search-grid'); const wordListContainer = document.querySelector('#word-list ul'); const feedbackLevel2 = document.getElementById('feedback-level2'); const restartBtn = document.getElementById('restart-btn'); const showAnswerBtn = document.getElementById('show-answer-btn'); const timerDisplayLvl2 = document.getElementById('timer-level2'); const gridOverlay = document.getElementById('grid-overlay');
+    let wordsForLevel2 = []; let isSelecting = false; let selectedCells = []; let timerIntervalLvl2 = null; let timeLeftLvl2 = 40;
+    function generateWordSearch(wordsArray, gridSize) { let grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(null)); let placedWords = []; const orientations = ['horizontal', 'vertical']; wordsArray.sort((a, b) => b.length - a.length); for (const word of wordsArray) { let placed = false; for (let i = 0; i < 100; i++) { const orientation = orientations[Math.floor(Math.random() * orientations.length)]; let r = Math.floor(Math.random() * gridSize); let c = Math.floor(Math.random() * gridSize); let dr = (orientation === 'vertical') ? 1 : 0; let dc = (orientation === 'horizontal') ? 1 : 0; if (c + word.length * dc >= gridSize || r + word.length * dr >= gridSize) continue; let canPlace = true; let cells = []; for (let j = 0; j < word.length; j++) { const charInGrid = grid[r + j * dr][c + j * dc]; if (charInGrid && charInGrid !== word[j]) { canPlace = false; break; } cells.push([r + j * dr, c + j * dc]); } if (canPlace) { for (let j = 0; j < word.length; j++) { grid[r + j * dr][c + j * dc] = word[j]; } placedWords.push({ word: word, found: false, cells: cells }); placed = true; break; } } } for (let r = 0; r < gridSize; r++) { for (let c = 0; c < gridSize; c++) { if (grid[r][c] === null) { grid[r][c] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[Math.floor(Math.random() * 26)]; } } } return { grid, placedWords }; }
+    function setupLevel2() { const initialWords = ['AIR', 'TANAH', 'IKAN', 'POHON', 'CAHAYA', 'UDARA', 'BATU', 'GAJAH']; const gridSize = 12; const generated = generateWordSearch(initialWords, gridSize); wordsForLevel2 = generated.placedWords; const grid = generated.grid; gridContainer.innerHTML = ''; gridContainer.style.gridTemplateColumns = `repeat(${gridSize}, 35px)`; gridContainer.style.gridTemplateRows = `repeat(${gridSize}, 35px)`; grid.forEach((row, r) => { row.forEach((char, c) => { const cell = document.createElement('div'); cell.classList.add('grid-cell'); cell.textContent = char; cell.dataset.row = r; cell.dataset.col = c; gridContainer.appendChild(cell); }); }); wordListContainer.innerHTML = ''; shuffleArray(wordsForLevel2); wordsForLevel2.forEach(w => { const li = document.createElement('li'); li.textContent = w.word; li.id = `word-${w.word}`; wordListContainer.appendChild(li); }); addCellListeners(); startTimerLvl2(); showAnswerBtn.style.display = 'inline-block'; showAnswerBtn.disabled = true; restartBtn.style.display = 'inline-block'; gridOverlay.style.display = 'none'; }
+    function addCellListeners() { const cells = document.querySelectorAll('.grid-cell'); cells.forEach(cell => { cell.addEventListener('mousedown', startSelection); cell.addEventListener('mouseover', continueSelection); cell.addEventListener('touchstart', startSelection, { passive: false }); cell.addEventListener('touchmove', handleTouchMove, { passive: false }); }); document.addEventListener('mouseup', endSelection); document.addEventListener('touchend', endSelection); }
+    function startSelection(e) { if(timeLeftLvl2 <= 0 || wordsForLevel2.every(w=>w.found)) return; e.preventDefault(); isSelecting = true; const target = e.type.includes('touch') ? document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY) : e.target; if (!target || !target.classList.contains('grid-cell')) return; selectedCells = [target]; target.classList.add('selected'); }
+    function continueSelection(e) { if (!isSelecting) return; const target = e.target; if (target && target.classList.contains('grid-cell') && !selectedCells.includes(target)) { selectedCells.push(target); target.classList.add('selected'); } }
+    function handleTouchMove(e) { if (!isSelecting) return; e.preventDefault(); const touch = e.touches[0]; const element = document.elementFromPoint(touch.clientX, touch.clientY); if (element && element.classList.contains('grid-cell') && !selectedCells.includes(element)) { selectedCells.push(element); element.classList.add('selected'); } }
+    function endSelection() { if (!isSelecting) return; isSelecting = false; const selectedWord = selectedCells.map(cell => cell.textContent).join(''); checkWord(selectedWord); }
+    function checkWord(word) { let foundWordObj = wordsForLevel2.find(w => w.word === word && !w.found); if (foundWordObj) { foundWordObj.found = true; document.getElementById(`word-${foundWordObj.word}`).classList.add('found'); selectedCells.forEach(cell => { cell.classList.remove('selected'); cell.classList.add('found'); }); feedbackLevel2.textContent = `Kamu menemukan kata: ${foundWordObj.word}! 👍`; } else { selectedCells.forEach(cell => cell.classList.remove('selected')); } selectedCells = []; checkLevel2Completion(); }
+    function checkLevel2Completion() { const allFound = wordsForLevel2.every(w => w.found); if (allFound) { clearInterval(timerIntervalLvl2); feedbackLevel2.textContent = 'Hebat! Kamu menemukan semua kata! 🏆'; showAnswerBtn.style.display = 'none'; } }
+    function startTimerLvl2() { timeLeftLvl2 = 20; timerDisplayLvl2.textContent = timeLeftLvl2; timerIntervalLvl2 = setInterval(() => { timeLeftLvl2--; timerDisplayLvl2.textContent = timeLeftLvl2; if (timeLeftLvl2 <= 0) { handleTimeUpLvl2(); } }, 1000); }
+    function handleTimeUpLvl2() { clearInterval(timerIntervalLvl2); gridOverlay.style.display = 'flex'; feedbackLevel2.textContent = "Waktu habis! Klik tombol untuk melihat jawaban."; showAnswerBtn.disabled = false; }
+    function showAnswerKey() { wordsForLevel2.forEach(wordObj => { if (!wordObj.found) { wordObj.cells.forEach(pos => { const cell = document.querySelector(`.grid-cell[data-row='${pos[0]}'][data-col='${pos[1]}']`); if(cell) cell.classList.add('hint'); }); } }); showAnswerBtn.disabled = true; }
+    nextLevelBtn.addEventListener('click', () => { clearInterval(timerIntervalLvl1); document.getElementById('level1').style.display = 'none'; document.getElementById('level2').style.display = 'block'; setupLevel2(); });
+    restartBtn.addEventListener('click', () => location.reload());
+    showAnswerBtn.addEventListener('click', showAnswerKey);
+});
+</script>
+
+</body>
+</html>
