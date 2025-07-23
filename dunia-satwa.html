@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Dunia Satwa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Mochiy+Pop+One&display=swap" rel="stylesheet">
+	<link rel="icon" type="image/x-icon" href="https://lh3.googleusercontent.com/d/1_4llqCMNoBDmwDHsI7RYsCM6rSK5wEjw">
+    <style>
+        :root {
+            --container-bg: #ffffff;
+            --card-bg: #FFFFE0; /* Light Yellow */
+            --card-border: #F0E68C; /* Khaki */
+            --text-color: #4A4A4A;
+            --title-color: #D2691E; /* Chocolate */
+            --btn-bg: #20B2AA; /* Light Sea Green */
+            --btn-shadow: #008080; /* Teal */
+            --font-title: 'Lilita One', cursive;
+            --font-body: 'Mochiy Pop One', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: linear-gradient(135deg, #90EE90, #FFDAB9); /* LightGreen to PeachPuff */
+            color: var(--text-color);
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 15px;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        #main-container {
+            max-width: 900px;
+            width: 100%;
+            background: var(--container-bg);
+            padding: 20px 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            border: 5px solid white;
+        }
+
+        h1 {
+            font-family: var(--font-title);
+            color: var(--title-color);
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            text-shadow: 2px 2px 0px white, 4px 4px 0px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            font-family: var(--font-title);
+            color: #5D9CEC;
+        }
+
+        #game-info {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 20px;
+            font-family: var(--font-title);
+            font-size: 1.5rem;
+        }
+
+        #score-container { color: #2E8B57; } /* SeaGreen */
+        #timer-container { color: #f44336; }
+        
+        #timer-container.warning {
+            color: #d32f2f;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        #game-area {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #statements-container {
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px dashed #ccc;
+            width: 100%;
+        }
+        
+        #cards-pool {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px; /* Sedikit lebih besar untuk jarak antar gambar */
+            justify-content: center;
+            align-items: center;
+            min-height: 100px;
+        }
+
+        /* Menghapus .statement-card dan menggantinya dengan .animal-card untuk <img> */
+        .animal-card {
+            background-color: var(--card-bg);
+            padding: 8px;
+            border-radius: 15px;
+            border: 3px solid var(--card-border);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: grab;
+            transition: transform 0.2s, box-shadow 0.2s;
+            touch-action: none;
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
+        
+        /* Style untuk fallback jika gambar gagal dimuat */
+        .animal-card-fallback {
+            background-color: var(--card-bg);
+            padding: 8px;
+            border-radius: 15px;
+            border: 3px solid var(--card-border);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: grab;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .dragging {
+            opacity: 0.7;
+            cursor: grabbing;
+            transform: scale(1.1);
+            position: fixed !important;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        #categories-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .category-box {
+            width: 200px;
+            min-height: 180px;
+            padding: 15px;
+            border-radius: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* Style untuk kartu yang sudah masuk ke dalam kotak */
+        .category-box .animal-card {
+            width: 50px;
+            height: 50px;
+            margin: 4px;
+            cursor: default;
+        }
+
+        .category-box.drag-over {
+            transform: scale(1.08) translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.2);
+        }
+        
+        .category-box h2 {
+            font-family: var(--font-title);
+            margin-top: 0;
+            color: white;
+            text-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+            pointer-events: none;
+        }
+
+        #box-herbivora { background: #6B8E23; } /* Olive Drab */
+        #box-karnivora { background: #B22222; } /* Firebrick */
+        #box-omnivora { background: #8B4513; } /* Saddle Brown */
+
+        #feedback {
+            font-size: 1.8rem;
+            font-weight: bold;
+            height: 40px;
+            font-family: var(--font-title);
+        }
+        
+        .btn-3d {
+            background-color: var(--btn-bg);
+            color: white;
+            font-family: var(--font-title);
+            font-size: 1.8rem;
+            border: none;
+            border-radius: 15px;
+            padding: 15px 35px;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+            box-shadow: 0 6px 0 var(--btn-shadow);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            margin-top: 20px;
+        }
+        .btn-3d:hover { transform: translateY(-2px); box-shadow: 0 8px 0 var(--btn-shadow); }
+        .btn-3d:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--btn-shadow); }
+        
+        .home-icon {
+            width: 30px; /* Ukuran ikon diperkecil agar pas di tombol */
+            height: 30px;
+            vertical-align: middle;
+        }
+
+        #end-animation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 9999;
+        }
+
+        .leaf {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,0 C20,20 20,80 50,100 C80,80 80,20 50,0 Z" fill="%232E8B57"/></svg>');
+            background-size: contain;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="end-animation-container"></div>
+    <div id="main-container">
+
+        <div id="start-screen">
+            <h1>Dunia Satwa</h1>
+            <p style="font-size: 1.2rem;">Seret setiap hewan ke kelompok yang benar: <b>Herbivora, Karnivora,</b> atau <b>Omnivora</b>. Waktumu 30 detik!</p>
+            <button id="start-btn" class="btn-3d">Mulai!</button>
+        </div>
+
+        <div id="game-area">
+            <div id="game-info">
+                <div id="score-container">Skor: <span id="score">0</span></div>
+                <div id="timer-container">Waktu: <span id="time">30</span></div>
+            </div>
+            <div id="statements-container">
+                <h3>👇 Seret hewan dari sini 👇</h3>
+                <div id="cards-pool"></div>
+            </div>
+            <div id="categories-container"></div>
+            <div id="feedback"></div>
+        </div>
+
+        <div id="end-screen" style="display: none;">
+            <h1>Permainan Selesai!</h1>
+            <h2 id="final-title">Skor Akhir Kamu:</h2>
+            <h2 id="final-score" style="color: #007bff; font-size: 4rem;">0</h2>
+            <p id="final-message" style="font-size: 1.2rem;"></p>
+            <button id="restart-btn" class="btn-3d">Main Lagi</button>
+            <a href="index.html">
+                <button class="btn-3d" style="padding: 10px 12px;">
+                    HOME
+                </button>
+            </a>
+        </div>
+
+    </div>
+
+    <script>
+        const GAME_DURATION = 30;
+
+        // --- DATA MATERI DIUBAH: Struktur data lebih sederhana ---
+        const statements = [
+            { id: 1, src: "https://lh3.googleusercontent.com/d/1x4QOoTpd7WBbg-e3aC9qcm3-RTxxlN1W", alt: "Panda", category: "herbivora" },
+            { id: 2, src: "https://lh3.googleusercontent.com/d/1s_pkFVT_3yX3si9z2mVaPnm-sotqT4PD", alt: "Singa", category: "karnivora" },
+            { id: 3, src: "https://lh3.googleusercontent.com/d/1cd_zOopQVDxZarGriBHy0DF00ZVtV_9f", alt: "Ayam", category: "omnivora" },
+            { id: 4, src: "https://lh3.googleusercontent.com/d/1smnqc4Q2pgb2NRJcTVnbqhy0p51jKmOQ", alt: "Kelinci", category: "herbivora" },
+            { id: 5, src: "https://lh3.googleusercontent.com/d/12cWaIVPjsar-3_P-RPH4ExNimpu1nD8i", alt: "Komodo", category: "karnivora" },
+            { id: 6, src: "https://lh3.googleusercontent.com/d/1FSxcwrLaalig5V7uL4JDYssryHpn1deQ", alt: "Beruang", category: "omnivora" },
+            { id: 7, src: "https://lh3.googleusercontent.com/d/1MpuRCTXvooV5pXyQ1vS4lhIfbGU9Xw28", alt: "Gajah", category: "herbivora" },
+            { id: 8, src: "https://lh3.googleusercontent.com/d/12diZb_YA_Beg5w5ax_bLvv601U9zXuS1", alt: "Elang", category: "karnivora" },
+            { id: 9, src: "https://lh3.googleusercontent.com/d/1cx03tLD2p9Gpu6SE6i7emQcisDfs6QxZ", alt: "Monyet", category: "omnivora" },
+            { id: 10, src: "https://lh3.googleusercontent.com/d/1NlC_bw0-llLqbBr5o9QPXPH-O1Kc0yGJ", alt: "Hiu", category: "karnivora" }
+        ];
+
+        const categories = {
+            herbivora: { title: "Herbivora", elementId: "box-herbivora" },
+            karnivora: { title: "Karnivora", elementId: "box-karnivora" },
+            omnivora: { title: "Omnivora", elementId: "box-omnivora" },
+        };
+        // ---------------------------------------------
+
+        const startScreen = document.getElementById('start-screen');
+        const gameArea = document.getElementById('game-area');
+        const endScreen = document.getElementById('end-screen');
+        const startBtn = document.getElementById('start-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const cardsPool = document.getElementById('cards-pool');
+        const categoriesContainer = document.getElementById('categories-container');
+        const scoreEl = document.getElementById('score');
+        const timeEl = document.getElementById('time');
+        const timerContainer = document.getElementById('timer-container');
+        const feedbackEl = document.getElementById('feedback');
+        const finalTitleEl = document.getElementById('final-title');
+        const finalScoreEl = document.getElementById('final-score');
+        const finalMessageEl = document.getElementById('final-message');
+        const animationContainer = document.getElementById('end-animation-container');
+
+        let score, matchedCards, activeCard, offsetX, offsetY, timer, timeLeft;
+        let audioCtx;
+
+        // Fungsi Suara (tidak berubah)
+        function playSound(type) {
+            if (!audioCtx) return;
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+
+            switch (type) {
+                case 'correct': oscillator.frequency.setValueAtTime(440, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3); break;
+                case 'wrong': oscillator.type = 'square'; oscillator.frequency.setValueAtTime(150, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.2); break;
+                case 'click': oscillator.frequency.setValueAtTime(600, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.1); break;
+                case 'tick': oscillator.type = 'square'; oscillator.frequency.setValueAtTime(800, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.05); break;
+                case 'win': const now = audioCtx.currentTime; oscillator.frequency.setValueAtTime(523.25, now); oscillator.frequency.linearRampToValueAtTime(659.25, now + 0.1); oscillator.frequency.linearRampToValueAtTime(783.99, now + 0.2); gainNode.gain.exponentialRampToValueAtTime(0.00001, now + 0.5); break;
+            }
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.5);
+        }
+
+        function initAudio() {
+             if (!audioCtx) {
+                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+             }
+        }
+        
+        startBtn.addEventListener('click', () => { initAudio(); playSound('click'); startGame(); });
+        restartBtn.addEventListener('click', () => { playSound('click'); startGame(); });
+        
+        function startGame() {
+            score = 0;
+            matchedCards = 0;
+            scoreEl.innerText = score;
+            feedbackEl.innerText = "";
+            animationContainer.innerHTML = '';
+            
+            startScreen.style.display = 'none';
+            endScreen.style.display = 'none';
+            gameArea.style.display = 'flex';
+
+            setupGame();
+            startTimer();
+        }
+
+        function startTimer() {
+            timeLeft = GAME_DURATION;
+            timeEl.innerText = timeLeft;
+            timerContainer.classList.remove('warning');
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--;
+                timeEl.innerText = timeLeft;
+                if (timeLeft <= 5 && timeLeft > 0) {
+                    timerContainer.classList.add('warning');
+                    playSound('tick');
+                }
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    endGame('timeup');
+                }
+            }, 1000);
+        }
+
+        function setupGame() {
+            cardsPool.innerHTML = '';
+            categoriesContainer.innerHTML = '';
+
+            for (const key in categories) {
+                const category = categories[key];
+                const box = document.createElement('div');
+                box.id = category.elementId;
+                box.className = 'category-box';
+                box.dataset.category = key;
+                box.innerHTML = `<h2>${category.title}</h2>`;
+                categoriesContainer.appendChild(box);
+                
+                box.addEventListener('dragover', e => { e.preventDefault(); box.classList.add('drag-over'); });
+                box.addEventListener('dragleave', () => box.classList.remove('drag-over'));
+                box.addEventListener('drop', onDrop);
+            }
+
+            const shuffledStatements = statements.sort(() => Math.random() - 0.5);
+            shuffledStatements.forEach(statement => {
+                // DIUBAH: Membuat elemen <img> secara langsung
+                const card = document.createElement('img');
+                card.id = `card-${statement.id}`;
+                card.className = 'animal-card';
+                card.draggable = true;
+                card.src = statement.src;
+                card.alt = statement.alt;
+                card.dataset.category = statement.category;
+                
+                // Fallback jika gambar gagal dimuat
+                card.onerror = function() {
+                    const fallback = document.createElement('div');
+                    fallback.id = this.id;
+                    fallback.className = 'animal-card-fallback';
+                    fallback.textContent = this.alt;
+                    fallback.draggable = true;
+                    fallback.dataset.category = this.dataset.category;
+                    
+                    fallback.addEventListener('dragstart', onDragStartMouse);
+                    fallback.addEventListener('touchstart', onTouchStart, { passive: false });
+                    this.parentNode.replaceChild(fallback, this);
+                };
+                
+                cardsPool.appendChild(card);
+                
+                card.addEventListener('dragstart', onDragStartMouse);
+                card.addEventListener('touchstart', onTouchStart, { passive: false });
+            });
+
+            document.addEventListener('touchmove', onTouchMove, { passive: false });
+            document.addEventListener('touchend', onTouchEnd);
+        }
+        
+        function handleMatch(card, dropZone) {
+            const cardCategory = card.dataset.category;
+            const zoneCategory = dropZone.dataset.category;
+
+            if (cardCategory === zoneCategory) {
+                playSound('correct');
+                feedbackEl.innerText = "Benar!";
+                feedbackEl.style.color = '#28a745';
+                score += 10;
+                scoreEl.innerText = score;
+                card.draggable = false;
+                card.style.cursor = 'default';
+                card.removeEventListener('dragstart', onDragStartMouse);
+                card.removeEventListener('touchstart', onTouchStart);
+                
+                dropZone.appendChild(card);
+                
+                matchedCards++;
+                if (matchedCards === statements.length) {
+                    clearInterval(timer);
+                    setTimeout(() => endGame('win'), 500);
+                }
+            } else {
+                playSound('wrong');
+                feedbackEl.innerText = "Kurang Tepat!";
+                feedbackEl.style.color = '#dc3545';
+                cardsPool.appendChild(card);
+            }
+            
+            // Mengatur ulang style kartu jika salah (tidak perlu karena style diatur oleh class)
+            card.style.position = 'static';
+            card.style.transform = 'none';
+
+            setTimeout(() => { feedbackEl.innerText = "" }, 1500);
+        }
+
+        function onDragStartMouse(e) { e.dataTransfer.setData('text/plain', e.target.id); }
+        
+        function onDrop(e) {
+            e.preventDefault();
+            const dropZone = e.currentTarget;
+            dropZone.classList.remove('drag-over');
+            const cardId = e.dataTransfer.getData('text/plain');
+            const card = document.getElementById(cardId);
+            if(card) {
+                handleMatch(card, dropZone);
+            }
+        }
+
+        function onTouchStart(e) {
+            if (e.currentTarget.draggable === false) return;
+            e.preventDefault();
+            initAudio();
+            activeCard = e.currentTarget;
+            
+            const clone = activeCard.cloneNode(true);
+            clone.id = 'dragging-clone';
+            clone.classList.add('dragging');
+            document.body.appendChild(clone);
+            activeCard.style.opacity = '0.5';
+
+            const rect = clone.getBoundingClientRect();
+            clone.style.left = `${e.touches[0].clientX - (rect.width / 2)}px`;
+            clone.style.top = `${e.touches[0].clientY - (rect.height / 2)}px`;
+        }
+
+        function onTouchMove(e) {
+            const clone = document.getElementById('dragging-clone');
+            if (!clone) return;
+            e.preventDefault();
+            const x = e.touches[0].clientX, y = e.touches[0].clientY;
+            
+            const rect = clone.getBoundingClientRect();
+            clone.style.left = `${x - (rect.width / 2)}px`;
+            clone.style.top = `${y - (rect.height / 2)}px`;
+
+            document.querySelectorAll('.category-box').forEach(box => {
+                const rect = box.getBoundingClientRect();
+                box.classList.toggle('drag-over', x > rect.left && x < rect.right && y > rect.top && y < rect.bottom);
+            });
+        }
+
+        function onTouchEnd(e) {
+            const clone = document.getElementById('dragging-clone');
+            if (!activeCard || !clone) return;
+
+            activeCard.style.opacity = '1';
+            const x = e.changedTouches[0].clientX, y = e.changedTouches[0].clientY;
+            
+            clone.style.display = 'none';
+            const elementBelow = document.elementFromPoint(x, y);
+            
+            let dropZone = elementBelow ? elementBelow.closest('.category-box') : null;
+            
+            document.querySelectorAll('.category-box').forEach(box => box.classList.remove('drag-over'));
+            
+            if (dropZone) {
+                handleMatch(activeCard, dropZone);
+            }
+            
+            document.body.removeChild(clone);
+            activeCard = null;
+        }
+        
+        function createFallingLeaves() {
+            for (let i = 0; i < 30; i++) {
+                const leaf = document.createElement('div');
+                leaf.className = 'leaf';
+                leaf.style.left = `${Math.random() * 100}vw`;
+                leaf.style.animationDuration = `${Math.random() * 3 + 4}s`;
+                leaf.style.animationDelay = `${Math.random() * 3}s`;
+                leaf.style.transform = `scale(${Math.random() * 0.5 + 0.8})`;
+                animationContainer.appendChild(leaf);
+            }
+        }
+        
+        function endGame(reason) {
+            gameArea.style.display = 'none';
+            endScreen.style.display = 'block';
+            finalScoreEl.innerText = score;
+            
+            if (reason === 'timeup') {
+                playSound('wrong');
+                finalTitleEl.innerText = "Waktu Habis!";
+                finalMessageEl.innerText = "Jangan menyerah, coba lagi ya!";
+            } else if (reason === 'win') {
+                playSound('win');
+                finalTitleEl.innerText = "Pawang Satwa Hebat!";
+                finalMessageEl.innerText = "Kamu berhasil mengelompokkan semua hewan!";
+                createFallingLeaves();
+            }
+        }
+    </script>
+</body>
+</html>
