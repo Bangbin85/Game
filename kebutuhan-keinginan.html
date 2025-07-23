@@ -1,0 +1,2109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kebutuhan vs Keinginan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        /* Mendefinisikan variabel CSS */
+        :root {
+            --white: #FFFFFF;
+        }
+
+        /* CSS umum untuk body dan canvas permainan */
+        body {
+            font-family: 'Inter', sans-serif; /* Menggunakan Inter sebagai font utama */
+            background: linear-gradient(to right, #6a11cb 0%, #2575fc 100%); /* Gradient background default */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Penting untuk mencegah scroll */
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* Gaya khusus untuk canvas latar belakang angka */
+        canvas#numberCanvas {
+            position: fixed; /* Penting agar canvas menutupi seluruh viewport */
+            top: 0;
+            left: 0;
+            width: 100vw;    /* Memastikan lebar 100% viewport */
+            height: 100vh;   /* Memastikan tinggi 100% viewport */
+            z-index: -1;     /* Menempatkan canvas di belakang semua konten lain */
+            display: block;  /* Pastikan tampil sebagai blok */
+            background-color: #f0f0f0; /* Warna fallback untuk canvas latar belakang */
+        }
+
+        /* Gaya untuk container utama game */
+        .game-container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 2.5rem; /* Increased padding */
+            max-width: 90%;
+            width: 800px; /* Max width for desktop */
+            text-align: center;
+            position: relative;
+            overflow: hidden; /* Ensure content stays within bounds */
+            z-index: 10; /* Pastikan game container di atas background canvas */
+        }
+
+        /* 3D Button Effect */
+        .btn-3d {
+            position: relative;
+            display: inline-block;
+            padding: 0.8rem 2rem; /* Adjusted padding */
+            border-radius: 12px; /* More rounded corners */
+            font-weight: 600;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            border: none;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.15s ease;
+            box-shadow: 0 6px #6b46c1, 0 10px 10px rgba(0,0,0,0.2); /* Deeper shadow */
+            background: linear-gradient(145deg, #7b58c4, #5f3e9c); /* Subtle gradient */
+            user-select: none; /* Prevent text selection on touch */
+        }
+
+        .btn-3d:active {
+            box-shadow: 0 2px #6b46c1, 0 5px 5px rgba(0,0,0,0.2); /* Smaller shadow on press */
+            transform: translateY(4px); /* Push down effect */
+        }
+
+        /* Specific button colors for variety */
+        .btn-green {
+            box-shadow: 0 6px #28a745, 0 10px 10px rgba(0,0,0,0.2);
+            background: linear-gradient(145deg, #38c172, #218838);
+        }
+        .btn-green:active {
+            box-shadow: 0 2px #28a745, 0 5px 5px rgba(0,0,0,0.2);
+        }
+
+        .btn-blue {
+            box-shadow: 0 6px #007bff, 0 10px 10px rgba(0,0,0,0.2);
+            background: linear-gradient(145deg, #008cff, #0069d9);
+        }
+        .btn-blue:active {
+            box-shadow: 0 2px #007bff, 0 5px 5px rgba(0,0,0,0.2);
+        }
+
+        .btn-red {
+            box-shadow: 0 6px #dc3545, 0 10px 10px rgba(0,0,0,0.2);
+            background: linear-gradient(145deg, #e44d5d, #bd2130);
+        }
+        .btn-red:active {
+            box-shadow: 0 2px #dc3545, 0 5px 5px rgba(0,0,0,0.2);
+        }
+
+        /* Question and feedback styles */
+        .question-box {
+            background-color: #f7fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+            min-height: 120px; /* Ensure consistent height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        .feedback {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-top: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .feedback.show {
+            opacity: 1;
+        }
+        .feedback.correct {
+            color: #28a745;
+        }
+        .feedback.incorrect {
+            color: #dc3545;
+        }
+
+        /* Drag and Drop styles (Level 2) */
+        .drop-zone {
+            border: 3px dashed #cbd5e0;
+            background-color: #edf2f7;
+            border-radius: 12px;
+            padding: 1rem;
+            min-height: 200px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            align-content: flex-start;
+            transition: all 0.2s ease;
+        }
+        .drop-zone.drag-over {
+            border-color: #4299e1;
+            background-color: #ebf8ff;
+        }
+        .draggable-item { /* For Level 2 items */
+            width: 80px; /* Fixed size for drag items */
+            height: 80px;
+            background-color: #a78bfa; /* Purple for items */
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column; /* Stack text and image */
+            justify-content: center;
+            align-items: center;
+            font-size: 0.75rem; /* Smaller font for item text */
+            color: white;
+            cursor: grab;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.1s ease-out;
+            user-select: none;
+            touch-action: none; /* Prevent browser default touch actions */
+        }
+        .draggable-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-bottom: 4px;
+        }
+        .draggable-item:active {
+            cursor: grabbing;
+            transform: scale(1.05); /* Slight lift on grab */
+        }
+        .draggable-item.dragging-absolute { /* For active touch/mouse drag state */
+            position: fixed; /* Make it float above others during drag */
+            z-index: 1000; /* Ensure it's on top of everything */
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3); /* More pronounced shadow when dragging */
+            transform: scale(1.1); /* Slightly larger when dragging */
+            will-change: transform, left, top; /* Optimize animations */
+        }
+        .draggable-item.dropped-correct {
+            background-color: #48bb78; /* Green for correct drop */
+        }
+        .draggable-item.dropped-incorrect {
+            background-color: #ef4444; /* Red for incorrect drop */
+        }
+        /* Initial container for draggable items (Level 2) */
+        .drag-items-container {
+            min-height: 100px; /* Ensure space for initial items */
+        }
+
+
+        /* Level 3: Matching - Items to be matched */
+        #matching-items-pool {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px; /* Increased gap for better spacing */
+            justify-content: center;
+            margin-bottom: 2rem;
+            min-height: 120px; /* Ensure enough space for items */
+            position: relative; /* For absolutely positioned matched items */
+        }
+        .matching-item-card {
+            width: 100px; /* Slightly larger for better tap target */
+            height: 100px;
+            background-color: #8b5cf6; /* Purple item */
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .matching-item-card img {
+            width: 60px; /* Larger icon */
+            height: 60px;
+            object-fit: contain;
+            margin-bottom: 4px;
+        }
+        .matching-item-card.selected {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 4px #4299e1, 0 8px 15px rgba(0,0,0,0.25); /* Blue glow when selected */
+            background-color: #6d28d9; /* Darker purple when selected */
+        }
+        .matching-item-card.matched-correct {
+            background-color: #48bb78; /* Green when correct */
+            pointer-events: none; /* Disable after correct match */
+            opacity: 0.7; /* Dim slightly */
+            transition: opacity 0.5s ease-out;
+        }
+        .matching-item-card.matched-incorrect {
+            background-color: #ef4444; /* Red when incorrect */
+        }
+
+        /* Level 3: Category Targets */
+        .category-target-zone {
+            border: 3px solid #cbd5e0;
+            background-color: #edf2f7;
+            border-radius: 12px;
+            padding: 1rem;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px; /* Gap between header and matched items */
+            transition: all 0.2s ease;
+            position: relative; /* For canvas line calculation */
+        }
+        .category-target-zone.active { /* For hover/touch active feedback */
+            border-color: #4299e1;
+            box-shadow: 0 0 0 4px rgba(66, 153, 225, 0.5);
+        }
+        .category-target-zone h3 {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            font-size: 1.75rem; /* Larger heading */
+        }
+        .category-target-zone .matched-item-display {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px; /* Gap for small matched items */
+        }
+        .category-target-zone .matched-item-display .matching-item-card {
+            width: 60px; /* Smaller size when matched and moved to target */
+            height: 60px;
+            font-size: 0.6rem;
+            opacity: 1; /* Ensure not dimmed further */
+            box-shadow: none; /* Remove shadow */
+            margin: 0; /* Remove extra margin */
+        }
+        .category-target-zone .matched-item-display .matching-item-card img {
+            width: 40px;
+            height: 40px;
+        }
+
+        /* Canvas for matching lines (Level 3) */
+        #matching-lines-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Do not block clicks */
+            z-index: 10; /* Ensure lines are below dragged items but above background */
+        }
+
+        /* Puzzle styles (Level 4) */
+        .puzzle-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: #edf2f7;
+            padding: 1rem;
+            border-radius: 12px;
+            min-height: 250px; /* Ensure enough space */
+            justify-content: center;
+            align-items: center;
+        }
+        .puzzle-item {
+            background-color: #f7fafc;
+            border: 2px solid #cbd5e0;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            cursor: grab;
+            user-select: none;
+            transition: all 0.2s ease;
+            width: 90%; /* Responsive width */
+            max-width: 400px;
+            font-weight: 500;
+            touch-action: none; /* Prevent browser default touch actions */
+        }
+        .puzzle-item.dragging { /* For mouse drag */
+            opacity: 0.6;
+            transform: scale(1.02);
+            border-color: #4299e1;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .puzzle-item.dragging-absolute { /* For touch drag */
+            position: fixed; /* For floating during touch drag */
+            z-index: 1000;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            transform: scale(1.1);
+            will-change: transform, left, top;
+        }
+
+        /* General utility classes */
+        .hidden {
+            display: none !important;
+        }
+        .flex-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 1.5rem;
+            }
+            .question-box {
+                font-size: 1.2rem;
+                min-height: 100px;
+            }
+            .btn-3d {
+                padding: 0.7rem 1.5rem;
+                font-size: 0.9rem;
+            }
+            .drop-zone {
+                min-height: 150px;
+                margin-bottom: 1rem;
+            }
+            .draggable-item {
+                width: 70px;
+                height: 70px;
+                font-size: 0.75rem;
+            }
+            .level-2-grid, .level-3-grid {
+                flex-direction: column;
+            }
+            .matching-item-card {
+                width: 80px;
+                height: 80px;
+                font-size: 0.7rem;
+            }
+            .matching-item-card img {
+                width: 50px;
+                height: 50px;
+            }
+            .category-target-zone h3 {
+                font-size: 1.5rem;
+            }
+            .category-target-zone .matched-item-display .matching-item-card {
+                width: 50px; /* Smaller in mobile category zone */
+                height: 50px;
+            }
+            .category-target-zone .matched-item-display .matching-item-card img {
+                width: 30px;
+                height: 30px;
+            }
+
+            /* Responsif untuk halaman awal */
+            .welcome-title-group {
+                flex-direction: column; /* Tumpuk gambar dan teks di layar kecil */
+                gap: 10px;
+                padding-left: 0;
+            }
+            .welcome-image {
+                position: static; /* Kembali ke posisi normal */
+                transform: none;
+                max-width: 150px; /* Perkecil gambar untuk layar kecil */
+            }
+            .welcome-title-group h1 {
+                font-size: clamp(2rem, 8vw, 3rem); /* Sesuaikan ukuran font */
+            }
+            #welcome-screen p {
+                font-size: 1rem;
+                margin-top: 0;
+            }
+            .welcome-buttons {
+                flex-direction: column; /* Tumpuk tombol di layar kecil */
+                gap: 10px;
+            }
+            .welcome-btn, #startButton {
+                width: 80%; /* Lebar tombol menyesuaikan */
+                margin: 0 auto;
+            }
+
+            /* Modal Pengembang */
+            #pengembangModal .modal-content {
+                flex-direction: column;
+                padding: 20px;
+            }
+            .profile-pic-container {
+                margin-right: 0;
+                margin-bottom: 15px; /* Jarak antara foto dan teks di tumpukan */
+            }
+            .modal-bg-image {
+                right: 0;
+                height: 50%; /* Kurangi ukuran background image */
+                top: auto;
+                bottom: 0;
+                width: 100%;
+                object-fit: cover;
+            }
+            #pengembangModal .modal-content > div { /* Konten utama di modal pengembang */
+                flex-direction: column;
+            }
+            #pengembangModal .modal-content .profile-pic-container {
+                order: -1; /* Pindahkan foto ke atas */
+            }
+            #pengembangModal .modal-content div:last-child { /* Text content */
+                text-align: center;
+            }
+        }
+
+        /* --- Gaya Halaman Awal dari referensi Anda --- */
+        #start-screen { /* Mengganti #welcome-screen dengan #start-screen */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            position: absolute; /* Penting agar bisa di-hide/show */
+            top: 0;
+            left: 0;
+            z-index: 20; /* Pastikan di atas game-container saat aktif */
+            background-color: transparent; /* Biarkan background canvas terlihat */
+        }
+        .welcome-title-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            padding-left: 20px;
+            padding-right: 10px;
+            box-sizing: border-box;
+            position: relative; /* Penting untuk posisi absolut welcome-image */
+        }
+
+        .welcome-image {
+            position: absolute;
+            z-index: -1;
+            left: -400px; /* Sesuaikan posisi agar tidak menutupi teks */
+            top: 50%;
+            transform: translateY(-30%) scaleX(-1); /* Membalik gambar secara horizontal */
+            max-width: 600px;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(3px 3px 2px rgba(0,0,0,0.3));
+        }
+
+        #start-screen .welcome-title-group h2 { /* Target h2 di dalam welcome-title-group */
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(3rem, 5vw, 4rem);
+            color: #d9534f;
+            text-shadow:
+                -4px -4px 0 var(--white),
+                4px -4px 0 var(--white),
+                -4px 4px 0 var(--white),
+                4px 4px 0 var(--white),
+                0 -4px 0 var(--white),
+                0 4px 0 var(--white),
+                -4px 0 0 var(--white),
+                4px 0 0 var(--white),
+                6px 6px 0 #000000;
+            margin-bottom: 0;
+            margin-left: 10px; /* Memberikan sedikit jarak dari gambar */
+        }
+
+        #start-screen p {
+            font-size: 1.2rem;
+            color: #34495e;
+            margin-top: -10px;
+            margin-bottom: 40px;
+        }
+        .welcome-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .welcome-btn, #start-game-btn { /* Menggunakan ID start-game-btn yang sudah ada */
+            padding: 12px 25px;
+            font-size: 1rem;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.2s ease-out;
+            font-weight: bold;
+        }
+        #start-game-btn { /* Menggunakan ID start-game-btn yang sudah ada */
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+        }
+        .welcome-btn {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+        }
+        #start-game-btn:hover, .welcome-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        }
+        
+        /* Latar Belakang Gelembung */
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            animation: bubble-float 15s infinite ease-in-out;
+            opacity: 0;
+            z-index: 0; /* Pastikan di bawah game-container tapi di atas numberCanvas */
+        }
+        .bubble:nth-child(1) { width: 60px; height: 60px; left: 10%; animation-duration: 12s; animation-delay: 0s; }
+        .bubble:nth-child(2) { width: 80px; height: 80px; left: 30%; animation-duration: 15s; animation-delay: 2s; }
+        .bubble:nth-child(3) { width: 280px; height: 280px; left: 50%; animation-duration: 10s; animation-delay: 1s; }
+        .bubble:nth-child(4) { width: 70px; height: 70px; left: 70%; animation-duration: 13s; animation-delay: 3s; }
+        .bubble:nth-child(5) { width: 300px; height: 300px; left: 90%; animation-duration: 16s; animation-delay: 4s; }
+        .bubble:nth-child(6) { width: 65px; height: 65px; left: 20%; animation-duration: 11s; animation-delay: 0.5s; }
+        .bubble:nth-child(7) { width: 75px; height: 75px; left: 45%; animation-duration: 14s; animation-delay: 2.5s; }
+
+        @keyframes bubble-float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
+        /* --- MODAL --- */
+        .modal {
+            display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px); animation: fadeIn 0.3s ease;
+            align-items: center; justify-content: center;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal-content {
+            margin: 5% auto; padding: 30px; border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3); width: 90%; max-width: 600px;
+            position: relative;
+        }
+        .info-modal .modal-content {
+            background: linear-gradient(to bottom, #ffffff, #eef2f3); color: #333; text-align: left;
+        }
+        .info-modal h2 { text-align: center; color: #2c3e50; margin-top: 0; }
+        .info-modal ul { padding-left: 20px; }
+        .info-modal li { margin-bottom: 10px; }
+        .close {
+            color: #aaa; font-size: 32px; font-weight: bold; cursor: pointer; transition: all 0.2s ease;
+            position: absolute; top: 10px; right: 20px; z-index: 20;
+        }
+        .close:hover, .close:focus { color: #e74c3c; transform: rotate(90deg) scale(1.2); }
+
+        /* --- NEW: Style untuk Efek 3D Profile (Modal Pengembang) --- */
+        .profile-pic-container {
+            perspective: 1000px; /* Penting untuk menciptakan ruang 3D */
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-right: 20px;
+            overflow: hidden;
+            width: 150px; /* Tetapkan lebar dan tinggi untuk lingkaran sempurna */
+            height: 250px;
+            display: flex; /* Untuk memusatkan gambar di dalamnya */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .profile-pic-container img {
+            transition: transform 0.2s ease-out; /* Animasi halus saat mouse bergerak */
+            width: 100%; /* Isi container */
+            height: 100%; /* Isi container */
+            object-fit: cover; /* Menjaga aspek rasio gambar asli */
+            display: block;
+        }
+
+        /* --- NEW: Efek Hover untuk Ikon Media Sosial (Modal Pengembang) --- */
+        #pengembangModal .fab {
+            transition: transform 0.3s ease, color 0.3s ease; /* Transisi halus */
+        }
+
+        #pengembangModal .fab:hover {
+            color: #F1C40F; /* Warna berubah menjadi kuning saat disentuh mouse */
+            animation: icon-wobble 0.6s ease-in-out; /* Menerapkan animasi bergoyang */
+        }
+
+        /* Animasi untuk efek bergoyang */
+        @keyframes icon-wobble {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-15deg) scale(1.1); }
+            50% { transform: rotate(10deg) scale(1.1); }
+            75% { transform: rotate(-5deg) scale(1.1); }
+            100% { transform: rotate(0deg) scale(1); }
+        }
+        /* Style untuk gambar baru di sebelah kanan */
+        .modal-bg-image {
+            position: absolute;
+            right: 10px; /* Sedikit digeser ke kanan agar lebih fokus ke bagian wajah */
+            top: 0;
+            height: 100%;
+            opacity: 0.15; /* Membuat gambar sangat transparan */
+            pointer-events: none; /* Penting! Agar gambar tidak bisa di-klik dan tidak menghalangi konten di depannya */
+            z-index: 1; /* Posisikan di belakang konten utama */
+        }
+
+        /* Konten utama (teks & foto kiri) diposisikan di atas gambar latar */
+        .modal-main-content {
+            position: relative;
+            z-index: 2; /* Pastikan konten ini ada di lapisan atas */
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="numberCanvas"></canvas>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+
+    <div id="start-screen" class="game-level">
+        <div class="welcome-title-group">
+            <img src="https://lh3.googleusercontent.com/d/1ika4en9PFUa6aRIXKDbvQzil6bxIO5E9" alt="Anak Laki-laki" class="welcome-image">
+            <h2>KEBUTUHAN VS KEINGINAN</h2>
+        </div>
+        <p class="text-xl text-gray-600 mb-8">Mari belajar membedakan apa yang kita butuhkan dan apa yang kita inginkan!</p>
+        <button id="start-game-btn" class="btn-3d btn-purple text-xl px-8 py-3">Mulai Game</button>
+        <div class="welcome-buttons">
+            <button id="petunjukBtn" class="welcome-btn">Petunjuk</button>
+            <button id="tujuanBtn" class="welcome-btn">Tujuan Pembelajaran</button>
+            <button id="pengembangBtn" class="welcome-btn">Pengembang</button>
+        </div>
+    </div>
+
+    <div id="game-container" class="game-container hidden">
+        <div class="flex justify-between items-center mb-6">
+            <div id="score-display" class="text-xl font-bold text-gray-700">Skor: 0</div>
+            <div id="level-display" class="text-xl font-bold text-gray-700">Level 1</div>
+            <div id="timer-display" class="text-xl font-bold text-red-600">Waktu: 30</div>
+        </div>
+
+        <div id="level-1" class="game-level hidden">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Level 1: Pilihan Ganda</h2>
+            <div id="question-box" class="question-box"></div>
+            <div id="choices-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+            </div>
+            <p id="feedback-l1" class="feedback"></p>
+        </div>
+
+        <div id="level-2" class="game-level hidden">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Level 2: Drag and Drop</h2>
+            <p class="text-lg text-gray-600 mb-4">Seret item ke kotak 'Kebutuhan' atau 'Keinginan'.</p>
+            <div class="flex flex-col md:flex-row gap-4 mb-6 level-2-grid">
+                <div id="needs-zone" class="drop-zone flex-1 p-4 rounded-xl shadow-inner border-blue-400 border-dashed transition-all duration-200">
+                    <h3 class="text-2xl font-semibold text-blue-700 mb-4 w-full">Kebutuhan</h3>
+                    </div>
+                <div id="wants-zone" class="drop-zone flex-1 p-4 rounded-xl shadow-inner border-pink-400 border-dashed transition-all duration-200">
+                    <h3 class="text-2xl font-semibold text-pink-700 mb-4 w-full">Keinginan</h3>
+                    </div>
+            </div>
+            <div id="drag-items-container" class="flex flex-wrap gap-3 justify-center drag-items-container">
+                </div>
+            <button id="check-drag-drop" class="btn-3d btn-green mt-8">Periksa Jawaban</button>
+            <p id="feedback-l2" class="feedback"></p>
+        </div>
+
+        <div id="level-3" class="game-level hidden">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Level 3: Menjodohkan Kategori</h2>
+            <p class="text-lg text-gray-600 mb-4">Ketuk item, lalu ketuk kategori yang tepat (Kebutuhan/Keinginan) di bawah.</p>
+            <div id="matching-elements-container" class="relative w-full h-auto min-h-[300px] mb-8">
+                    <div id="matching-items-pool" class="flex flex-wrap gap-3 justify-center w-full">
+                    </div>
+                <canvas id="matching-lines-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></canvas>
+            </div>
+            
+            <div class="flex flex-col md:flex-row gap-4 level-3-grid">
+                <div id="category-needs-target" class="category-target-zone flex-1 p-4 rounded-xl shadow-inner bg-blue-100 border-blue-400 transition-all duration-200">
+                    <h3 class="text-blue-700">Kebutuhan</h3>
+                    <div class="matched-item-display"></div>
+                </div>
+                <div id="category-wants-target" class="category-target-zone flex-1 p-4 rounded-xl shadow-inner bg-pink-100 border-pink-400 transition-all duration-200">
+                    <h3 class="text-pink-700">Keinginan</h3>
+                    <div class="matched-item-display"></div>
+                </div>
+            </div>
+            <button id="check-matching-category" class="btn-3d btn-green mt-8">Periksa Semua Kategori</button>
+            <p id="feedback-l3" class="feedback"></p>
+        </div>
+
+        <div id="level-4" class="game-level hidden">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Level 4: Puzzle Prioritas</h2>
+            <p class="text-lg text-gray-600 mb-4">Susun prioritas dari yang paling dibutuhkan hingga paling diinginkan.</p>
+            <div id="puzzle-sortable-area" class="puzzle-container mb-6">
+                </div>
+            <div id="puzzle-items-shelf" class="flex flex-wrap justify-center gap-3 mb-6">
+                </div>
+            <button id="check-puzzle" class="btn-3d btn-green mt-8">Periksa Urutan</button>
+            <p id="feedback-l4" class="feedback"></p>
+        </div>
+
+        <div id="game-over" class="game-level hidden">
+            <h2 class="text-4xl font-bold text-blue-700 mb-8">Selamat! Kamu Telah Menyelesaikan Game!</h2>
+            <p class="text-2xl text-gray-700 mb-6">Skor Akhir: <span id="final-score" class="font-extrabold text-purple-600">0</span></p>
+            <p class="text-lg text-gray-600 mb-8">Terima kasih telah bermain dan belajar tentang kebutuhan vs. keinginan!</p>
+            <button id="restart-game" class="btn-3d btn-blue text-xl px-8 py-3">Main Lagi</button>
+			<a href="index.html"><button class="btn-3d btn-blue text-xl px-8 py-3" ><i style="color: white; text-decoration: none;"><i class="fa fa-home"></i></button></a>
+        </div>
+    </div>
+
+    <div id="petunjukModal" class="modal info-modal">
+        <div class="modal-content">
+            <span class="close petunjuk-close">&times;</span>
+            <h2>Petunjuk Permainan</h2>
+            <ul>
+                <li>Klik tombol "Mulai Bermain" untuk masuk ke permainan.</li>
+                <li>Pada Level 1 (Pilihan Ganda), pilih jawaban yang benar.</li>
+                <li>Pada Level 2 (Drag and Drop), seret item ke kotak 'Kebutuhan' atau 'Keinginan' yang sesuai.</li>
+                <li>Pada Level 3 (Menjodohkan Kategori), ketuk item, lalu ketuk kategori yang tepat (Kebutuhan/Keinginan).</li>
+                <li>Pada Level 4 (Puzzle Prioritas), susun prioritas dari yang paling dibutuhkan hingga paling diinginkan.</li>
+                <li>Selesaikan semua level untuk menamatkan permainan. Selamat bermain!</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="tujuanModal" class="modal info-modal">
+        <div class="modal-content">
+            <span class="close tujuan-close">&times;</span>
+            <h2>Tujuan Pembelajaran</h2>
+            <p>Permainan ini dirancang untuk membantu pemain, khususnya anak-anak, dalam mencapai tujuan berikut:</p>
+            <ul>
+                <li>Meningkatkan kemampuan membedakan antara kebutuhan dan keinginan.</li>
+                <li>Melatih pengambilan keputusan dalam menentukan prioritas.</li>
+                <li>Mengembangkan pemikiran kritis terkait konsumsi.</li>
+                <li>Menjadikan proses belajar tentang manajemen sumber daya lebih menyenangkan dan interaktif.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="pengembangModal" class="modal">
+        <div class="modal-content" style="background: linear-gradient(135deg, #4e54c8, #8f94fb); max-width: 700px; padding: 25px;">
+            <span class="close pengembang-close">&times;</span>
+            <img src="https://lh3.googleusercontent.com/d/1ivUN8B8xdd4R8Kef_-wEqNx56_eeUv4w" alt="Background" class="modal-bg-image">
+            <div class="modal-main-content">
+                <div class="profile-pic-container">
+                    <img src="https://lh3.googleusercontent.com/d/1tFGMHXxFlkz5Ij0nHbxddt4aF-MfnTio" alt="Foto Profil">
+                </div>
+
+                <div style="color: white; text-align: left; flex-grow: 1;">
+                    <h2 style="margin: 0; font-size: 1.5em; color: white; text-shadow: none;">BINTANG ADHI PERMANA</h2>
+                    <p style="margin: 5px 0; font-size: 0.9em;">SDN Lubang Buaya 01, Jakarta Timur</p>
+                    <p style="margin: 10px 0 5px 0; font-weight: bold; font-size: 0.9em;">Kontak:</p>
+                    <div style="font-size: 1.8em;">
+                        <a href="https://www.facebook.com/bintang.a.permana.1/" target="_blank" style="margin-right: 15px; color: white; text-decoration: none;"><i class="fab fa-facebook"></i></a>
+                        <a href="https://www.youtube.com/@bangbin_1" target="_blank" style="margin-right: 15px; color: white; text-decoration: none;"><i class="fab fa-youtube"></i></a>
+                        <a href="https://wa.me/6281310051985" target="_blank" style="color: white; text-decoration: none;"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <audio id="button-click-sound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
+    <audio id="correct-sound" src="https://actions.google.com/sounds/v1/general/reward.ogg"></audio>
+    <audio id="incorrect-sound" src="https://actions.google.com/sounds/v1/cartoon/metal_twang.ogg"></audio>
+    <audio id="win-sound" src="https://actions.google.com/sounds/v1/crowds/battle_crowd_celebrate_stutter.ogg"></audio>
+
+    <script>
+        // --- SOUND EFFECT GLOBAL FUNCTIONS ---
+        const buttonClickSound = document.getElementById('button-click-sound');
+        const correctSound = document.getElementById('correct-sound');
+        const incorrectSound = document.getElementById('incorrect-sound');
+        const winSound = document.getElementById('win-sound');
+
+        function playSound(audioElement) {
+            audioElement.currentTime = 0; // Rewind to start in case it's still playing
+            audioElement.play();
+        }
+
+        // --- GLOBAL GAME VARIABLES ---
+        let currentLevel = 0;
+        let score = 0;
+        const totalLevels = 4;
+        let activeDraggable = null; // Global variable to track the currently dragged item (for touch)
+        let xOffset = 0, yOffset = 0; // Offset for touch positioning
+
+        // Timer variables
+        let levelTimer; // Stores the interval ID for the timer
+        let timeLeft; // Stores the remaining time for the current level
+        const TIME_PER_LEVEL = 30; // 30 seconds for levels 2, 3, 4
+
+        // Canvas for drawing lines in Level 3
+        let matchingLinesCanvas;
+        let ctx;
+        let matchedPairs = {}; // Stores matched pairs for Level 3: {itemId: categoryZoneId}
+        let currentSelection = null; // Stores the currently selected item (from matching-items-pool) in Level 3
+
+        // DOM elements
+        const gameContainer = document.getElementById('game-container');
+        const scoreDisplay = document.getElementById('score-display');
+        const levelDisplay = document.getElementById('level-display');
+        const timerDisplay = document.getElementById('timer-display'); // New timer display element
+        const startScreen = document.getElementById('start-screen'); // Renamed from #welcome-screen
+        const startGameBtn = document.getElementById('start-game-btn');
+        const gameOverScreen = document.getElementById('game-over');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const restartGameBtn = document.getElementById('restart-game');
+
+        // Modals and their buttons
+        const petunjukBtn = document.getElementById('petunjukBtn');
+        const tujuanBtn = document.getElementById('tujuanBtn');
+        const pengembangBtn = document.getElementById('pengembangBtn');
+
+        const petunjukModal = document.getElementById('petunjukModal');
+        const tujuanModal = document.getElementById('tujuanModal');
+        const pengembangModal = document.getElementById('pengembangModal');
+
+        const closeButtons = document.querySelectorAll('.modal .close'); // All close buttons
+
+        // --- Helper function to shuffle an array ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+            }
+            return array;
+        }
+
+        // --- Level 1: Multiple Choice Data ---
+        const level1Questions = [
+            {
+                question: "Apa yang paling penting untuk bertahan hidup?",
+                choices: ["Rumah mewah", "Makanan dan air", "Ponsel terbaru", "Liburan ke luar negeri"],
+                answer: "Makanan dan air"
+            },
+            {
+                question: "Jika kamu lapar di gurun pasir, apa yang paling kamu butuhkan?",
+                choices: ["Sepatu baru", "Kompas", "Air minum", "Game konsol"],
+                answer: "Air minum"
+            },
+            {
+                question: "Mana yang merupakan kebutuhan dasar manusia?",
+                choices: ["Pakaian modis", "Akses internet cepat", "Tempat tinggal", "Mobil sport"],
+                answer: "Tempat tinggal"
+            },
+            {
+                question: "Untuk belajar dan berkembang, apa yang paling esensial?",
+                choices: ["Kursus memasak", "Pendidikan", "Mobil pribadi", "Perhiasan"],
+                answer: "Pendidikan"
+            },
+            {
+                question: "Dalam situasi darurat kesehatan, apa yang menjadi prioritas utama?",
+                choices: ["Liburan ke pantai", "Obat-obatan dan perawatan medis", "Membeli saham", "Main game"],
+                answer: "Obat-obatan dan perawatan medis"
+            }
+        ];
+        let currentQuestionIndexL1 = 0;
+        const questionBoxL1 = document.getElementById('question-box');
+        const choicesContainerL1 = document.getElementById('choices-container');
+        const feedbackL1 = document.getElementById('feedback-l1');
+
+        // --- Level 2: Drag and Drop Data ---
+        const level2Items = [
+            { id: 'item1', name: 'Nasi', type: 'kebutuhan', image: 'https://cdn-icons-png.flaticon.com/512/3109/3109780.png' },
+            { id: 'item2', name: 'Ponsel', type: 'keinginan', image: 'https://cdn-icons-png.flaticon.com/512/186/186239.png' },
+            { id: 'item3', name: 'Baju Hangat', type: 'kebutuhan', image: 'https://cdn-icons-png.flaticon.com/512/1926/1926322.png' },
+            { id: 'item4', name: 'Liburan Mewah', type: 'keinginan', image: 'https://cdn-icons-png.flaticon.com/512/3762/3762131.png' },
+            { id: 'item5', name: 'Obat-obatan', type: 'kebutuhan', image: 'https://cdn-icons-png.flaticon.com/512/647/647237.png' },
+            { id: 'item6', name: 'Mobil Sport', type: 'keinginan', image: 'https://cdn-icons-png.flaticon.com/512/2330/2330453.png' },
+            { id: 'item7', name: 'Buku Pelajaran', type: 'kebutuhan', image: 'https://cdn-icons-png.flaticon.com/512/5833/5833290.png' },
+            { id: 'item8', name: 'Perhiasan', type: 'keinginan', image: 'https://cdn-icons-png.flaticon.com/512/10551/10551201.png' }
+        ];
+        const needsZone = document.getElementById('needs-zone');
+        const wantsZone = document.getElementById('wants-zone');
+        const dragItemsContainer = document.getElementById('drag-items-container');
+        const checkDragDropBtn = document.getElementById('check-drag-drop');
+        const feedbackL2 = document.getElementById('feedback-l2');
+        let droppedItems = []; // To track items dropped in zones for Level 2
+
+        // --- Level 3: Matching Category Data ---
+        const level3Items = [
+            { id: 'catitem1', name: 'Makanan', type: 'kebutuhan', image: 'https://cdn-icons-png.flaticon.com/512/706/706195.png' },
+            { id: 'catitem2', name: 'Liburan', type: 'keinginan', image: 'https://placehold.co/90x90/8b5cf6/ffffff?text=%F0%9F%8C%B4' },
+            { id: 'catitem3', name: 'Air Bersih', type: 'kebutuhan', image: 'https://cdn-icons-png.flaticon.com/512/3105/3105807.png' },
+            { id: 'catitem4', name: 'Pakaian Modis', type: 'keinginan', image: 'https://cdn-icons-png.flaticon.com/512/15793/15793502.png' },
+            { id: 'catitem5', name: 'Pendidikan', type: 'kebutuhan', image: 'https://cdn-icons-png.flaticon.com/512/10484/10484468.png' },
+            { id: 'catitem6', name: 'Mobil Mewah', type: 'keinginan', image: 'https://cdn-icons-png.flaticon.com/512/2330/2330453.png' },
+            { id: 'catitem7', name: 'Rumah', type: 'kebutuhan', image: 'https://cdn-icons-png.flaticon.com/512/12942/12942653.png' },
+            { id: 'catitem8', name: 'Permainan Video', type: 'keinginan', image: 'https://cdn-icons-png.flaticon.com/512/2780/2780137.png' }
+        ];
+        const matchingItemsPool = document.getElementById('matching-items-pool');
+        const categoryNeedsTarget = document.getElementById('category-needs-target');
+        const categoryWantsTarget = document.getElementById('category-wants-target');
+        const checkMatchingCategoryBtn = document.getElementById('check-matching-category');
+        const feedbackL3 = document.getElementById('feedback-l3');
+        
+        let matchedCategoryItemsCount = 0; // Track correct matches in Level 3
+
+        // --- Level 4: Puzzle Data ---
+        const level4Items = [
+            { id: 'puzzle1', text: 'Makan 3 kali sehari', order: 1 },
+            { id: 'puzzle2', text: 'Membeli gadget terbaru', order: 5 },
+            { id: 'puzzle3', text: 'Berobat saat sakit', order: 2 },
+            { id: 'puzzle4', text: 'Menonton film di bioskop setiap hari', order: 4 },
+            { id: 'puzzle5', text: 'Memiliki tempat tinggal yang layak', order: 3 },
+            { id: 'puzzle6', text: 'Liburan ke luar negeri', order: 6 }
+        ];
+        const puzzleSortableArea = document.getElementById('puzzle-sortable-area');
+        const puzzleItemsShelf = document.getElementById('puzzle-items-shelf');
+        const checkPuzzleBtn = document.getElementById('check-puzzle');
+        const feedbackL4 = document.getElementById('feedback-l4');
+        let sortedPuzzleItems = []; // To store items currently in the sortable area
+
+        // --- General Game Functions ---
+
+        /**
+         * Initializes the game by setting score, level, and showing the start screen.
+         */
+        function initializeGame() {
+            score = 0;
+            currentLevel = 0;
+            updateScoreDisplay();
+            hideAllLevels();
+            startScreen.classList.remove('hidden');
+            gameContainer.classList.add('hidden'); // Ensure game content is hidden
+            timerDisplay.classList.add('hidden'); // Hide timer on start screen
+            drawBackground(); // Redraw background on game initialization
+        }
+
+        /**
+         * Hides all game levels and game over screen.
+         */
+        function hideAllLevels() {
+            document.querySelectorAll('.game-level').forEach(level => {
+                level.classList.add('hidden');
+            });
+        }
+
+        /**
+         * Updates the score display on the top bar.
+         */
+        function updateScoreDisplay() {
+            scoreDisplay.textContent = `Skor: ${score}`;
+        }
+
+        /**
+         * Starts the level timer.
+         * @param {number} duration - The duration of the timer in seconds.
+         * @param {Function} onTimerEndCallback - Callback function to execute when timer ends.
+         */
+        function startTimer(duration, onTimerEndCallback) {
+            stopTimer(); // Clear any existing timer
+            timeLeft = duration;
+            timerDisplay.textContent = `Waktu: ${timeLeft}`;
+            timerDisplay.classList.remove('hidden'); // Show timer
+
+            levelTimer = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = `Waktu: ${timeLeft}`;
+                if (timeLeft <= 0) {
+                    stopTimer();
+                    onTimerEndCallback(); // Execute callback when time runs out
+                }
+            }, 1000);
+        }
+
+        /**
+         * Stops the current level timer.
+         */
+        function stopTimer() {
+            clearInterval(levelTimer);
+        }
+
+        /**
+         * Advances the game to the next level or finishes the game.
+         */
+        function nextLevel() {
+            stopTimer(); // Stop timer before moving to next level
+            currentLevel++;
+            hideAllLevels(); // Hide current level
+            startScreen.classList.add('hidden'); // Hide start screen permanently once game starts
+            gameContainer.classList.remove('hidden'); // Show game content
+
+            if (currentLevel === 1) {
+                showLevel1();
+            } else if (currentLevel === 2) {
+                showLevel2();
+            } else if (currentLevel === 3) {
+                showLevel3();
+            } else if (currentLevel === 4) {
+                showLevel4();
+            } else {
+                playSound(winSound); // Play win sound when the game is completed
+                showGameOver();
+            }
+            levelDisplay.textContent = `Level ${currentLevel}`;
+        }
+
+        /**
+         * Shows the game over screen with the final score.
+         */
+        function showGameOver() {
+            gameOverScreen.classList.remove('hidden');
+            finalScoreDisplay.textContent = score;
+            timerDisplay.classList.add('hidden'); // Hide timer on game over screen
+        }
+
+        // --- Level 1 Functions (Multiple Choice) ---
+
+        /**
+         * Displays Level 1 and sets up the first question.
+         */
+        function showLevel1() {
+            document.getElementById('level-1').classList.remove('hidden');
+            timerDisplay.classList.add('hidden'); // No timer for Level 1
+            currentQuestionIndexL1 = 0;
+            shuffleArray(level1Questions); // Shuffle questions for replayability
+            loadQuestionL1();
+            feedbackL1.classList.remove('show', 'correct', 'incorrect');
+        }
+
+        /**
+         * Loads and displays the current question for Level 1.
+         */
+        function loadQuestionL1() {
+            if (currentQuestionIndexL1 < level1Questions.length) {
+                const q = level1Questions[currentQuestionIndexL1];
+                questionBoxL1.textContent = q.question;
+                choicesContainerL1.innerHTML = ''; // Clear previous choices
+                shuffleArray(q.choices); // Shuffle choices for each question
+                q.choices.forEach(choice => {
+                    const button = document.createElement('button');
+                    button.textContent = choice;
+                    button.classList.add('btn-3d', 'btn-blue', 'text-lg', 'w-full', 'py-3', 'px-6', 'rounded-xl', 'transition-all', 'duration-150');
+                    button.onclick = () => {
+                        playSound(buttonClickSound); // Play sound on button click
+                        checkAnswerL1(choice, q.answer, button);
+                    };
+                    choicesContainerL1.appendChild(button);
+                });
+                feedbackL1.classList.remove('show', 'correct', 'incorrect');
+            } else {
+                // All questions answered, move to next level
+                setTimeout(nextLevel, 1000);
+            }
+        }
+
+        /**
+         * Checks the answer for Level 1 question.
+         * @param {string} selectedChoice - The choice selected by the user.
+         * @param {string} correctAnswer - The correct answer for the question.
+         * @param {HTMLElement} buttonElement - The button element that was clicked.
+         */
+        function checkAnswerL1(selectedChoice, correctAnswer, buttonElement) {
+            // Disable all buttons to prevent multiple clicks
+            Array.from(choicesContainerL1.children).forEach(btn => btn.disabled = true);
+
+            if (selectedChoice === correctAnswer) {
+                score += 10;
+                updateScoreDisplay();
+                feedbackL1.textContent = "Benar! 👍";
+                feedbackL1.classList.remove('incorrect');
+                feedbackL1.classList.add('correct', 'show');
+                buttonElement.classList.add('bg-green-500', 'btn-green'); // Visual feedback for correct
+                playSound(correctSound); // Play correct sound
+            } else {
+                feedbackL1.textContent = "Salah! 👎 Jawaban benar adalah: " + correctAnswer;
+                feedbackL1.classList.remove('correct');
+                feedbackL1.classList.add('incorrect', 'show');
+                buttonElement.classList.add('bg-red-500', 'btn-red'); // Visual feedback for incorrect
+                playSound(incorrectSound); // Play incorrect sound
+                // Highlight correct answer
+                Array.from(choicesContainerL1.children).forEach(btn => {
+                    if (btn.textContent === correctAnswer) {
+                        btn.classList.add('bg-green-500', 'btn-green');
+                    }
+                });
+            }
+
+            setTimeout(() => {
+                currentQuestionIndexL1++;
+                loadQuestionL1();
+                // Re-enable buttons for next question (handled by loadQuestionL1 clearing and recreating)
+            }, 1500); // Give time to read feedback
+        }
+
+        // --- Level 2 Functions (Drag and Drop) ---
+
+        /**
+         * Displays Level 2 and sets up draggable items and drop zones.
+         */
+        function showLevel2() {
+            document.getElementById('level-2').classList.remove('hidden');
+            shuffleArray(level2Items); // Shuffle items for replayability
+            renderDragItems();
+            setupDropZones();
+            droppedItems = []; // Reset for new game
+            feedbackL2.classList.remove('show', 'correct', 'incorrect');
+
+            needsZone.innerHTML = '<h3 class="text-2xl font-semibold text-blue-700 mb-4 w-full">Kebutuhan</h3>';
+            wantsZone.innerHTML = '<h3 class="text-2xl font-semibold text-pink-700 mb-4 w-full">Keinginan</h3>';
+            // Reset zone styles
+            needsZone.classList.remove('drag-over');
+            wantsZone.classList.remove('drag-over');
+            startTimer(TIME_PER_LEVEL, () => handleLevelTimeout(2)); // Start timer for Level 2
+        }
+
+        /**
+         * Renders all draggable items into their initial container for Level 2.
+         */
+        function renderDragItems() {
+            dragItemsContainer.innerHTML = ''; // Clear previous items
+            level2Items.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.id = item.id;
+                itemDiv.dataset.type = item.type; // Store original type
+                itemDiv.classList.add('draggable-item');
+                
+                // Add image and text
+                const img = document.createElement('img');
+                img.src = item.image;
+                img.alt = item.name;
+                const textSpan = document.createElement('span');
+                textSpan.textContent = item.name;
+                itemDiv.appendChild(img);
+                itemDiv.appendChild(textSpan);
+
+                // Mouse events (for desktop)
+                itemDiv.setAttribute('draggable', 'true');
+                itemDiv.ondragstart = (e) => {
+                    playSound(buttonClickSound); // Play sound on drag start
+                    e.dataTransfer.setData('text/plain', e.target.id);
+                    // For mouse drag, we can use the default dragging class
+                    e.target.classList.add('dragging-absolute');
+                };
+                itemDiv.ondragend = (e) => {
+                    e.target.classList.remove('dragging-absolute');
+                    // Reset position after mouse drag
+                    e.target.style.position = '';
+                    e.target.style.left = '';
+                    e.target.style.top = '';
+                    e.target.style.transform = '';
+                    e.target.style.boxShadow = '';
+                };
+
+                // Touch events (for mobile responsiveness)
+                itemDiv.addEventListener('touchstart', handleTouchStart);
+                itemDiv.addEventListener('touchmove', handleTouchMove);
+                itemDiv.addEventListener('touchend', handleTouchEnd);
+                
+                dragItemsContainer.appendChild(itemDiv);
+            });
+        }
+
+        /**
+         * Sets up event listeners for drop zones in Level 2.
+         */
+        function setupDropZones() {
+            const zones = [needsZone, wantsZone];
+            zones.forEach(zone => {
+                // Mouse drag events remain for desktop
+                zone.ondragover = (e) => {
+                    e.preventDefault(); // Allow drop
+                    zone.classList.add('drag-over');
+                };
+                zone.ondragleave = (e) => {
+                    zone.classList.remove('drag-over');
+                };
+                zone.ondrop = (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('drag-over');
+                    const itemId = e.dataTransfer.getData('text/plain');
+                    const draggedItem = document.getElementById(itemId);
+
+                    if (!draggedItem || draggedItem.closest('.drop-zone') === zone) {
+                        return;
+                    }
+                    zone.appendChild(draggedItem);
+                    // Reset position after mouse drag for items dropped by mouse
+                    draggedItem.style.position = ''; 
+                    draggedItem.style.left = '';
+                    draggedItem.style.top = '';
+                    draggedItem.style.transform = '';
+                    draggedItem.style.boxShadow = '';
+
+                    draggedItem.classList.remove('dropped-correct', 'dropped-incorrect'); // Remove previous feedback
+                };
+            });
+            checkDragDropBtn.onclick = () => {
+                playSound(buttonClickSound); // Play sound on button click
+                checkDragDropAnswers();
+            };
+        }
+
+        // --- Common Touch Drag and Drop Handlers for Level 2 and Level 4 ---
+        // (Active Draggable and offset are global variables at the top of the script)
+
+        function handleTouchStart(e) {
+            if (e.touches.length === 1) {
+                playSound(buttonClickSound); // Play sound on touch start (acting as a grab)
+                const touch = e.touches[0];
+                activeDraggable = this; // 'this' refers to the item that was touched
+                activeDraggable.classList.add('dragging-absolute'); // Apply floating style
+                
+                const rect = activeDraggable.getBoundingClientRect();
+                // Calculate offset from touch point to item's top-left corner
+                xOffset = touch.clientX - rect.left;
+                yOffset = touch.clientY - rect.top;
+
+                // Set initial position as fixed relative to viewport
+                activeDraggable.style.left = (touch.clientX - xOffset) + 'px';
+                activeDraggable.style.top = (touch.clientY - yOffset) + 'px';
+
+                e.preventDefault(); // Prevent default scrolling/zooming on touch start
+            }
+        }
+
+        function handleTouchMove(e) {
+            if (activeDraggable && e.touches.length === 1) {
+                const touch = e.touches[0];
+                // Update position based on touch movement
+                activeDraggable.style.left = (touch.clientX - xOffset) + 'px';
+                activeDraggable.style.top = (touch.clientY - yOffset) + 'px';
+
+                // --- Highlight drop zones based on current touch position ---
+                // For Level 2
+                if (activeDraggable.classList.contains('draggable-item')) {
+                    const needsRect = needsZone.getBoundingClientRect();
+                    const wantsRect = wantsZone.getBoundingClientRect();
+                    const currentX = touch.clientX;
+                    const currentY = touch.clientY;
+
+                    needsZone.classList.remove('drag-over');
+                    wantsZone.classList.remove('drag-over');
+
+                    if (currentX > needsRect.left && currentX < needsRect.right && currentY > needsRect.top && currentY < needsRect.bottom) {
+                        needsZone.classList.add('drag-over');
+                    } else if (currentX > wantsRect.left && currentX < wantsRect.right && currentY > wantsRect.top && currentY < wantsRect.bottom) {
+                        wantsZone.classList.add('drag-over');
+                    }
+                } 
+                // For Level 4 puzzle
+                else if (activeDraggable.classList.contains('puzzle-item')) {
+                    const sortableAreaRect = puzzleSortableArea.getBoundingClientRect();
+                    const currentY = touch.clientY;
+
+                    puzzleSortableArea.classList.remove('drag-over'); // Clear initial highlight
+
+                    // Check if the current touch point is within the puzzle sortable area
+                    if (currentY > sortableAreaRect.top && currentY < sortableAreaRect.bottom &&
+                        touch.clientX > sortableAreaRect.left && touch.clientX < sortableAreaRect.right) {
+                        
+                        puzzleSortableArea.classList.add('drag-over'); // Highlight sortable area
+
+                        const afterElement = getDragAfterElement(puzzleSortableArea, currentY);
+                        if (afterElement == null) {
+                            if (puzzleSortableArea.lastElementChild !== activeDraggable) {
+                                puzzleSortableArea.appendChild(activeDraggable);
+                            }
+                        } else {
+                            if (afterElement !== activeDraggable.nextSibling) {
+                                puzzleSortableArea.insertBefore(activeDraggable, afterElement);
+                            }
+                        }
+                    } else {
+                        // If outside the sortable area, ensure it's removed from there if it was dropped previously
+                        // This handles dragging an item out of the sortable area back to the shelf conceptually
+                        if (activeDraggable.parentNode === puzzleSortableArea) {
+                            // Do nothing here, actual return to shelf is handled in touchend
+                        }
+                    }
+                }
+                e.preventDefault(); // Prevent scrolling while dragging
+            }
+        }
+
+        function handleTouchEnd(e) {
+            if (activeDraggable) {
+                activeDraggable.classList.remove('dragging-absolute'); // Remove floating style
+                needsZone.classList.remove('drag-over'); // Clear Level 2 highlights
+                wantsZone.classList.remove('drag-over');
+                puzzleSortableArea.classList.remove('drag-over'); // Clear Level 4 highlights
+
+                const touch = e.changedTouches[0];
+                const droppedX = touch.clientX;
+                const droppedY = touch.clientY;
+                let targetZone = null;
+
+                // --- Handle drop for Level 2 items ---
+                if (activeDraggable.classList.contains('draggable-item')) {
+                    const needsRect = needsZone.getBoundingClientRect();
+                    const wantsRect = wantsZone.getBoundingClientRect();
+
+                    if (droppedX > needsRect.left && droppedX < needsRect.right && droppedY > needsRect.top && droppedY < needsRect.bottom) {
+                        targetZone = needsZone;
+                    } else if (droppedX > wantsRect.left && droppedX < wantsRect.right && droppedY > wantsRect.top && droppedY < wantsRect.bottom) {
+                        targetZone = wantsZone;
+                    }
+
+                    if (targetZone) {
+                        // Only append if not already in this zone or if moving between zones
+                        if (activeDraggable.parentNode !== targetZone) {
+                            targetZone.appendChild(activeDraggable);
+                        }
+                    } else {
+                        // If dropped outside any valid zone, return to its original shelf
+                        const originalParent = dragItemsContainer; 
+                        if (activeDraggable.parentNode !== originalParent) {
+                            originalParent.appendChild(activeDraggable);
+                        }
+                    }
+                    activeDraggable.classList.remove('dropped-correct', 'dropped-incorrect'); // Clear feedback
+                } 
+                // --- Handle drop for Level 4 puzzle items ---
+                else if (activeDraggable.classList.contains('puzzle-item')) {
+                    const sortableAreaRect = puzzleSortableArea.getBoundingClientRect();
+                    const droppedInSortableArea = (droppedX > sortableAreaRect.left && droppedX < sortableAreaRect.right && 
+                                                    droppedY > sortableAreaRect.top && droppedY < sortableAreaRect.bottom);
+
+                    if (droppedInSortableArea) {
+                        // Item should already be reordered by touchmove, just ensure it's in the sortable area
+                        // This conditional might be redundant if touchmove handles all reordering correctly,
+                        // but it acts as a safeguard.
+                        if (activeDraggable.parentNode !== puzzleSortableArea) {
+                           puzzleSortableArea.appendChild(activeDraggable); // Fallback if somehow not in sortable area
+                        }
+                    } else {
+                        // If dropped outside sortable area, return to original shelf
+                        if (activeDraggable.parentNode !== puzzleItemsShelf) {
+                            puzzleItemsShelf.appendChild(activeDraggable);
+                        }
+                    }
+                    // Update the sortedPuzzleItems array based on the final DOM order
+                    sortedPuzzleItems = Array.from(puzzleSortableArea.children).map(el => {
+                        const originalItem = level4Items.find(item => `puzzle-${item.id}` === el.id);
+                        return originalItem ? originalItem.order : null;
+                    });
+                }
+                
+                // Reset all dynamically set styles after drop to allow flexbox/normal flow
+                activeDraggable.style.position = '';
+                activeDraggable.style.left = '';
+                activeDraggable.style.top = '';
+                activeDraggable.style.transform = '';
+                activeDraggable.style.boxShadow = '';
+                activeDraggable = null; // Clear active draggable
+            }
+        }
+
+        /**
+         * Handles when the timer for a level runs out.
+         * @param {number} level - The level number that timed out.
+         */
+        function handleLevelTimeout(level) {
+            let feedbackElement;
+            if (level === 2) {
+                feedbackElement = feedbackL2;
+            } else if (level === 3) {
+                feedbackElement = feedbackL3;
+            } else if (level === 4) {
+                feedbackElement = feedbackL4;
+            }
+
+            if (feedbackElement) {
+                feedbackElement.textContent = "Waktu habis! Coba lagi di level berikutnya. ⏳";
+                feedbackElement.classList.remove('correct');
+                feedbackElement.classList.add('incorrect', 'show');
+                playSound(incorrectSound); // Play incorrect sound for timeout
+            }
+            // Move to the next level after a short delay
+            setTimeout(nextLevel, 1500);
+        }
+
+        /**
+         * Checks the answers for Level 2 (Drag and Drop).
+         */
+        function checkDragDropAnswers() {
+            let correctCount = 0;
+            // Iterate over all items that were originally available for drag and drop
+            level2Items.forEach(itemData => {
+                const itemElement = document.getElementById(itemData.id);
+                if (!itemElement) return; // Should not happen if all items rendered
+
+                // Determine which zone the item is currently in
+                const parentZone = itemElement.closest('.drop-zone');
+                
+                if (!parentZone) {
+                    // Item is still in the initial shelf or dropped outside, mark as incorrect visually
+                    itemElement.classList.add('dropped-incorrect');
+                    itemElement.classList.remove('dropped-correct');
+                    return;
+                }
+
+                const droppedIntoType = parentZone.id === 'needs-zone' ? 'kebutuhan' : 'keinginan';
+
+                if (droppedIntoType === itemData.type) {
+                    itemElement.classList.add('dropped-correct');
+                    itemElement.classList.remove('dropped-incorrect');
+                    correctCount++;
+                } else {
+                    itemElement.classList.add('dropped-incorrect');
+                    itemElement.classList.remove('dropped-correct');
+                }
+            });
+
+            if (correctCount === level2Items.length) {
+                score += 20; // Award more points for completing a level
+                updateScoreDisplay();
+                feedbackL2.textContent = `Sempurna! Semua benar! 👍`;
+                feedbackL2.classList.remove('incorrect');
+                feedbackL2.classList.add('correct', 'show');
+                playSound(correctSound); // Play correct sound for level completion
+                stopTimer(); // Stop timer on completion
+                setTimeout(nextLevel, 1500);
+            } else {
+                feedbackL2.textContent = `Ada ${level2Items.length - correctCount} item yang salah. Coba lagi! 👎`;
+                feedbackL2.classList.remove('correct');
+                feedbackL2.classList.add('incorrect', 'show');
+                playSound(incorrectSound); // Play incorrect sound for wrong attempt
+            }
+        }
+
+
+        // --- Level 3 Functions (Matching Category) ---
+
+        /**
+         * Displays Level 3 and sets up matching items and category targets.
+         */
+        function showLevel3() {
+            document.getElementById('level-3').classList.remove('hidden');
+            // Initialize canvas for drawing lines
+            matchingLinesCanvas = document.getElementById('matching-lines-canvas');
+            ctx = matchingLinesCanvas.getContext('2d');
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas); // Adjust canvas size on window resize
+            
+            matchedPairs = {}; // Reset matched pairs {itemId: categoryZoneId}
+            matchedCategoryItemsCount = 0; // Reset correct matches count
+            currentSelection = null; // Reset selection
+            feedbackL3.classList.remove('show', 'correct', 'incorrect');
+            renderLevel3Items();
+            startTimer(TIME_PER_LEVEL, () => handleLevelTimeout(3)); // Start timer for Level 3
+        }
+
+        /**
+         * Resizes the canvas to match its parent container.
+         */
+        function resizeCanvas() {
+            const container = document.getElementById('matching-elements-container');
+            const rect = container.getBoundingClientRect();
+            matchingLinesCanvas.width = rect.width;
+            matchingLinesCanvas.height = rect.height;
+            // Position canvas absolutely relative to the game container, not just its immediate parent in flow
+            // This ensures it overlays the correct area even if parent's layout shifts slightly
+            const gameContainerRect = gameContainer.getBoundingClientRect();
+            matchingLinesCanvas.style.top = (rect.top - gameContainerRect.top) + 'px';
+            matchingLinesCanvas.style.left = (rect.left - gameContainerRect.left) + 'px';
+            drawLines(); // Redraw lines when canvas is resized
+        }
+
+        /**
+         * Renders all items for Level 3 (Matching Category).
+         */
+        function renderLevel3Items() {
+            matchingItemsPool.innerHTML = ''; // Clear previous items
+            
+            // Clear items from category target zones
+            categoryNeedsTarget.querySelector('.matched-item-display').innerHTML = '';
+            categoryWantsTarget.querySelector('.matched-item-display').innerHTML = '';
+
+            shuffleArray(level3Items); // Shuffle items for replayability
+
+            level3Items.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.id = item.id;
+                itemDiv.dataset.type = item.type; // Store correct category type
+                itemDiv.classList.add('matching-item-card');
+                
+                const img = document.createElement('img');
+                img.src = item.image;
+                img.alt = item.name;
+                const textSpan = document.createElement('span');
+                textSpan.textContent = item.name;
+                itemDiv.appendChild(img);
+                itemDiv.appendChild(textSpan);
+
+                itemDiv.onclick = () => {
+                    playSound(buttonClickSound); // Play sound on item card click
+                    handleItemCardClick(itemDiv);
+                };
+                matchingItemsPool.appendChild(itemDiv);
+            });
+
+            // Set up category target zones click handlers
+            categoryNeedsTarget.dataset.categoryType = 'kebutuhan';
+            categoryWantsTarget.dataset.categoryType = 'keinginan';
+            categoryNeedsTarget.onclick = () => {
+                playSound(buttonClickSound); // Play sound on category target click
+                handleCategoryTargetClick(categoryNeedsTarget);
+            };
+            categoryWantsTarget.onclick = () => {
+                playSound(buttonClickSound); // Play sound on category target click
+                handleCategoryTargetClick(categoryWantsTarget);
+            };
+
+            checkMatchingCategoryBtn.onclick = () => {
+                playSound(buttonClickSound); // Play sound on button click
+                checkMatchingCategoryAnswers();
+            };
+            drawLines(); // Initial clear
+        }
+
+        /**
+         * Handles click on an item card in Level 3.
+         * @param {HTMLElement} itemElement - The item card element clicked.
+         */
+        function handleItemCardClick(itemElement) {
+            // Do nothing if already matched
+            if (itemElement.classList.contains('matched-correct')) {
+                return;
+            }
+
+            // Clear previous selection if any
+            if (currentSelection && currentSelection !== itemElement) {
+                currentSelection.classList.remove('selected');
+            }
+
+            // Toggle selection
+            if (currentSelection === itemElement) {
+                itemElement.classList.remove('selected');
+                currentSelection = null;
+            } else {
+                currentSelection = itemElement;
+                itemElement.classList.add('selected');
+            }
+            feedbackL3.classList.remove('show', 'correct', 'incorrect'); // Clear previous feedback
+            drawLines(); // Redraw to clear/show temporary selection effect
+        }
+
+        /**
+         * Handles click on a category target zone in Level 3.
+         * @param {HTMLElement} targetZone - The category target zone clicked.
+         */
+        function handleCategoryTargetClick(targetZone) {
+            if (!currentSelection) {
+                feedbackL3.textContent = "Ketuk item di atas dulu! 👆";
+                feedbackL3.classList.add('incorrect', 'show');
+                playSound(incorrectSound); // Play incorrect sound for no selection
+                // Remove feedback after a short delay
+                setTimeout(() => feedbackL3.classList.remove('show'), 1000);
+                return;
+            }
+
+            const itemType = currentSelection.dataset.type;
+            const targetType = targetZone.dataset.categoryType;
+
+            // Draw a temporary line for the potential match BEFORE processing the actual match
+            // This gives immediate visual feedback.
+            drawLines(currentSelection.id, targetZone.id, itemType === targetType);
+
+            if (itemType === targetType) {
+                // Correct match
+                currentSelection.classList.add('matched-correct');
+                currentSelection.classList.remove('selected');
+                
+                // Move item to inside the category box visually (clone for display, keep original for line source)
+                const clonedItemForDisplay = currentSelection.cloneNode(true);
+                clonedItemForDisplay.classList.remove('selected', 'matched-incorrect');
+                clonedItemForDisplay.classList.add('matching-item-card'); // Ensure it retains card styling
+                clonedItemForDisplay.classList.add('matched-item-display-card'); // Specific class for display in category box
+                clonedItemForDisplay.onclick = null; // Disable clicks on cloned item
+                
+                // Set the correct class for smaller display in target box
+                targetZone.querySelector('.matched-item-display').appendChild(clonedItemForDisplay);
+
+                // Store match for permanent line drawing
+                matchedPairs[currentSelection.id] = targetZone.id;
+                matchedCategoryItemsCount++; // Increment correct count
+
+                score += 10;
+                updateScoreDisplay();
+                feedbackL3.textContent = "Benar! Item ditempatkan. 👍";
+                feedbackL3.classList.remove('incorrect');
+                feedbackL3.classList.add('correct', 'show');
+                playSound(correctSound); // Play correct sound
+
+                // Remove the original item from the pool (or hide it)
+                currentSelection.style.display = 'none'; // Hide instead of removing to keep its original DOM position for line drawing reference until level ends
+
+                drawLines(); // Redraw permanent lines (including the new one)
+
+                if (matchedCategoryItemsCount === level3Items.length) {
+                    // All items correctly categorized
+                    stopTimer(); // Stop timer on completion
+                    setTimeout(nextLevel, 1500);
+                }
+
+            } else {
+                // Incorrect match
+                currentSelection.classList.add('matched-incorrect');
+                feedbackL3.textContent = `Salah! Itu adalah ${itemType === 'kebutuhan' ? 'Kebutuhan' : 'Keinginan'}. 👎`;
+                feedbackL3.classList.remove('correct');
+                feedbackL3.classList.add('incorrect', 'show');
+                playSound(incorrectSound); // Play incorrect sound
+
+                setTimeout(() => {
+                    currentSelection.classList.remove('matched-incorrect', 'selected');
+                    currentSelection = null; // Clear selection
+                    drawLines(); // Clear temporary line
+                    feedbackL3.classList.remove('show');
+                }, 1000);
+            }
+            currentSelection = null; // Clear selection after processing
+        }
+
+        /**
+         * Draws lines on the canvas for currently matched pairs and temporary selection.
+         * For Level 3 (Matching Category)
+         * @param {string | null} tempItemId - ID of the item for temporary line, if any.
+         * @param {string | null} tempTargetId - ID of the target zone for temporary line, if any.
+         * @param {boolean} isTempCorrect - True if temporary line is correct.
+         */
+        function drawLines(tempItemId = null, tempTargetId = null, isTempCorrect = false) {
+            ctx.clearRect(0, 0, matchingLinesCanvas.width, matchingLinesCanvas.height); // Clear canvas
+
+            const container = document.getElementById('matching-elements-container');
+            const containerRect = container.getBoundingClientRect();
+            const canvasRect = matchingLinesCanvas.getBoundingClientRect();
+
+            // Draw permanent lines for correctly matched pairs
+            for (const itemId in matchedPairs) {
+                const targetZoneId = matchedPairs[itemId];
+                const itemElement = document.getElementById(itemId); 
+                const targetZoneElement = document.getElementById(targetZoneId);
+
+                // If original item is hidden (because it's matched), its rect will be 0.
+                // We need to get the position of the CLONED item inside the target zone.
+                const sourceElementInTarget = targetZoneElement.querySelector(`#${itemId}`);
+                const sourceElement = itemElement && itemElement.style.display !== 'none' ? itemElement : sourceElementInTarget;
+
+                if (sourceElement && targetZoneElement) {
+                    const itemRect = sourceElement.getBoundingClientRect();
+                    const targetRect = targetZoneElement.getBoundingClientRect();
+
+                    ctx.beginPath();
+                    // Adjust coordinates relative to the canvas's top-left corner
+                    ctx.moveTo(
+                        itemRect.left + itemRect.width / 2 - canvasRect.left, 
+                        itemRect.bottom - canvasRect.top
+                    );
+                    ctx.lineTo(
+                        targetRect.left + targetRect.width / 2 - canvasRect.left, 
+                        targetRect.top - canvasRect.top
+                    );
+                    ctx.strokeStyle = '#48bb78'; // Green for correct
+                    ctx.lineWidth = 3;
+                    ctx.setLineDash([]); // Ensure solid line for permanent matches
+                    ctx.stroke();
+                }
+            }
+
+            // Draw temporary line for current selection
+            if (currentSelection && tempItemId && tempTargetId) {
+                const selectedItemElement = document.getElementById(tempItemId);
+                const potentialTargetZoneElement = document.getElementById(tempTargetId);
+                
+                if (selectedItemElement && potentialTargetZoneElement) {
+                    const itemRect = selectedItemElement.getBoundingClientRect();
+                    const targetRect = potentialTargetZoneElement.getBoundingClientRect();
+
+                    ctx.beginPath();
+                    // Adjust coordinates relative to the canvas's top-left corner
+                    ctx.moveTo(
+                        itemRect.left + itemRect.width / 2 - canvasRect.left, 
+                        itemRect.bottom - canvasRect.top
+                    );
+                    ctx.lineTo(
+                        targetRect.left + targetRect.width / 2 - canvasRect.left, 
+                        targetRect.top - canvasRect.top
+                    );
+                    
+                    ctx.strokeStyle = isTempCorrect ? '#4299e1' : '#dc3545'; // Blue for pending, Red for incorrect temp line
+                    ctx.lineWidth = 3;
+                    ctx.setLineDash([5, 5]); // Dashed line for temporary
+                    ctx.stroke();
+                    ctx.setLineDash([]); // Reset line dash
+                }
+            }
+        }
+
+
+        /**
+         * Checks the categorization answers for Level 3 when the button is clicked.
+         */
+        function checkMatchingCategoryAnswers() {
+            // Check if all items have been correctly categorized
+            if (matchedCategoryItemsCount === level3Items.length) {
+                score += 20; // Additional points for completing
+                updateScoreDisplay();
+                feedbackL3.textContent = "Hebat! Semua item terkategorikan dengan benar! 👍";
+                feedbackL3.classList.remove('incorrect');
+                feedbackL3.classList.add('correct', 'show');
+                playSound(correctSound); // Play correct sound for level completion
+                stopTimer(); // Stop timer on completion
+                setTimeout(nextLevel, 1500);
+            } else {
+                feedbackL3.textContent = `Ada ${level3Items.length - matchedCategoryItemsCount} item yang belum terkategorikan dengan benar. Coba lagi! 👎`;
+                feedbackL3.classList.remove('correct');
+                feedbackL3.classList.add('incorrect', 'show');
+                playSound(incorrectSound); // Play incorrect sound for wrong attempt
+                setTimeout(() => feedbackL3.classList.remove('show'), 2000); // Hide feedback after 2 seconds
+            }
+        }
+
+
+        // --- Level 4 Functions (Puzzle Sorting) ---
+
+        /**
+         * Displays Level 4 and sets up puzzle items for sorting.
+         */
+        function showLevel4() {
+            document.getElementById('level-4').classList.remove('hidden');
+            shuffleArray(level4Items); // Shuffle items for replayability
+            renderPuzzleItems();
+            sortedPuzzleItems = []; // Reset
+            feedbackL4.classList.remove('show', 'correct', 'incorrect');
+            startTimer(TIME_PER_LEVEL, () => handleLevelTimeout(4)); // Start timer for Level 4
+        }
+
+        /**
+         * Renders puzzle items into the shelf and sets up drag-and-drop for sorting.
+         */
+        function renderPuzzleItems() {
+            puzzleItemsShelf.innerHTML = '';
+            puzzleSortableArea.innerHTML = ''; // Clear previous items
+
+            const shuffledItems = [...level4Items]; // Already shuffled in showLevel4
+            shuffledItems.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.id = `puzzle-${item.id}`;
+                itemDiv.textContent = item.text;
+                itemDiv.dataset.order = item.order; // Store correct order
+                itemDiv.classList.add('puzzle-item');
+                itemDiv.setAttribute('draggable', 'true');
+
+                // Mouse events for puzzle items
+                itemDiv.ondragstart = (e) => {
+                    playSound(buttonClickSound); // Play sound on drag start
+                    e.dataTransfer.setData('text/plain', e.target.id);
+                    e.target.classList.add('dragging'); // Regular dragging class for mouse
+                };
+                itemDiv.ondragend = (e) => {
+                    e.target.classList.remove('dragging');
+                };
+
+                // Touch events for puzzle items (similar to Level 2)
+                itemDiv.addEventListener('touchstart', handleTouchStart);
+                itemDiv.addEventListener('touchmove', handleTouchMove);
+                itemDiv.addEventListener('touchend', handleTouchEnd);
+
+
+                puzzleItemsShelf.appendChild(itemDiv);
+            });
+
+            // Set up drop area for sorting (mouse drag only, touch is handled on item itself)
+            puzzleSortableArea.ondragover = (e) => {
+                e.preventDefault();
+                const draggingElement = document.querySelector('.dragging'); // Use the default dragging class for mouse
+                if (!draggingElement) return;
+
+                const afterElement = getDragAfterElement(puzzleSortableArea, e.clientY);
+                if (afterElement == null) {
+                    puzzleSortableArea.appendChild(draggingElement);
+                } else {
+                    puzzleSortableArea.insertBefore(draggingElement, afterElement);
+                }
+            };
+            puzzleSortableArea.ondrop = (e) => {
+                e.preventDefault();
+                const itemId = e.dataTransfer.getData('text/plain');
+                const draggedItem = document.getElementById(itemId);
+                if (draggedItem) {
+                    // Update the sortedPuzzleItems array
+                    sortedPuzzleItems = Array.from(puzzleSortableArea.children).map(el => {
+                        const originalItem = level4Items.find(item => `puzzle-${item.id}` === el.id);
+                        return originalItem ? originalItem.order : null;
+                    });
+                }
+            };
+
+            checkPuzzleBtn.onclick = () => {
+                playSound(buttonClickSound); // Play sound on button click
+                checkPuzzleOrder();
+            };
+        }
+
+        /**
+         * Helper function to determine where to insert a dragged element in a sortable list.
+         * @param {HTMLElement} container - The container element (e.g., the sortable area).
+         * @param {number} y - The Y-coordinate of the mouse/touch.
+         * @returns {HTMLElement | null} The element to insert after, or null if at the end.
+         */
+        function getDragAfterElement(container, y) {
+            // Exclude both dragging classes for the calculation
+            const draggableElements = [...container.querySelectorAll('.puzzle-item:not(.dragging):not(.dragging-absolute)')]; 
+
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2; // Midpoint of the child element
+                if (offset < 0 && offset > closest.offset) { // If touch is above midpoint, and it's the closest negative offset
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: -Infinity }).element; // Initialize with -Infinity to find the closest negative offset
+        }
+
+
+        /**
+         * Checks the order of puzzle items in Level 4.
+         */
+        function checkPuzzleOrder() {
+            const currentOrderElements = Array.from(puzzleSortableArea.children);
+            if (currentOrderElements.length !== level4Items.length) {
+                feedbackL4.textContent = "Belum semua item diurutkan. Pastikan semua item berada di area puzzle. 👎";
+                feedbackL4.classList.remove('correct');
+                feedbackL4.classList.add('incorrect', 'show');
+                playSound(incorrectSound); // Play incorrect sound
+                return;
+            }
+
+            const currentOrder = currentOrderElements.map(el => {
+                const originalItem = level4Items.find(item => `puzzle-${item.id}` === el.id);
+                return originalItem ? originalItem.order : null;
+            });
+
+            // Expected order is 1, 2, 3, 4, 5, 6
+            const isCorrect = currentOrder.every((value, index) => value === index + 1);
+
+            if (isCorrect) {
+                score += 30; // More points for final level
+                updateScoreDisplay();
+                feedbackL4.textContent = "Luar Biasa! Urutan prioritasmu benar! 👍";
+                feedbackL4.classList.remove('incorrect');
+                feedbackL4.classList.add('correct', 'show');
+                playSound(correctSound); // Play correct sound for level completion
+                stopTimer(); // Stop timer on completion
+                setTimeout(nextLevel, 1500); // Game Over
+            } else {
+                feedbackL4.textContent = "Urutan belum tepat. Coba lagi! 👎";
+                feedbackL4.classList.remove('correct');
+                feedbackL4.classList.add('incorrect', 'show');
+                playSound(incorrectSound); // Play incorrect sound
+                // Optional: Highlight incorrect items
+                currentOrderElements.forEach((el, index) => {
+                    const originalItem = level4Items.find(item => `puzzle-${item.id}` === el.id);
+                    if (originalItem && originalItem.order !== index + 1) {
+                        el.style.border = '2px solid red'; // Temporary visual feedback
+                    } else {
+                        el.style.border = ''; // Reset
+                    }
+                });
+                setTimeout(() => {
+                    currentOrderElements.forEach(el => el.style.border = ''); // Clear highlights
+                }, 1000);
+            }
+        }
+
+        // --- Event Listeners ---
+        startGameBtn.addEventListener('click', () => {
+            playSound(buttonClickSound); // Play sound on start game button
+            nextLevel();
+        }); 
+        restartGameBtn.addEventListener('click', () => {
+            playSound(buttonClickSound); // Play sound on restart game button
+            initializeGame();
+        });
+
+        // Add event listeners to all main buttons for the button click sound
+        document.querySelectorAll('.btn-3d').forEach(button => {
+            button.addEventListener('click', () => playSound(buttonClickSound));
+        });
+
+        // --- Modals Logic ---
+        function openModal(modalElement) {
+            modalElement.style.display = 'flex';
+            playSound(buttonClickSound); // Play sound when opening modal
+        }
+
+        function closeModal(modalElement) {
+            modalElement.style.display = 'none';
+        }
+
+        petunjukBtn.addEventListener('click', () => openModal(petunjukModal));
+        tujuanBtn.addEventListener('click', () => openModal(tujuanModal));
+        pengembangBtn.addEventListener('click', () => openModal(pengembangModal));
+
+        closeButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                const modalToClose = event.target.closest('.modal');
+                if (modalToClose) {
+                    closeModal(modalToClose);
+                }
+            });
+        });
+
+        // Close modal when clicking outside the modal content
+        [petunjukModal, tujuanModal, pengembangModal].forEach(modal => {
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) { // Check if the click was directly on the overlay
+                    closeModal(modal);
+                }
+            });
+        });
+
+        // --- Canvas Background (Number Canvas) Logic ---
+        const numberBgCanvas = document.getElementById('numberCanvas');
+        const numberBgCtx = numberBgCanvas.getContext('2d');
+
+        function resizeNumberBgCanvas() {
+            numberBgCanvas.width = window.innerWidth;
+            numberBgCanvas.height = window.innerHeight;
+            drawBackground();
+        }
+
+        const colors = {
+            greenishGrey: '#A4C49F', // Kiri atas
+            yellow: '#F8D960',       // Tengah kiri
+            orange: '#FF9F5F',       // Tengah kanan
+            blueishGreen: '#8CC4C3'  // Kanan bawah
+        };
+
+        function drawBackground() {
+            const width = numberBgCanvas.width;
+            const height = numberBgCanvas.height;
+
+            numberBgCtx.clearRect(0, 0, width, height); // Clear for redraw
+
+            // Gambar warna dasar (biru kehijauan) yang akan menjadi area kanan bawah
+            numberBgCtx.fillStyle = colors.blueishGreen;
+            numberBgCtx.fillRect(0, 0, width, height);
+
+            // Gambar area hijau keabu-abuan (kiri atas) dengan lengkungan
+            numberBgCtx.fillStyle = colors.greenishGrey;
+            numberBgCtx.beginPath();
+            numberBgCtx.moveTo(0, 0);
+            numberBgCtx.lineTo(width * 0.65, 0);
+            numberBgCtx.quadraticCurveTo(width * 0.4, height * 0.3, width * 0.1, height);
+            numberBgCtx.lineTo(0, height);
+            numberBgCtx.closePath();
+            numberBgCtx.fill();
+
+            // Gambar area kuning (tengah kiri) dengan lengkungan
+            numberBgCtx.fillStyle = colors.yellow;
+            numberBgCtx.beginPath();
+            numberBgCtx.moveTo(width * 0.30, 0);
+            numberBgCtx.lineTo(width * 0.90, 0);
+            numberBgCtx.quadraticCurveTo(width * 0.8, height * 0.4, width * 0.05, height);
+            numberBgCtx.lineTo(width * 0.05, height);
+            numberBgCtx.closePath();
+            numberBgCtx.fill();
+
+            // Gambar area oranye (tengah kanan) dengan lengkungan
+            numberBgCtx.fillStyle = colors.orange;
+            numberBgCtx.beginPath();
+            numberBgCtx.moveTo(width * 0.70, 0);
+            numberBgCtx.lineTo(width, 0);
+            numberBgCtx.lineTo(width, height * 0.80);
+            numberBgCtx.quadraticCurveTo(width * 0.7, height * 0.6, width * 0.40, height);
+            numberBgCtx.closePath();
+            numberBgCtx.fill();
+
+            drawNumbers(); // Setelah latar belakang, baru gambar angka
+        }
+
+        const numbersData = [
+            { num: 1, color: '#8bc34a', size: 50, rot: 0, x: 0.06, y: 0.18 },
+            { num: 5, color: '#fb8c00', size: 200, rot: -15, x: 0.20, y: 0.48 },
+            { num: 6, color: '#03a9f4', size: 200, rot: 10, x: 0.40, y: 0.35 },
+            { num: 0, color: '#607d8b', size: 90, rot: -25, x: 0.50, y: 0.50 },
+            { num: 2, color: '#ef5350', size: 200, rot: 20, x: 0.55, y: 0.60 },
+            { num: 4, color: '#e91e63', size: 75, rot: -8, x: 0.35, y: 0.70 },
+            { num: 8, color: '#9c27b0', size: 60, rot: 5, x: 0.85, y: 0.50 },
+            { num: 9, color: '#4CAF50', size: 80, rot: 30, x: 0.85, y: 0.10 },
+            { num: 3, color: '#ffeb3b', size: 60, rot: 10, x: 0.40, y: 0.90 },
+            { num: 7, color: '#7cb342', size: 50, rot: 0, x: 0.65, y: 0.75 },
+            { num: 1, color: '#FF5733', size: 70, rot: 20, x: 0.25, y: 0.03 },
+            { num: 2, color: '#DAF7A6', size: 60, rot: -5, x: 0.70, y: 0.05 },
+            { num: 3, color: '#FFC300', size: 80, rot: 15, x: 0.18, y: 0.88 },
+            { num: 4, color: '#C70039', size: 200, rot: -10, x: 0.90, y: 0.30 },
+            { num: 5, color: '#FF33FF', size: 90, rot: 25, x: 0.02, y: 0.60 },
+            { num: 6, color: '#33FFCE', size: 70, rot: 0, x: 0.50, y: 0.15 },
+            { num: 7, color: '#00FF00', size: 65, rot: -20, x: 0.95, y: 0.55 },
+            { num: 8, color: '#8A2BE2', size: 75, rot: 10, x: 0.30, y: 0.92 },
+            { num: 9, color: '#DC143C', size: 150, rot: -15, x: 0.70, y: 0.95 },
+            { num: 0, color: '#40E0D0', size: 60, rot: 30, x: 0.10, y: 0.30 },
+            { num: 1, color: '#FFD700', size: 50, rot: 5, x: 0.45, y: 0.20 },
+            { num: 2, color: '#ADFF2F', size: 70, rot: -25, x: 0.80, y: 0.40 },
+            { num: 3, color: '#00BFFF', size: 90, rot: 18, x: 0.60, y: 0.08 },
+            { num: 4, color: '#FF6347', size: 85, rot: -7, x: 0.20, y: 0.55 },
+            { num: 5, color: '#FFA07A', size: 60, rot: 12, x: 0.90, y: 0.70 },
+            { num: 6, color: '#DA70D6', size: 75, rot: -18, x: 0.05, y: 0.45 },
+            { num: 7, color: '#F08080', size: 80, rot: 22, x: 0.70, y: 0.25 },
+            { num: 8, color: '#20B2AA', size: 65, rot: -30, x: 0.15, y: 0.70 },
+            { num: 9, color: '#BA55D3', size: 55, rot: 8, x: 0.35, y: 0.98 },
+            { num: 0, color: '#FF4500', size: 120, rot: -3, x: 0.88, y: 0.60 }
+        ];
+
+        function drawNumbers() {
+            if (!numberBgCtx || !numberBgCanvas) return; // Pastikan canvas dan konteks ada
+
+            numbersData.forEach(data => {
+                const x = numberBgCanvas.width * data.x;
+                const y = numberBgCanvas.height * data.y;
+
+                numberBgCtx.save();
+                numberBgCtx.translate(x, y);
+                numberBgCtx.rotate(data.rot * Math.PI / 180);
+
+                numberBgCtx.font = `bold ${data.size}px Fredoka One`; // Menggunakan Fredoka One
+                numberBgCtx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+                numberBgCtx.shadowBlur = 5;
+                numberBgCtx.shadowOffsetX = 3;
+                numberBgCtx.shadowOffsetY = 3;
+
+                numberBgCtx.fillStyle = data.color;
+                numberBgCtx.fillText(data.num.toString(), 0, 0);
+
+                numberBgCtx.restore();
+            });
+        }
+
+        // Jalankan resize saat halaman dimuat dan saat ukuran jendela berubah
+        window.addEventListener('load', resizeNumberBgCanvas);
+        window.addEventListener('resize', resizeNumberBgCanvas);
+
+
+        // --- Profile Pic 3D Effect Logic (Modal Pengembang) ---
+        const profilePicContainer = document.querySelector('.profile-pic-container');
+        if (profilePicContainer) {
+            const profilePic = profilePicContainer.querySelector('img');
+            const maxRotate = 25; // Derajat maksimal rotasi (bisa diubah)
+
+            profilePicContainer.addEventListener('mousemove', (e) => {
+                const rect = profilePicContainer.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+
+                const rotateY = ((mouseX / rect.width) - 0.5) * 2 * maxRotate;
+                const rotateX = (((mouseY / rect.height) - 0.5) * 2 * maxRotate) * -1;
+
+                profilePic.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.1)`;
+            });
+
+            profilePicContainer.addEventListener('mouseleave', () => {
+                profilePic.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+            });
+        }
+
+
+        // Initial game setup on load
+        window.onload = initializeGame;
+
+    </script>
+</body>
+</html>

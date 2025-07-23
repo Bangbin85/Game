@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" type="image/x-icon" href="https://lh3.googleusercontent.com/d/1_4llqCMNoBDmwDHsI7RYsCM6rSK5wEjw">
+    <title>Game Menjodohkan Gambar dengan Kata</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .game-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            max-width: 1600px;
+            margin-bottom: 20px;
+        }
+        .images-container, .words-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+        }
+        .card {
+            width: 150px;
+            height: 180px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .card img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+        .card .text {
+            font-size: 18px;
+            text-align: center;
+            padding: 0 10px;
+            font-weight: bold;
+        }
+        .card.selected {
+            background-color: #e1f5fe;
+            border: 3px solid #3498db;
+        }
+        .card.matched {
+            background-color: #c8e6c9;
+            cursor: default;
+            opacity: 0.6;
+        }
+        .card.matched::after {
+            content: "✓";
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            color: #2e7d32;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .card.disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 20px;
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .stat-box {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3498db;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        .message {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e74c3c;
+            margin: 20px 0;
+            height: 30px;
+            text-align: center;
+        }
+        .controls {
+            margin-top: 20px;
+        }
+        button {
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        @media (max-width: 600px) {
+            .card {
+                width: 120px;
+                height: 150px;
+            }
+            .card img {
+                width: 80px;
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Menjodohkan Gambar dengan Kalimat</h1>
+    
+    <div class="stats">
+        <div class="stat-box">
+            <div class="stat-value" id="matches">0</div>
+            <div class="stat-label">Pasangan Ditemukan</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="attempts">0</div>
+            <div class="stat-label">Percobaan</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="time">40</div>
+            <div class="stat-label">Detik Tersisa</div>
+        </div>
+    </div>
+    
+    <div class="message" id="message"></div>
+    
+    <div class="game-container">
+        <div class="images-container" id="images-container"></div>
+        <div class="words-container" id="words-container"></div>
+    </div>
+    
+    <div class="controls">
+        <button id="reset-btn">Main Lagi</button>
+    </div>
+
+    <script>
+        // Data gambar dan kata yang sesuai
+        const items = [
+            { text: "Baju Adya basah karena terkena hujan", img: "https://cdn-icons-png.flaticon.com/512/892/892458.png" },
+            { text: "Ayah membelikan aku Sepeda baru", img: "https://cdn-icons-png.flaticon.com/512/9842/9842386.png" },
+            { text: "Bianka kehialangan pensil saat pergi mandi", img: "https://cdn-icons-png.flaticon.com/512/732/732391.png" },
+            { text: "Buana memiliki buku warna hijau dan biru", img: "https://cdn-icons-png.flaticon.com/512/5832/5832416.png" },
+            { text: "Mobil ayah dibawa ke bengkel", img: "https://cdn-icons-png.flaticon.com/512/3097/3097180.png" },
+            { text: "Mawar adalah bunga kesukaanku", img: "https://cdn-icons-png.flaticon.com/512/2926/2926754.png" }
+        ];
+
+        // Variabel game
+        let selectedImage = null;
+        let selectedWord = null;
+        let matchedPairs = 0;
+        let attempts = 0;
+        let matchedItems = [];
+        let timeLeft = 40;
+        let timer;
+        let gameActive = true;
+
+        // Elemen DOM
+        const imagesContainer = document.getElementById('images-container');
+        const wordsContainer = document.getElementById('words-container');
+        const matchesDisplay = document.getElementById('matches');
+        const attemptsDisplay = document.getElementById('attempts');
+        const messageDisplay = document.getElementById('message');
+        const resetBtn = document.getElementById('reset-btn');
+        const timeDisplay = document.getElementById('time');
+
+        // Fungsi untuk memulai timer
+        function startTimer() {
+            clearInterval(timer); // Hentikan timer sebelumnya jika ada
+            timeLeft = 40;
+            timeDisplay.textContent = timeLeft;
+            gameActive = true;
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                timeDisplay.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        // Fungsi untuk mengakhiri permainan
+        function endGame() {
+            gameActive = false;
+            messageDisplay.textContent = "Waktu habis! Permainan berakhir.";
+            
+            // Nonaktifkan semua kartu
+            document.querySelectorAll('.card').forEach(card => {
+                if (!card.classList.contains('matched')) {
+                    card.classList.add('disabled');
+                }
+            });
+        }
+
+        // Inisialisasi game
+        function initGame() {
+            // Acak urutan gambar
+            const shuffledImages = [...items].sort(() => Math.random() - 0.5);
+            
+            // Acak urutan kata
+            const shuffledWords = [...items].sort(() => Math.random() - 0.5);
+            
+            // Render gambar
+            imagesContainer.innerHTML = '';
+            shuffledImages.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.dataset.text = item.text;
+                
+                card.innerHTML = `
+                    <img src="${item.img}" alt="${item.text}">
+                `;
+                
+                card.addEventListener('click', () => selectImage(card, item.text));
+                imagesContainer.appendChild(card);
+            });
+            
+            // Render kata
+            wordsContainer.innerHTML = '';
+            shuffledWords.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.dataset.text = item.text;
+                
+                card.innerHTML = `
+                    <div class="text">${item.text}</div>
+                `;
+                
+                card.addEventListener('click', () => selectWord(card, item.text));
+                wordsContainer.appendChild(card);
+            });
+            
+            // Reset variabel game
+            selectedImage = null;
+            selectedWord = null;
+            matchedPairs = 0;
+            attempts = 0;
+            matchedItems = [];
+            
+            matchesDisplay.textContent = matchedPairs;
+            attemptsDisplay.textContent = attempts;
+            messageDisplay.textContent = '';
+            
+            // Mulai timer
+            startTimer();
+        }
+
+        // Pilih gambar
+        function selectImage(card, text) {
+            if (!gameActive || matchedItems.includes(text)) return;
+            
+            // Hapus seleksi sebelumnya
+            document.querySelectorAll('.images-container .card.selected').forEach(el => {
+                if (!matchedItems.includes(el.dataset.text)) {
+                    el.classList.remove('selected');
+                }
+            });
+            
+            // Pilih gambar baru
+            card.classList.add('selected');
+            selectedImage = text;
+            
+            // Cek jika kata juga sudah dipilih
+            checkMatch();
+        }
+
+        // Pilih kata
+        function selectWord(card, text) {
+            if (!gameActive || matchedItems.includes(text)) return;
+            
+            // Hapus seleksi sebelumnya
+            document.querySelectorAll('.words-container .card.selected').forEach(el => {
+                if (!matchedItems.includes(el.dataset.text)) {
+                    el.classList.remove('selected');
+                }
+            });
+            
+            // Pilih kata baru
+            card.classList.add('selected');
+            selectedWord = text;
+            
+            // Cek jika gambar juga sudah dipilih
+            checkMatch();
+        }
+
+        // Cek kecocokan
+        function checkMatch() {
+            if (!gameActive) return;
+            
+            if (selectedImage && selectedWord) {
+                attempts++;
+                attemptsDisplay.textContent = attempts;
+                
+                if (selectedImage === selectedWord) {
+                    // Cocok
+                    matchedPairs++;
+                    matchesDisplay.textContent = matchedPairs;
+                    matchedItems.push(selectedImage);
+                    
+                    // Tandai sebagai cocok
+                    document.querySelectorAll(`.card[data-text="${selectedImage}"]`).forEach(el => {
+                        el.classList.add('matched');
+                        el.classList.remove('selected');
+                    });
+                    
+                    // Reset seleksi
+                    selectedImage = null;
+                    selectedWord = null;
+                    
+                    // Cek jika game selesai
+                    if (matchedPairs === items.length) {
+                        clearInterval(timer);
+                        gameActive = false;
+                        messageDisplay.textContent = `Selamat! Anda menang dengan ${attempts} percobaan!`;
+                    } else {
+                        messageDisplay.textContent = "Benar! Cari pasangan berikutnya.";
+                        setTimeout(() => {
+                            messageDisplay.textContent = '';
+                        }, 1000);
+                    }
+                } else {
+                    // Tidak cocok
+                    messageDisplay.textContent = "Salah, coba lagi!";
+                    setTimeout(() => {
+                        // Hapus seleksi
+                        document.querySelectorAll('.card.selected').forEach(el => {
+                            if (!matchedItems.includes(el.dataset.text)) {
+                                el.classList.remove('selected');
+                            }
+                        });
+                        selectedImage = null;
+                        selectedWord = null;
+                        messageDisplay.textContent = '';
+                    }, 1000);
+                }
+            }
+        }
+
+        // Event listener untuk tombol reset
+        resetBtn.addEventListener('click', initGame);
+
+        // Mulai game
+        initGame();
+    </script>
+</body>
+</html>
