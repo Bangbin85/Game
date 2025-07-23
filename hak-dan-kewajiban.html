@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Petualangan Hak & Kewajiban</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Mochiy+Pop+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+	<link rel="icon" type="image/x-icon" href="https://lh3.googleusercontent.com/d/1_4llqCMNoBDmwDHsI7RYsCM6rSK5wEjw">
+    <style>
+        :root {
+            --bg-color: #87CEEB; /* Sky Blue */
+            --container-bg: #ffffff;
+            --card-bg: #FFFACD; /* Lemon Chiffon */
+            --card-border: #FFD700; /* Gold */
+            --text-color: #4A4A4A;
+            --title-color: #FF6347; /* Tomato */
+            --btn-bg: #32CD32; /* Lime Green */
+            --btn-shadow: #228B22; /* Forest Green */
+            --font-title: 'Lilita One', cursive;
+            --font-body: 'Mochiy Pop One', sans-serif;
+            --modal-overlay-bg: rgba(0, 0, 0, 0.7);
+            --modal-content-bg: #fff;
+            --modal-border-color: #ddd;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: linear-gradient(135deg, #87CEEB, #f0e68c);
+            color: var(--text-color);
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        #main-container {
+            max-width: 2000px;
+            margin: auto;
+            background: var(--container-bg);
+            padding: 20px 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            border: 5px solid white;
+        }
+
+        h1 {
+            font-family: var(--font-title);
+            color: var(--title-color);
+            font-size: clamp(2.2rem, 7vw, 3.5rem); 
+            text-shadow: 2px 2px 0px white, 4px 4px 0px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            font-family: var(--font-title);
+            color: #5D9CEC;
+        }
+
+        #game-info {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 20px;
+            font-family: var(--font-title);
+            font-size: 1.5rem;
+        }
+
+        #score-container { color: var(--title-color); }
+        #timer-container { color: #5D9CEC; }
+        
+        #timer-container.warning {
+            color: #dc3545;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        #game-area {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #statements-pool-container {
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px dashed #ccc;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        #statements-text-pool {
+            display: grid; /* Menggunakan Grid */
+            grid-template-columns: repeat(3, 1fr); /* Tetap 3 kolom dengan lebar yang sama */
+            gap: 10px;
+            justify-content: center;
+            font-size: 0.9rem; /* Ukuran teks lebih kecil */
+            color: var(--text-color);
+        }
+
+        /* Untuk layar kecil, turunkan menjadi 1 kolom agar responsif */
+        @media (max-width: 768px) {
+            #statements-text-pool {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (min-width: 769px) and (max-width: 900px) {
+            #statements-text-pool {
+                grid-template-columns: repeat(2, 1fr); /* 2 kolom untuk ukuran menengah */
+            }
+        }
+
+
+        .statement-text-item {
+            background-color: #E0FFFF; /* Light Cyan */
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #ADD8E6; /* Light Blue */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-family: var(--font-body);
+            text-align: left; /* Teks rata kiri */
+        }
+
+        #cards-pool {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            min-height: 50px;
+        }
+
+        .statement-card {
+            background-color: var(--card-bg);
+            padding: 12px 18px;
+            border-radius: 12px;
+            border: 3px solid var(--card-border);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: grab;
+            font-size: 2.5rem; /* Make numbers larger */
+            font-family: var(--font-title); /* Use title font for numbers */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px; /* Fixed size for number cards */
+            height: 20px; /* Fixed size for number cards */
+            transition: transform 0.2s, box-shadow 0.2s;
+            touch-action: none;
+        }
+
+        .dragging {
+            opacity: 0.7;
+            cursor: grabbing;
+            transform: scale(1.1);
+            position: fixed !important;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        #categories-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .category-box {
+            width: 200px;
+            min-height: 180px;
+            padding: 20px;
+            border-radius: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .category-box.drag-over {
+            transform: scale(1.08) translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.2);
+        }
+        
+        .category-box h2 {
+            font-family: var(--font-title);
+            margin-top: 0;
+            color: white;
+            text-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+            pointer-events: none;
+        }
+
+        #box-hak { background: #4FC1E9; }
+        #box-kewajiban { background: #ED5565; }
+        #box-tanggungJawab { background: #AC92EC; }
+
+        #feedback {
+            font-size: 1.8rem;
+            font-weight: bold;
+            height: 40px;
+            font-family: var(--font-title);
+        }
+        
+        .btn-3d {
+            background-color: var(--btn-bg);
+            color: white;
+            font-family: var(--font-title);
+            font-size: 1.6rem; 
+            border: none;
+            border-radius: 15px;
+            padding: 15px 35px;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+            box-shadow: 0 6px 0 var(--btn-shadow);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            margin-top: 20px;
+            margin-bottom: 25px; 
+        }
+        .btn-3d:hover { transform: translateY(-2px); box-shadow: 0 8px 0 var(--btn-shadow); }
+        .btn-3d:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--btn-shadow); }
+        
+        #end-animation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 9999;
+        }
+
+        .flower {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><g fill="%23FFC0CB"><circle cx="50" cy="20" r="15"/><circle cx="25" cy="40" r="15"/><circle cx="75" cy="40" r="15"/><circle cx="35" cy="70" r="15"/><circle cx="65" cy="70" r="15"/></g><circle cx="50" cy="50" r="10" fill="%23FFFF00"/></svg>');
+            background-size: contain;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- STYLES FOR ROUND 2 (WORD SEARCH) --- */
+        #round2-screen {
+            display: none; 
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        #round2-info {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 10px;
+            font-family: var(--font-title);
+            font-size: 1.5rem;
+        }
+
+        #word-clue-container {
+            background-color: #ffe0b2; 
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px dashed #ffc107;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+        #word-clue-container p {
+            font-size: 1.4rem; 
+            font-family: var(--font-body);
+            color: #d35400; 
+            margin: 0;
+        }
+        #words-to-find {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .word-list-item {
+            background-color: #fff8e1; 
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            color: #e65100; 
+            border: 1px solid #ffcc80;
+            opacity: 1;
+            transition: opacity 0.3s ease-out;
+        }
+        .word-list-item.found {
+            text-decoration: line-through;
+            opacity: 0.5;
+            background-color: #c8e6c9; 
+            color: #388e3c;
+        }
+
+        #word-grid-container {
+            display: grid;
+            border: 3px solid #6c757d;
+            border-radius: 10px;
+            overflow: hidden; 
+            touch-action: none; 
+        }
+        .grid-cell {
+            width: 40px; 
+            height: 40px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-title);
+            font-size: 1.5rem;
+            color: #343a40;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .grid-cell.selected {
+            background-color: #a0d9f0; 
+            border-color: #3f8fcd;
+        }
+        .grid-cell.found-highlight {
+            background-color: #8bc34a; 
+            color: white;
+            animation: highlight-fade 1s ease-out forwards;
+        }
+
+        @keyframes highlight-fade {
+            0% { background-color: #8bc34a; }
+            100% { background-color: #aed581; }
+        }
+
+        #feedback-round2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            height: 30px;
+            font-family: var(--font-title);
+            margin-top: 10px;
+        }
+
+        /* --- MODAL STYLES --- */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 10000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: var(--modal-overlay-bg); 
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--modal-content-bg);
+            margin: auto;
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid var(--modal-border-color);
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+            color: var(--text-color); /* Pastikan teks konten modal default berwarna normal */
+        }
+
+        .modal-content h3 {
+            font-family: var(--font-title); 
+            color: var(--title-color);
+            font-size: 1.8rem; 
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .modal-content h4 { 
+            font-family: Arial, sans-serif; /* Font biasa */
+            color: var(--text-color); /* Menggunakan warna teks standar */
+            font-size: 1.2rem; 
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .modal-content p, .modal-content ul, .modal-content li {
+            font-family: Arial, sans-serif; /* Font biasa: Arial atau fallback sans-serif */
+            font-size: 1rem; 
+            line-height: 1.6;
+            color: var(--text-color);
+            text-align: left;
+        }
+        .modal-content ul {
+            padding-left: 20px;
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 30px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Styles for the new info buttons */
+        #info-buttons-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 0 auto; 
+            margin-top: 20px; 
+            width: 100%;
+            max-width: 600px; 
+        }
+        .info-btn {
+            background-color: #64b5f6; 
+            color: white;
+            font-family: var(--font-title);
+            font-size: 1rem; 
+            border: none;
+            border-radius: 10px;
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+            box-shadow: 0 4px 0 #1976d2; 
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        .info-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #1976d2; }
+        .info-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #1976d2; }
+        
+        #start-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+			padding: 30px;
+			max-height: 100%
+        }
+
+        /* PROFIL MODAL SPECIFIC STYLES */
+        .profile-modal {
+            background: linear-gradient(135deg, #f1c40f, #2ecc71); /* Gradien sesuai permintaan */
+            color: white; /* Warna teks putih untuk modal profil */
+            overflow: hidden;
+        }
+        .profile-modal .modal-content { /* Mengoverride modal-content default */
+            background-color: transparent; /* Latar belakang transparan agar gradien terlihat */
+            padding: 30px; /* Sesuaikan padding */
+            box-shadow: none; /* Hilangkan shadow default modal-content */
+            border: none; /* Hilangkan border default modal-content */
+            color: white; /* Pastikan teks di dalam modal ini putih */
+        }
+        .modal-main-content { 
+            display: flex; 
+            align-items: center; 
+            flex-wrap: wrap; /* Agar responsif di layar kecil */
+            justify-content: center; /* Pusatkan konten utama */
+            position: relative; /* Penting untuk z-index di bawah bg-img */
+            z-index: 1; /* Pastikan konten di atas gambar background */
+        }
+        .profile-pic-container { 
+            width: 100px; 
+            height: 200px; /* Ukuran persegi untuk membuat lingkaran */
+            margin-right: 25px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            position: relative; /* Untuk z-index */
+            z-index: 2; /* Pastikan foto di atas teks */
+        }
+        .profile-pic-container img {
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .profile-pic-container img:hover { transform: scale(1.1); }
+        .profile-text {
+            text-align: left; /* Rata kiri untuk teks profil */
+            flex-grow: 1; /* Agar teks mengisi ruang yang tersedia */
+        }
+        .profile-text h2 {
+            font-family: var(--font-title);
+            font-size: 1.8em;
+            color: white; /* Pastikan judul di modal profil putih */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+            margin-bottom: 5px; /* Kurangi margin bawah */
+        }
+        .profile-text p { 
+            font-size: 0.9em; 
+            margin: 5px 0; 
+            color: white; /* Pastikan paragraf di modal profil putih */
+        }
+        .profile-text .kontak { 
+            font-weight: bold; 
+            margin-top: 15px; 
+            color: white; /* Pastikan teks kontak di modal profil putih */
+        }
+        .social-icons { 
+            font-size: 1.8em; 
+            display: flex; 
+            gap: 20px; 
+            margin-top: 10px;
+        }
+        .social-icons a { 
+            color: white; 
+            text-decoration: none; 
+            transition: transform 0.2s; 
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        .social-icons a:hover { transform: scale(1.2); }
+        .profile-bg-img {
+            position: absolute; 
+            right: -30px; 
+            top: -30px;
+            height: 130%; 
+            opacity: 0.1; /* Transparansi sesuai permintaan */
+            pointer-events: none; 
+            z-index: 0; /* Di bawah konten utama tapi di atas background gradien */
+            transform: rotate(-20deg); /* Sedikit rotasi untuk efek */
+        }
+        .profile-modal .close-button { /* Ubah .close-modal menjadi .close-button */
+            color: white; /* Warna tombol tutup putih */
+            z-index: 3; /* Pastikan tombol tutup di atas semua */
+        }
+
+        /* Responsif untuk modal profil */
+        @media (max-width: 550px) {
+            .modal-main-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .profile-pic-container {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+            .profile-text {
+                text-align: center;
+            }
+            .social-icons {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="end-animation-container"></div>
+    <div id="main-container">
+
+        <div id="start-screen">
+            <h1>Petualangan Hak & Kewajiban</h1>
+            <p style="font-size: 1.1rem;">Kamu punya waktu **30 detik** untuk menjodohkan semua kartu. Ayo buktikan kehebatanmu!</p>
+            <button id="start-btn" class="btn-3d">Mulai!</button>
+            
+            <div id="info-buttons-container">
+                <button id="btn-petunjuk" class="info-btn"><i class="fa-solid fa-lightbulb"></i> Petunjuk</button>
+                <button id="btn-tujuan" class="info-btn"><i class="fa-solid fa-bullseye"></i> Tujuan Pelajaran</button>
+                <button id="btn-pengembang" class="info-btn"><i class="fa-solid fa-code"></i> Pengembang</button>
+            </div>
+        </div>
+
+        <div id="game-area">
+            <div id="game-info">
+                <div id="score-container">Skor: <span id="score">0</span></div>
+                <div id="timer-container">Waktu: <span id="time">30</span></div>
+            </div>
+            <div id="statements-pool-container">
+                <h3>👇 Pasangkan gambar angka dengan keterangan di bawah ini 👇</h3>
+                <div id="statements-text-pool"></div>
+            </div>
+            <div id="cards-pool"></div> <div id="categories-container"></div>
+            <div id="feedback"></div>
+        </div>
+
+        <div id="round2-screen">
+            <h2>Babak 2: Tebak Kata Tersembunyi!</h2>
+            <div id="round2-info">
+                <div id="score-container-round2">Skor: <span id="score2">0</span></div>
+                <div id="timer-container-round2">Waktu: <span id="time2">0</span></div>
+            </div>
+            <div id="word-clue-container">
+                <p id="clue-text">Temukan kata-kata berikut di dalam kotak:</p>
+                <div id="words-to-find">
+                    </div>
+            </div>
+            <div id="word-grid-container">
+                </div>
+            <div id="feedback-round2"></div>
+        </div>
+
+        <div id="end-screen" style="display: none;">
+            <h1>Permainan Selesai!</h1>
+            <h2 id="final-title">Skor Akhir Kamu:</h2>
+            <h2 id="final-score" style="color: #007bff; font-size: 4rem;">0</h2>
+            <p id="final-message" style="font-size: 1.2rem;"></p>
+            <button id="restart-btn" class="btn-3d">Main Lagi</button>
+            <a href="index.html"><button class="btn-3d" ><i style="color: red; text-decoration: none;"><i class="fa fa-home"></i></button></a>
+        </div>
+
+    </div>
+
+    <div id="modal-petunjuk" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3>💡 Petunjuk Permainan</h3>
+            <h4>Babak 1: Jodohkan Gambar & Keterangan</h4>
+            <ul>
+                <li>Di babak ini, kamu akan melihat daftar keterangan tentang Hak, Kewajiban, dan Tanggung Jawab dengan angka 1-9 secara acak.</li>
+                <li>Di bawahnya, ada kartu-kartu bergambar angka 1-9 yang bisa kamu seret (drag).</li>
+                <li>Tugasmu adalah menyeret gambar angka ke kategori yang tepat (Hak, Kewajiban, atau Tanggung Jawab) berdasarkan keterangannya.</li>
+                <li>Contoh: Jika keterangan nomor 1 adalah "Mendapat nilai dari guru" (termasuk Hak), maka seret kartu angka 1 ke kotak "Hak".</li>
+                <li>Selesaikan semua jodoh dalam waktu yang ditentukan untuk lanjut ke Babak 2!</li>
+            </ul>
+            <h4>Babak 2: Tebak Kata Tersembunyi</h4>
+            <ul>
+                <li>Di babak ini, kamu akan melihat kotak besar berisi huruf-huruf acak dan daftar kata yang harus kamu temukan.</li>
+                <li>Kata-kata tersebut tersembunyi secara horizontal atau vertikal.</li>
+                <li>Untuk menemukan kata, sentuh atau klik huruf pertama pada kata, lalu seret jarimu/kursor ke huruf terakhir kata tersebut (lurus, tidak boleh diagonal).</li>
+                <li>Jika tebakanmu benar, kata akan ditandai dan kamu mendapatkan skor.</li>
+                <li>Temukan semua kata sebelum waktu habis untuk memenangkan permainan!</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="modal-tujuan" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3>🎯 Tujuan Pembelajaran</h3>
+            <p>Melalui permainan "Petualangan Hak & Kewajiban" ini, diharapkan pemain dapat:</p>
+            <ul>
+                <li>Memahami dan membedakan konsep **Hak**, **Kewajiban**, dan **Tanggung Jawab** dalam kehidupan sehari-hari.</li>
+                <li>Mengidentifikasi berbagai contoh Hak, Kewajiban, dan Tanggung Jawab.</li>
+                <li>Meningkatkan kemampuan literasi dan kosa kata terkait topik Hak dan Kewajiban.</li>
+                <li>Mengembangkan kecepatan berpikir dan ketelitian dalam memecahkan masalah.</li>
+                <li>Menumbuhkan kesadaran akan pentingnya menjalankan Kewajiban dan Tanggung Jawab untuk mendapatkan Hak.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="modal-pengembang" class="modal">
+        <div class="modal-content profile-modal">
+            <span class="close-button">&times;</span>
+            <div class="modal-main-content">
+                <div class="profile-pic-container">
+                    <img id="profileImage" src="https://lh3.googleusercontent.com/d/1tFGMHXxFlkz5Ij0nHbxddt4aF-MfnTio" alt="Foto Profil"> </div>
+                <div class="profile-text">
+                    <h2>BINTANG ADHI PERMANA</h2>
+                    <p>SDN Lubang Buaya 01, Jakarta Timur</p>
+                    <p class="kontak">Kontak:</p>
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com/bintang.a.permana.1/" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="https://www.youtube.com/@bangbin1" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a> <a href="https://wa.me/6281310051985" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <img src="https://lh3.googleusercontent.com/d/1ivUN8B8xdd4R8Kef_-wEqNx56_eeUv4w" alt="Background" class="profile-bg-img"> </div>
+    </div>
+
+    <script>
+        const GAME_DURATION_ROUND1 = 30; // Durasi permainan Babak 1 dalam detik
+        const GAME_DURATION_ROUND2 = 60; // Durasi permainan Babak 2 dalam detik (meningkat karena lebih kompleks)
+
+        const statements = [
+            { id: 1, text: "Mendapat nilai dari guru", category: "hak" },
+            { id: 2, text: "Mengerjakan PR", category: "kewajiban" },
+            { id: 3, text: "Menjaga mainan agar awet", category: "tanggungJawab" },
+            { id: 4, text: "Bermain saat istirahat", category: "hak" },
+            { id: 5, text: "Memakai seragam sekolah", category: "kewajiban" },
+            { id: 6, text: "Mengakui jika berbuat salah", category: "tanggungJawab" },
+            { id: 7, text: "Mendapat kasih sayang", category: "hak" },
+            { id: 8, text: "Piket membersihkan kelas", category: "kewajiban" },
+            { id: 9, text: "Menjaga kebersihan sekolah", category: "tanggungJawab" },
+        ];
+        const categories = {
+            hak: { title: "Hak", elementId: "box-hak" },
+            kewajiban: { title: "Kewajiban", elementId: "box-kewajiban" },
+            tanggungJawab: { title: "Tanggung Jawab", elementId: "box-tanggungJawab" },
+        };
+
+        const wordsForRound2 = [
+            { word: "HAK", clue: "Sesuatu yang seharusnya kita dapatkan atau miliki.", found: false },
+            { word: "WAJIB", clue: "Singkatan dari KEWAJIBAN, yang harus dilakukan.", found: false },
+            { word: "TANGGUNG", clue: "Bagian dari TANGGUNG JAWAB yang berarti beban atau janji.", found: false },
+            { word: "GURU", clue: "Orang yang mengajarkan ilmu di sekolah.", found: false },
+            { word: "BELAJAR", clue: "Kegiatan utama siswa di sekolah.", found: false },
+            { word: "JUJUR", clue: "Sikap tidak berbohong.", found: false },
+            { word: "DISIPLIN", clue: "Sikap patuh pada aturan.", found: false },
+            { word: "PIKET", clue: "Jadwal membersihkan kelas.", found: false },
+        ];
+        const GRID_SIZE = 10; // Ukuran grid (10x10)
+        const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        const startScreen = document.getElementById('start-screen');
+        const gameArea = document.getElementById('game-area'); // Round 1 game area
+        const round2Screen = document.getElementById('round2-screen'); // Round 2 game area
+        const endScreen = document.getElementById('end-screen');
+
+        const startBtn = document.getElementById('start-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        // New Info Buttons
+        const btnPetunjuk = document.getElementById('btn-petunjuk');
+        const btnTujuan = document.getElementById('btn-tujuan');
+        const btnPengembang = document.getElementById('btn-pengembang');
+
+        // Modals
+        const modalPetunjuk = document.getElementById('modal-petunjuk');
+        const modalTujuan = document.getElementById('modal-tujuan');
+        const modalPengembang = document.getElementById('modal-pengembang');
+
+        // Round 1 elements
+        const cardsPool = document.getElementById('cards-pool');
+        const statementsTextPool = document.getElementById('statements-text-pool');
+        const categoriesContainer = document.getElementById('categories-container');
+        const scoreEl = document.getElementById('score');
+        const timeEl = document.getElementById('time');
+        const timerContainer = document.getElementById('timer-container');
+        const feedbackEl = document.getElementById('feedback');
+
+        // Round 2 elements
+        const score2El = document.getElementById('score2');
+        const time2El = document.getElementById('time2');
+        const timerContainer2 = document.getElementById('timer-container-round2');
+        const wordClueContainer = document.getElementById('word-clue-container');
+        const wordsToFindList = document.getElementById('words-to-find');
+        const wordGridContainer = document.getElementById('word-grid-container');
+        const feedbackRound2El = document.getElementById('feedback-round2');
+
+        // End screen elements
+        const finalTitleEl = document.getElementById('final-title');
+        const finalScoreEl = document.getElementById('final-score');
+        const finalMessageEl = document.getElementById('final-message');
+        const animationContainer = document.getElementById('end-animation-container');
+
+        let currentRound = 1;
+        let totalScore = 0; // Total score across all rounds
+        let matchedCards = 0; // For Round 1
+        let timer, timeLeft;
+        let audioCtx;
+
+        // Round 2 specific variables
+        let grid = [];
+        let selectedCells = [];
+        let startCellCoords = null; // Store {row, col}
+        let availableWordsForRound2 = []; // A copy to manage 'found' status
+
+        // --- Utility Functions ---
+        function playSound(type) {
+            if (!audioCtx) return;
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+
+            switch (type) {
+                case 'correct':
+                    oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3);
+                    break;
+                case 'wrong':
+                    oscillator.type = 'square';
+                    oscillator.frequency.setValueAtTime(150, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.2);
+                    break;
+                case 'click':
+                    oscillator.frequency.setValueAtTime(600, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.1);
+                    break;
+                case 'tick':
+                    oscillator.type = 'square';
+                    oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.05);
+                    break;
+                case 'win':
+                    const now = audioCtx.currentTime;
+                    oscillator.frequency.setValueAtTime(523.25, now);
+                    oscillator.frequency.linearRampToValueAtTime(659.25, now + 0.1);
+                    oscillator.frequency.linearRampToValueAtTime(783.99, now + 0.2);
+                    gainNode.gain.exponentialRampToValueAtTime(0.00001, now + 0.5);
+                    break;
+            }
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.5);
+        }
+
+        function initAudio() {
+             if (!audioCtx) {
+                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+        
+        startBtn.addEventListener('click', () => { initAudio(); playSound('click'); startGame(); });
+        restartBtn.addEventListener('click', () => { playSound('click'); startGame(); });
+
+        // --- Modal Event Listeners ---
+        btnPetunjuk.addEventListener('click', () => { playSound('click'); openModal(modalPetunjuk); });
+        btnTujuan.addEventListener('click', () => { playSound('click'); openModal(modalTujuan); });
+        btnPengembang.addEventListener('click', () => { playSound('click'); openModal(modalPengembang); });
+
+        // Get all close buttons and attach event listener
+        document.querySelectorAll('.close-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                playSound('click');
+                closeModal(e.target.closest('.modal'));
+            });
+        });
+
+        // Close modal when clicking outside of it
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                playSound('click');
+                closeModal(e.target);
+            }
+        });
+
+        function openModal(modalElement) {
+            modalElement.style.display = 'flex'; // Use flex to center content
+        }
+
+        function closeModal(modalElement) {
+            modalElement.style.display = 'none';
+        }
+        
+        function startGame() {
+            currentRound = 1;
+            totalScore = 0;
+            matchedCards = 0;
+            scoreEl.innerText = totalScore;
+            feedbackEl.innerText = "";
+            animationContainer.innerHTML = '';
+            
+            startScreen.style.display = 'none';
+            endScreen.style.display = 'none';
+            round2Screen.style.display = 'none'; 
+            gameArea.style.display = 'flex'; 
+
+            setupRound1();
+            startTimer(GAME_DURATION_ROUND1, timeEl, timerContainer, () => endGame('timeup_round1'));
+        }
+
+        function startTimer(duration, timeElement, timerContainerElement, onTimeUpCallback) {
+            timeLeft = duration;
+            timeElement.innerText = timeLeft;
+            timerContainerElement.classList.remove('warning');
+            clearInterval(timer); 
+            timer = setInterval(() => {
+                timeLeft--;
+                timeElement.innerText = timeLeft;
+                if (timeLeft <= 5 && timeLeft > 0) {
+                    timerContainerElement.classList.add('warning');
+                    playSound('tick');
+                }
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    onTimeUpCallback();
+                }
+            }, 1000);
+        }
+
+        /* --- ROUND 1 FUNCTIONS --- */
+        function setupRound1() {
+            cardsPool.innerHTML = '';
+            statementsTextPool.innerHTML = ''; 
+            categoriesContainer.innerHTML = '';
+
+            for (const key in categories) {
+                const category = categories[key];
+                const box = document.createElement('div');
+                box.id = category.elementId;
+                box.className = 'category-box';
+                box.dataset.category = key;
+                box.innerHTML = `<h2>${category.title}</h2>`;
+                categoriesContainer.appendChild(box);
+                
+                box.addEventListener('dragover', e => { e.preventDefault(); box.classList.add('drag-over'); });
+                box.addEventListener('dragleave', () => box.classList.remove('drag-over'));
+                box.addEventListener('drop', onDrop);
+            }
+
+            const shuffledStatementsText = [...statements].sort(() => Math.random() - 0.5);
+            shuffledStatementsText.forEach(statement => {
+                const textItem = document.createElement('div');
+                textItem.className = 'statement-text-item';
+                textItem.innerText = `${statement.id}. ${statement.text}`;
+                statementsTextPool.appendChild(textItem);
+            });
+
+            const shuffledNumberCards = [...statements].sort(() => Math.random() - 0.5);
+            shuffledNumberCards.forEach(statement => {
+                const card = document.createElement('div');
+                card.id = `card-${statement.id}`;
+                card.className = 'statement-card';
+                card.draggable = true;
+                card.innerText = statement.id; 
+                card.dataset.statementId = statement.id; 
+                card.dataset.category = statement.category; 
+                cardsPool.appendChild(card);
+                
+                card.addEventListener('dragstart', onDragStartMouse);
+                card.addEventListener('touchstart', onTouchStart, { passive: false });
+            });
+
+            document.addEventListener('touchmove', onTouchMove, { passive: false });
+            document.addEventListener('touchend', onTouchEnd);
+        }
+        
+        function handleMatch(card, dropZone) {
+            const cardCategory = card.dataset.category;
+            const zoneCategory = dropZone.dataset.category;
+
+            if (cardCategory === zoneCategory) {
+                playSound('correct');
+                feedbackEl.innerText = "Benar!";
+                feedbackEl.style.color = '#28a745';
+                totalScore += 10;
+                scoreEl.innerText = totalScore;
+                card.draggable = false;
+                card.className = 'statement-card matched'; 
+                card.style = ''; 
+                dropZone.appendChild(card);
+                matchedCards++;
+                if (matchedCards === statements.length) {
+                    clearInterval(timer); 
+                    setTimeout(() => startRound2(), 1000); // Go to Round 2!
+                }
+            } else {
+                playSound('wrong');
+                feedbackEl.innerText = "Kurang Tepat!";
+                feedbackEl.style.color = '#dc3545';
+                cardsPool.appendChild(card); 
+                card.style.position = 'static'; 
+                card.style.width = 'auto'; 
+                card.style.height = 'auto'; 
+            }
+            setTimeout(() => { feedbackEl.innerText = "" }, 1500);
+        }
+
+        function onDragStartMouse(e) { 
+            e.dataTransfer.setData('text/plain', e.target.id); 
+            e.target.classList.add('dragging');
+        }
+
+        function onDrop(e) {
+            e.preventDefault();
+            const dropZone = e.currentTarget;
+            dropZone.classList.remove('drag-over');
+            const cardId = e.dataTransfer.getData('text/plain');
+            const draggedCard = document.getElementById(cardId);
+            draggedCard.classList.remove('dragging');
+            handleMatch(draggedCard, dropZone);
+        }
+
+        function onTouchStart(e) {
+            e.preventDefault();
+            activeCard = e.currentTarget;
+            const rect = activeCard.getBoundingClientRect();
+            offsetX = e.touches[0].clientX - rect.left;
+            offsetY = e.touches[0].clientY - rect.top;
+            activeCard.style.width = `${rect.width}px`;
+            activeCard.style.height = `${rect.height}px`;
+            activeCard.classList.add('dragging');
+            activeCard.style.left = `${e.touches[0].clientX - offsetX}px`;
+            activeCard.style.top = `${e.touches[0].clientY - offsetY}px`;
+        }
+
+        function onTouchMove(e) {
+            if (!activeCard) return;
+            e.preventDefault();
+            const x = e.touches[0].clientX, y = e.touches[0].clientY;
+            activeCard.style.left = `${x - offsetX}px`;
+            activeCard.style.top = `${y - offsetY}px`;
+            document.querySelectorAll('.category-box').forEach(box => {
+                const rect = box.getBoundingClientRect();
+                box.classList.toggle('drag-over', x > rect.left && x < rect.right && y > rect.top && y < rect.bottom);
+            });
+        }
+
+        function onTouchEnd(e) {
+            if (!activeCard) return;
+            activeCard.classList.remove('dragging');
+            const x = e.changedTouches[0].clientX, y = e.changedTouches[0].clientY;
+            activeCard.style.display = 'none'; 
+            const elementBelow = document.elementFromPoint(x, y);
+            activeCard.style.display = 'block'; 
+            
+            let dropZone = elementBelow ? elementBelow.closest('.category-box') : null;
+            
+            document.querySelectorAll('.category-box').forEach(box => box.classList.remove('drag-over'));
+            
+            if (dropZone) {
+                handleMatch(activeCard, dropZone);
+            } else {
+                cardsPool.appendChild(activeCard);
+                activeCard.style.position = 'static'; 
+                activeCard.style.width = 'auto'; 
+                activeCard.style.height = 'auto'; 
+            }
+            activeCard = null;
+        }
+
+        /* --- ROUND 2 FUNCTIONS (WORD SEARCH) --- */
+        let isSwiping = false; 
+        
+        function startRound2() {
+            currentRound = 2;
+            gameArea.style.display = 'none'; 
+            round2Screen.style.display = 'flex'; 
+
+            score2El.innerText = totalScore; 
+            foundWordsCount = 0;
+            availableWordsForRound2 = JSON.parse(JSON.stringify(wordsForRound2)); 
+            
+            setupWordSearchGrid();
+            startTimer(GAME_DURATION_ROUND2, time2El, timerContainer2, () => endGame('timeup_round2'));
+        }
+
+        function setupWordSearchGrid() {
+            wordGridContainer.innerHTML = '';
+            wordsToFindList.innerHTML = '';
+            grid = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(''));
+            
+            wordGridContainer.style.gridTemplateColumns = `repeat(${GRID_SIZE}, 1fr)`;
+
+            const wordsToPlace = [...availableWordsForRound2].sort(() => Math.random() - 0.5);
+
+            wordsToPlace.forEach(wordObj => {
+                let placed = false;
+                let attempts = 0;
+                const maxAttempts = 100;
+
+                while (!placed && attempts < maxAttempts) {
+                    const direction = Math.random() < 0.5 ? 'horizontal' : 'vertical';
+                    const startRow = Math.floor(Math.random() * GRID_SIZE);
+                    const startCol = Math.floor(Math.random() * GRID_SIZE);
+                    
+                    if (canPlaceWord(wordObj.word, startRow, startCol, direction)) {
+                        placeWord(wordObj.word, startRow, startCol, direction);
+                        placed = true;
+                    }
+                    attempts++;
+                }
+            });
+
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    if (grid[r][c] === '') {
+                        grid[r][c] = ALPHABET.charAt(Math.floor(Math.random() * ALPHABET.length));
+                    }
+                }
+            }
+
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'grid-cell';
+                    cell.innerText = grid[r][c];
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    
+                    // Mouse events
+                    cell.addEventListener('mousedown', onGridMouseDown);
+                    cell.addEventListener('mouseover', onGridMouseOver);
+                    cell.addEventListener('mouseup', onGridMouseUp);
+
+                    // Touch events for swipe
+                    cell.addEventListener('touchstart', onGridTouchStart, { passive: false });
+                    cell.addEventListener('touchmove', onGridTouchMove, { passive: false });
+                    cell.addEventListener('touchend', onGridTouchEnd, { passive: false });
+
+                    wordGridContainer.appendChild(cell);
+                }
+            }
+
+            availableWordsForRound2.forEach(wordObj => {
+                const listItem = document.createElement('div');
+                listItem.className = 'word-list-item';
+                listItem.id = `word-to-find-${wordObj.word}`;
+                listItem.innerText = wordObj.word;
+                wordsToFindList.appendChild(listItem);
+            });
+        }
+
+        function canPlaceWord(word, r, c, direction) {
+            if (direction === 'horizontal') {
+                if (c + word.length > GRID_SIZE) return false;
+                for (let i = 0; i < word.length; i++) {
+                    if (grid[r][c + i] !== '' && grid[r][c + i] !== word[i]) {
+                        return false;
+                    }
+                }
+            } else { // vertical
+                if (r + word.length > GRID_SIZE) return false;
+                for (let i = 0; i < word.length; i++) {
+                    if (grid[r + i][c] !== '' && grid[r + i][c] !== word[i]) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function placeWord(word, r, c, direction) {
+            if (direction === 'horizontal') {
+                for (let i = 0; i < word.length; i++) {
+                    grid[r][c + i] = word[i];
+                }
+            } else { // vertical
+                for (let i = 0; i < word.length; i++) {
+                    grid[r + i][c] = word[i];
+                }
+            }
+        }
+
+        // --- Mouse Selection Handlers ---
+        let isMouseDown = false;
+        function onGridMouseDown(e) {
+            isMouseDown = true;
+            startCellCoords = { row: parseInt(e.target.dataset.row), col: parseInt(e.target.dataset.col) };
+            updateSelection(e.target);
+        }
+
+        function onGridMouseOver(e) {
+            if (!isMouseDown) return;
+            updateSelection(e.target);
+        }
+
+        function onGridMouseUp(e) {
+            isMouseDown = false;
+            checkSelectedWord();
+            resetSelection();
+        }
+
+        // --- Touch Selection Handlers ---
+        let touchStartCell = null;
+        let touchCurrentCell = null;
+
+        function onGridTouchStart(e) {
+            e.preventDefault(); 
+            isSwiping = true;
+            const touch = e.touches[0];
+            const targetCell = document.elementFromPoint(touch.clientX, touch.clientY);
+            if (targetCell && targetCell.classList.contains('grid-cell')) {
+                touchStartCell = targetCell;
+                startCellCoords = { row: parseInt(targetCell.dataset.row), col: parseInt(targetCell.dataset.col) };
+                updateSelection(targetCell);
+            }
+        }
+
+        function onGridTouchMove(e) {
+            e.preventDefault(); 
+            if (!isSwiping || !touchStartCell) return;
+            const touch = e.touches[0];
+            const targetCell = document.elementFromPoint(touch.clientX, touch.clientY);
+            if (targetCell && targetCell.classList.contains('grid-cell') && targetCell !== touchCurrentCell) {
+                touchCurrentCell = targetCell;
+                updateSelection(targetCell);
+            }
+        }
+
+        function onGridTouchEnd(e) {
+            e.preventDefault(); 
+            if (!isSwiping) return;
+            isSwiping = false;
+            checkSelectedWord();
+            resetSelection();
+            touchStartCell = null;
+            touchCurrentCell = null;
+        }
+
+        // --- Common Selection Logic ---
+        function updateSelection(currentCellElement) {
+            selectedCells.forEach(cell => cell.classList.remove('selected'));
+            selectedCells = [];
+
+            const startR = startCellCoords.row;
+            const startC = startCellCoords.col;
+            const currentR = parseInt(currentCellElement.dataset.row);
+            const currentC = parseInt(currentCellElement.dataset.col);
+
+            const isHorizontal = startR === currentR;
+            const isVertical = startC === currentC;
+
+            if (isHorizontal) { 
+                for (let c = Math.min(startC, currentC); c <= Math.max(startC, currentC); c++) {
+                    const cell = wordGridContainer.querySelector(`[data-row="${startR}"][data-col="${c}"]`);
+                    selectedCells.push(cell);
+                    cell.classList.add('selected');
+                }
+            } else if (isVertical) { 
+                for (let r = Math.min(startR, currentR); r <= Math.max(startR, currentR); r++) {
+                    const cell = wordGridContainer.querySelector(`[data-row="${r}"][data-col="${startC}"]`);
+                    selectedCells.push(cell);
+                    cell.classList.add('selected');
+                }
+            } else {
+                selectedCells.push(currentCellElement);
+                currentCellElement.classList.add('selected');
+            }
+        }
+
+        function resetSelection() {
+            setTimeout(() => {
+                selectedCells.forEach(cell => cell.classList.remove('selected'));
+                selectedCells = [];
+                startCellCoords = null;
+            }, 200); 
+        }
+
+        function checkSelectedWord() {
+            if (selectedCells.length === 0) return;
+
+            let currentSelection = '';
+            const firstCell = selectedCells[0];
+            const lastCell = selectedCells[selectedCells.length - 1];
+
+            const startR = parseInt(firstCell.dataset.row);
+            const startC = parseInt(firstCell.dataset.col);
+            const endR = parseInt(lastCell.dataset.row);
+            const endC = parseInt(lastCell.dataset.col);
+
+            const isHorizontal = startR === endR;
+            const isVertical = startC === endC;
+
+            if (selectedCells.length === 1) { 
+                 playSound('wrong');
+                 feedbackRound2El.innerText = "Pilih lebih dari satu huruf!";
+                 feedbackRound2El.style.color = '#dc3545';
+                 setTimeout(() => feedbackRound2El.innerText = "", 1500);
+                 return;
+            }
+
+            if (!isHorizontal && !isVertical) {
+                playSound('wrong');
+                feedbackRound2El.innerText = "Pilihan tidak valid (harus lurus!)";
+                feedbackRound2El.style.color = '#dc3545';
+                setTimeout(() => feedbackRound2El.innerText = "", 1500);
+                return;
+            }
+
+            if (isHorizontal) {
+                selectedCells.sort((a, b) => parseInt(a.dataset.col) - parseInt(b.dataset.col));
+            } else { 
+                selectedCells.sort((a, b) => parseInt(a.dataset.row) - parseInt(b.dataset.row));
+            }
+
+            selectedCells.forEach(cell => {
+                currentSelection += cell.innerText;
+            });
+
+            let foundWordObj = availableWordsForRound2.find(
+                wordObj => (wordObj.word === currentSelection || wordObj.word === currentSelection.split('').reverse().join(''))
+            );
+
+            if (foundWordObj && !foundWordObj.found) {
+                playSound('correct');
+                feedbackRound2El.innerText = `Ditemukan: ${foundWordObj.word}!`;
+                feedbackRound2El.style.color = '#28a745';
+                totalScore += (currentSelection.length * 10); 
+                score2El.innerText = totalScore;
+                
+                foundWordObj.found = true; 
+                document.getElementById(`word-to-find-${foundWordObj.word}`).classList.add('found');
+                
+                selectedCells.forEach(cell => cell.classList.add('found-highlight'));
+                
+                selectedCells.forEach(cell => {
+                    cell.removeEventListener('mousedown', onGridMouseDown);
+                    cell.removeEventListener('mouseover', onGridMouseOver);
+                    cell.removeEventListener('mouseup', onGridMouseUp);
+                    cell.removeEventListener('touchstart', onGridTouchStart);
+                    cell.removeEventListener('touchmove', onGridTouchMove);
+                    cell.removeEventListener('touchend', onGridTouchEnd);
+                    cell.style.cursor = 'default'; 
+                    cell.style.pointerEvents = 'none'; 
+                });
+
+                let allWordsFound = availableWordsForRound2.every(word => word.found);
+                if (allWordsFound) {
+                    clearInterval(timer);
+                    setTimeout(() => endGame('win_round2'), 1500);
+                }
+            } else {
+                playSound('wrong');
+                feedbackRound2El.innerText = "Tidak ditemukan atau sudah ditemukan!";
+                feedbackRound2El.style.color = '#dc3545';
+            }
+            setTimeout(() => { feedbackRound2El.innerText = "" }, 1500);
+        }
+
+        /* --- END GAME FUNCTIONS --- */
+        function createFallingFlowers() {
+            for (let i = 0; i < 30; i++) {
+                const flower = document.createElement('div');
+                flower.className = 'flower';
+                flower.style.left = `${Math.random() * 100}vw`;
+                flower.style.animationDuration = `${Math.random() * 3 + 4}s`;
+                flower.style.animationDelay = `${Math.random() * 3}s`;
+                flower.style.transform = `scale(${Math.random() * 0.5 + 0.5})`;
+                animationContainer.appendChild(flower);
+            }
+        }
+        
+        function endGame(reason) {
+            clearInterval(timer); 
+            gameArea.style.display = 'none';
+            round2Screen.style.display = 'none';
+            endScreen.style.display = 'block';
+            finalScoreEl.innerText = totalScore;
+            
+            if (reason === 'timeup_round1') {
+                playSound('wrong');
+                finalTitleEl.innerText = "Waktu Habis di Babak 1!";
+                finalMessageEl.innerText = "Kamu kehabisan waktu di babak pertama. Coba lagi ya!";
+            } else if (reason === 'win_round1') { 
+                // This state is now handled by directly transitioning to Round 2
+            } else if (reason === 'timeup_round2') {
+                playSound('wrong');
+                finalTitleEl.innerText = "Waktu Habis di Babak 2!";
+                const remainingWords = availableWordsForRound2.filter(word => !word.found).map(word => `"${word.word}"`).join(', ');
+                finalMessageEl.innerText = `Kamu tidak berhasil menemukan semua kata. Kata yang belum ditemukan: ${remainingWords}. Ayo coba lagi!`;
+            } else if (reason === 'win_round2') {
+                playSound('win');
+                finalTitleEl.innerText = "Selamat! Kamu Pemenang!";
+                finalMessageEl.innerText = "Kamu berhasil menyelesaikan semua tantangan!";
+                createFallingFlowers();
+            } else { 
+                 finalTitleEl.innerText = "Permainan Selesai!";
+                 finalMessageEl.innerText = "Kamu telah mencoba yang terbaik!";
+            }
+        }
+    </script>
+</body>
+</html>
