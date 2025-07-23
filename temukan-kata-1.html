@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEMUKAN KATA</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+	<link rel="icon" type="image/x-icon" href="https://lh3.googleusercontent.com/d/1_4llqCMNoBDmwDHsI7RYsCM6rSK5wEjw">		
+    <style>
+        /* --- Global Styles & Animations --- */
+        :root {
+            --blue: #3498db;
+            --green: #2ecc71;
+            --red: #e74c3c;
+            --yellow: #f1c40f;
+            --dark-blue: #2c3e50;
+            --light-gray: #ecf0f1;
+            --navy: #2980b9;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(46, 204, 113, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+        }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideIn { from { transform: translateY(-30px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #e9eef3;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            perspective: 1500px;
+            /* Mencegah seleksi teks yang tidak diinginkan di mobile */
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .stage-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        h1, h2 {
+            color: var(--dark-blue);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        button {
+            padding: 15px 35px;
+            font-size: 18px;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            font-weight: bold;
+            letter-spacing: 1px;
+            position: relative;
+        }
+        button:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        }
+        button:active {
+            transform: translateY(1px) scale(0.95);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* --- Start & End Screen Styles --- */
+        #start-screen, #end-screen { display: flex; min-height: 90vh; }
+        #start-screen h1, #end-screen h1 { font-size: 3rem; }
+        #start-button {
+            background: linear-gradient(45deg, var(--green), #27ae60);
+            animation: pulse 2s infinite;
+            margin-top: 20px;
+        }
+        #restart-button { background: linear-gradient(45deg, var(--blue), var(--navy)); }
+
+        /* --- New Modal Styles --- */
+        .modal-buttons-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .modal-trigger-btn {
+            background: linear-gradient(45deg, var(--blue), var(--navy));
+            font-size: 16px;
+            padding: 10px 25px;
+        }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: slideIn 0.4s ease-out;
+            text-align: left;
+        }
+        .modal-content.blue-modal {
+            background: linear-gradient(135deg, var(--blue), var(--navy));
+            color: white;
+        }
+        .modal-content h2 {
+            color: inherit;
+            margin-top: 0;
+            text-align: center;
+        }
+        .modal-content ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .modal-content ul li {
+            background-color: rgba(255,255,255,0.1);
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+        }
+        .close-modal {
+            color: white;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .close-modal:hover {
+            transform: scale(1.2);
+        }
+
+        /* --- Timer Progress Bar --- */
+        .timer-container { width: 80%; max-width: 400px; height: 12px; background-color: #dbe2e8; border-radius: 10px; margin: 20px auto; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+        .timer-bar { height: 100%; width: 100%; border-radius: 10px; transition: width 1s linear, background-color 0.5s ease; background-color: var(--green); }
+        .timer-bar.yellow { background-color: var(--yellow); }
+        .timer-bar.red { background-color: var(--red); }
+        
+        /* --- STAGE 1: 3D Spin Wheel --- */
+        #stage-1 .wheel-container { position: relative; display: inline-block; perspective: 1200px; margin: 30px 0; transition: transform 0.4s ease; }
+        #stage-1 .wheel-container:hover { transform: rotateY(15deg) rotateX(5deg); }
+        #stage-1 canvas { border-radius: 50%; box-shadow: 0 20px 40px rgba(0,0,0,0.25), inset 0 0 15px rgba(0,0,0,0.3); transform-style: preserve-3d; }
+        #stage-1 .pointer { position: absolute; top: -30px; left: 50%; transform: translateX(-50%) translateZ(50px); width: 40px; height: 60px; background: var(--red); clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
+        #stage-1 #spinBtn1 { background: linear-gradient(45deg, var(--green), #27ae60); animation: pulse 2s infinite; }
+        #stage-1 .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px); }
+        #stage-1 .modal-content { background-color: #fff; margin: 5% auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 2000px; }
+        #stage-1 .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        /* PERBAIKAN CSS untuk DRAG */
+        #stage-1 .letter { 
+            display: inline-block; margin: 8px; padding: 15px 25px; 
+            background: linear-gradient(135deg, var(--blue), var(--navy)); 
+            color: white; font-weight: bold; font-size: 24px; 
+            border-radius: 12px; cursor: grab; 
+            touch-action: none; /* Properti penting untuk mencegah browser handle gesture */
+            position: relative; /* Agar z-index berfungsi */
+        }
+        #stage-1 .drop-target { display: inline-block; margin: 8px; padding: 30px 18px; min-width: 30px; background: var(--light-gray); border: 3px dashed #95a5a6; font-size: 24px; text-align: center; border-radius: 12px; }
+        #stage-1 .alert-message { margin-top: 20px; font-size: 18px; padding: 15px; border-radius: 10px; }
+        #stage-1 .word-image { width: 120px; height: 120px; object-fit: contain; margin: 20px auto; display: block; }
+        
+        /* --- STAGE 2 & 3: 3D Cards --- */
+        .card { width: 120px; height: 150px; background-color: white; border-radius: 10px; box-shadow: 0 8px 16px rgba(0,0,0,0.15); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; transform-style: preserve-3d; }
+        .card:hover { transform: translateY(-10px) rotateY(10deg) scale(1.05); box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
+        .card.matched { background-color: #c8e6c9; cursor: default; transform: scale(0.95); opacity: 0.7; }
+        .card.matched::after { content: "✓"; position: absolute; top: 5px; right: 5px; color: #2e7d32; font-size: 20px; }
+        #stage-2 .game-container { display: flex; flex-direction: column; align-items: center; gap: 20px; max-width: 2000px; }
+        #stage-2 .card-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+        #stage-2 .card img { width: 80px; height: 80px; object-fit: contain; margin-bottom: 10px; }
+        #stage-2 button { background-color: var(--blue); }
+        #stage-2 .score, #stage-2 .timer-label { font-size: 18px; margin-top: 10px; color: var(--dark-blue); }
+        #stage-2 .message { font-size: 24px; font-weight: bold; color: #27ae60; margin-top: 20px; height: 30px; }
+        #stage-3 .game-container { display: flex; flex-direction: column; gap: 20px; max-width: 2000px; }
+        #stage-3 .images-container, #stage-3 .words-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; width: 100%; }
+        #stage-3 .card { width: 150px; min-height: 180px; padding: 10px; }
+        #stage-3 .card img { width: 100px; height: 100px; object-fit: contain; }
+        #stage-3 .card.selected { border: 3px solid var(--blue); transform: translateY(-5px) scale(1.08); }
+        #stage-3 .stats { display: flex; justify-content: space-around; width: 100%; max-width: 1000px; margin: 20px 0; background-color: white; padding: 15px; border-radius: 10px;}
+        #stage-3 .stat-value { font-size: 24px; font-weight: bold; color: var(--blue); }
+        #stage-3 .stat-label { font-size: 14px; color: #7f8c8d; }
+        #stage-3 .message { font-size: 22px; font-weight: bold; margin: 15px 0; height: 30px; color: #27ae60;}
+        #stage-3 button { background-color: var(--blue); }
+        
+        /* --- Finale Effects --- */
+        .confetti, .falling-flower { position: fixed; top: -10%; z-index: 2000; pointer-events: none; animation: fallAndRotate 5s linear forwards; }
+        .falling-flower { width: 30px; height: auto; }
+        @keyframes fallAndRotate { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <div id="start-screen" class="stage-container">
+        <h1>TEMUKAN KATA TEMUKAN KALIMAT</h1>
+        <p>Selesaikan 3 stage permainan untuk menguji pengetahuan dan ketangkasanmu. Klik tombol di bawah untuk memulai petualangan!</p>
+        <div class="modal-buttons-container">
+            <button class="modal-trigger-btn" data-modal-target="petunjukModal">Petunjuk</button>
+            <button class="modal-trigger-btn" data-modal-target="tujuanModal">Tujuan Pembelajaran</button>
+            <button class="modal-trigger-btn" data-modal-target="profilModal">Profil</button>
+			<a href="index.html"><button class="modal-trigger-btn" ><i style="color: red; text-decoration: none;"><i class="fa fa-home"></i></button></a>
+        </div>
+        <button id="start-button">Mulai Bermain</button>
+    </div>
+
+    <div id="petunjukModal" class="modal-overlay">
+        <div class="modal-content blue-modal">
+            <span class="close-modal">×</span>
+            <h2>Petunjuk Permainan</h2>
+            <ul>
+                <li><strong>Stage 1: Tebak Kata</strong><br>Putar roda untuk mendapatkan gambar, lalu susun huruf acak menjadi kata yang benar.</li>
+                <li><strong>Stage 2: Jodohkan Gambar</strong><br>Buka dua kartu untuk mencari pasangan gambar yang identik. Ingat posisi setiap kartu!</li>
+                <li><strong>Stage 3: Jodohkan Kalimat</strong><br>Jodohkan kartu gambar di baris atas dengan kartu kalimat yang maknanya sesuai di baris bawah.</li>
+            </ul>
+        </div>
+    </div>
+    <div id="tujuanModal" class="modal-overlay">
+        <div class="modal-content blue-modal">
+            <span class="close-modal">×</span>
+            <h2>Tujuan Pembelajaran</h2>
+            <ul>
+                <li>Meningkatkan kosakata dan kemampuan mengeja kata.</li>
+                <li>Melatih daya ingat visual dan kemampuan konsentrasi.</li>
+                <li>Mengembangkan kemampuan literasi dan pemahaman membaca.</li>
+                <li>Menjadikan proses belajar lebih interaktif dan menyenangkan.</li>
+            </ul>
+        </div>
+    </div>
+	
+
+
+    <div id="profilModal" class="modal-overlay">
+        <div class="modal-content blue-modal" style="display: flex; flex-direction: column; padding: 20px; border-radius: 15px; min-width: 400px; align-items: center;">
+            <div style="display: flex; align-items: center; width: 100%; margin-bottom: 5px;">
+                <div class="image-container" style="flex-shrink: 0; margin-right: 20px; overflow: hidden; border-radius: 50%;">
+                    <img src="https://lh3.googleusercontent.com/d/1tFGMHXxFlkz5Ij0nHbxddt4aF-MfnTio" alt="Foto Profil Bintang Adhi Permana" style="width: 100px; height: 100px; object-fit: contain; display: block;">
+                </div>
+                <div class="text-container" style="color: white; text-align: left; flex-grow: 1;">
+                    <h1 style="margin-top: 0; margin-bottom: 5px; font-size: 1.5em;">BINTANG ADHI PERMANA</h1>
+                    <p style="margin-bottom: 5px; font-size: 0.9em;">SDN Lubang Buaya 01, Jakarta Timur</p><br>
+                    <p style="margin-bottom: 5px; font-weight: bold; font-size: 0.9em;">Kontak:</p>
+                    <div style="font-size: 1.5em;">
+                        <a href="https://www.facebook.com/bintang.a.permana.1/" target="_blank" style="margin-right: 10px; color: white;"><i class="fab fa-facebook"></i></a>
+                        <a href="https://www.youtube.com/@Bangbin_1" target="_blank" style="margin-right: 10px; color: white;"><i class="fab fa-youtube"></i></a>
+                        <a href="https://wa.me/6281310051985" target="_blank" style="color: white;"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <button class="close-modal" style="padding: 10px 20px; border: none; border-radius: 5px; background-color: #f44336; color: white; cursor: pointer; font-size: 1em; align-self: flex-start;">Tutup</button>
+        </div>
+    </div>
+
+
+    <div id="stage-1" class="stage-container">
+        <h1>Stage 1: Tebak Kata</h1>
+        <div class="wheel-container">
+            <div class="pointer"></div>
+            <canvas id="wheel1" width="400" height="400"></canvas>
+        </div>
+        <br>
+        <button id="spinBtn1">Putar Roda</button>
+        <div id="modal1" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeModal1">×</span>
+                <div id="result1"></div>
+                <div id="letterZone1" style="margin-top: 30px; text-align: center;"></div>
+                <div id="dropZone1" style="margin-top: 20px; min-height: 80px; text-align: center;"></div>
+                <div class="timer-container">
+                    <div class="timer-bar" id="timer-bar-1"></div>
+                </div>
+                <div id="alertMessage1" class="alert-message"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="stage-2" class="stage-container">
+        <h1>Stage 2: Jodohkan Gambar</h1>
+        <div class="score">Pasangan Ditemukan: <span id="matches2">0</span>/6</div>
+        <div class="timer-label">Sisa Waktu:</div>
+        <div class="timer-container">
+            <div class="timer-bar" id="timer-bar-2"></div>
+        </div>
+        <div class="message" id="message2"></div>
+        <div class="game-container" id="game-container2">
+            <div class="card-row" id="card-row-1"></div>
+            <div class="card-row" id="card-row-2"></div>
+        </div>
+        <div class="controls">
+            <button id="reset-btn2">Ulangi Stage</button>
+        </div>
+    </div>
+    
+    <div id="stage-3" class="stage-container">
+        <h1>Stage 3: Jodohkan Gambar & Kalimat</h1>
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value" id="matches3">0</div>
+                <div class="stat-label">Pasangan</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="attempts3">0</div>
+                <div class="stat-label">Percobaan</div>
+            </div>
+        </div>
+        <div class="timer-label">Sisa Waktu:</div>
+        <div class="timer-container">
+            <div class="timer-bar" id="timer-bar-3"></div>
+        </div>
+        <div class="message" id="message3"></div>
+        <div class="game-container">
+            <div class="images-container" id="images-container3"></div>
+            <div class="words-container" id="words-container3"></div>
+        </div>
+        <div class="controls">
+            <button id="reset-btn3">Ulangi Stage</button>
+        </div>
+    </div>
+
+    <div id="end-screen" class="stage-container">
+        <h1>Luar Biasa!</h1>
+        <p>Kamu telah berhasil menyelesaikan semua stage dengan gemilang. Teruslah belajar dan bermain!</p>
+        <button id="restart-button">Main Lagi</button>
+    </div>
+
+    <audio id="spinSound" src="https://actions.google.com/sounds/v1/cartoon/woodpecker.ogg" preload="auto"></audio>
+    <audio id="successSound" src="https://actions.google.com/sounds/v1/crowds/battle_crowd_celebrate_stutter.ogg" preload="auto"></audio>
+    <audio id="timeoutSound" src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" preload="auto"></audio>
+    <audio id="dropSound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg" preload="auto"></audio>
+    <audio id="victoryFanfareSound" src="https://assets.mixkit.co/sfx/preview/mixkit-epic-orchestra-victory-2211.mp3" preload="auto"></audio>
+
+
+<script>
+// --- MODAL LOGIC ---
+document.querySelectorAll('.modal-trigger-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const modalId = btn.getAttribute('data-modal-target');
+        document.getElementById(modalId).style.display = 'flex';
+    });
+});
+document.querySelectorAll('.modal-overlay').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+});
+document.querySelectorAll('.close-modal').forEach(btn => {
+    btn.addEventListener('click', () => {
+        btn.closest('.modal-overlay').style.display = 'none';
+    });
+});
+
+// --- GLOBAL GAME CONTROL ---
+const startScreen = document.getElementById('start-screen');
+const endScreen = document.getElementById('end-screen');
+const stages = document.querySelectorAll('.stage-container');
+const startButton = document.getElementById('start-button');
+const restartButton = document.getElementById('restart-button');
+function showStage(stageId) {
+    stages.forEach(stage => { stage.style.display = 'none'; });
+    document.getElementById(stageId).style.display = 'flex';
+}
+startButton.addEventListener('click', () => {
+    showStage('stage-1');
+    loadImages1(drawWheel1);
+});
+restartButton.addEventListener('click', () => { window.location.reload(); });
+
+// --- FINALE EFFECT ---
+function triggerGrandFinale() {
+    document.getElementById('victoryFanfareSound').play();
+    const flowerImages = [ 'https://cdn-icons-png.flaticon.com/512/2926/2926754.png', 'https://cdn-icons-png.flaticon.com/512/1063/1063371.png', 'https://cdn-icons-png.flaticon.com/512/599/599949.png' ];
+    for (let i = 0; i < 150; i++) {
+        const flower = document.createElement('img');
+        flower.className = 'falling-flower';
+        flower.src = flowerImages[Math.floor(Math.random() * flowerImages.length)];
+        flower.style.left = `${Math.random() * 100}vw`;
+        flower.style.width = `${Math.random() * 20 + 20}px`;
+        flower.style.animationDuration = `${Math.random() * 3 + 4}s`;
+        flower.style.animationDelay = `${Math.random() * 2}s`;
+        document.body.appendChild(flower);
+        setTimeout(() => { flower.remove(); }, 7000);
+    }
+}
+
+
+// =================================================================================
+// --- STAGE 1 SCRIPT (Spin Wheel) - KODE YANG TELAH DIPERBAIKI ---
+// =================================================================================
+const canvas1 = document.getElementById('wheel1');
+const ctx1 = canvas1.getContext('2d');
+const segments1 = [
+    { text: "Baju", img: "https://cdn-icons-png.flaticon.com/512/892/892458.png" },
+    { text: "Sepeda", img: "https://cdn-icons-png.flaticon.com/512/9842/9842386.png" },
+    { text: "Pensil", img: "https://cdn-icons-png.flaticon.com/512/732/732391.png" },
+    { text: "Buku", img: "https://cdn-icons-png.flaticon.com/512/5832/5832416.png" },
+    { text: "Mobil", img: "https://cdn-icons-png.flaticon.com/512/3097/3097180.png" },
+    { text: "Bunga", img: "https://cdn-icons-png.flaticon.com/512/2926/2926754.png" }
+];
+const loadedImages1 = [];
+let angle1 = 0, spinning1 = false, currentWord1 = "", countdown1;
+const totalTime1 = 30;
+const modal1 = document.getElementById("modal1");
+const alertMessageDiv1 = document.getElementById("alertMessage1");
+const timerBar1 = document.getElementById('timer-bar-1');
+
+// Variabel untuk menangani drag-and-drop sentuhan
+let touchDraggingElement = null;
+let touchOffsetX, touchOffsetY;
+
+function drawWheel1() {
+    const arc = (2 * Math.PI) / segments1.length;
+    ctx1.clearRect(0, 0, 400, 400);
+    for (let i = 0; i < segments1.length; i++) {
+        const startAngle = angle1 + i * arc;
+        ctx1.beginPath();
+        ctx1.moveTo(200, 200);
+        ctx1.arc(200, 200, 200, startAngle, startAngle + arc);
+        ctx1.closePath();
+        ctx1.fillStyle = i % 2 === 0 ? "#f39c12" : "#f1c40f";
+        ctx1.fill();
+        const img = loadedImages1[i];
+        if (img) {
+            ctx1.save();
+            ctx1.translate(200 + Math.cos(startAngle + arc / 2) * 140, 200 + Math.sin(startAngle + arc / 2) * 140);
+            ctx1.rotate(startAngle + arc / 2 + Math.PI / 2);
+            ctx1.drawImage(img, -25, -25, 50, 50);
+            ctx1.restore();
+        }
+    }
+}
+
+function loadImages1(callback) {
+    let loaded = 0;
+    segments1.forEach((segment, i) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = segment.img;
+        img.onload = () => {
+            loadedImages1[i] = img;
+            loaded++;
+            if (loaded === segments1.length) callback();
+        };
+    });
+}
+
+function spin1() {
+    if (spinning1) return;
+    spinning1 = true;
+    document.getElementById('spinSound').play();
+    let spinAngle = Math.random() * 360 + 720, startTime = Date.now();
+    function animate() {
+        const elapsed = Date.now() - startTime;
+        if (elapsed < 4000) {
+            const progress = (t => --t * t * t + 1)(elapsed / 4000);
+            angle1 = (progress * spinAngle * Math.PI) / 180;
+            drawWheel1();
+            requestAnimationFrame(animate);
+        } else {
+            spinning1 = false;
+            const finalAngle = angle1 % (2 * Math.PI), arc = (2 * Math.PI) / segments1.length, index = Math.floor(((3 * Math.PI / 2 - finalAngle + 2 * Math.PI) % (2 * Math.PI)) / arc);
+            currentWord1 = segments1[index].text.toUpperCase();
+            document.getElementById('result1').innerHTML = `<img src="${segments1[index].img}" class="word-image" />`;
+            showDragDrop1(currentWord1);
+            modal1.style.display = "block";
+            startTimer1();
+        }
+    }
+    animate();
+}
+
+// ---- FUNGSI BARU DAN DISEMPURNAKAN UNTUK MENANGANI SENTUHAN ----
+
+// Saat jari mulai menyentuh huruf
+function handleTouchStart(e) {
+    // Mencegah browser melakukan aksi default seperti scrolling atau zoom
+    e.preventDefault();
+    
+    // Simpan elemen yang sedang disentuh
+    touchDraggingElement = e.target;
+    
+    // Hitung posisi jari relatif terhadap sudut kiri atas elemen
+    // Ini penting agar elemen tidak "melompat" saat disentuh
+    const touch = e.touches[0];
+    const rect = touchDraggingElement.getBoundingClientRect();
+    touchOffsetX = touch.clientX - rect.left;
+    touchOffsetY = touch.clientY - rect.top;
+
+    // Ubah style agar elemen "melayang" dan mengikuti jari
+    touchDraggingElement.style.position = 'fixed';
+    touchDraggingElement.style.zIndex = '2000'; // Pastikan di atas semua elemen lain
+    touchDraggingElement.style.opacity = '0.7';
+    touchDraggingElement.style.transform = 'scale(1.1)'; // Beri efek membesar sedikit
+    
+    // Posisikan elemen tepat di bawah jari
+    touchDraggingElement.style.left = `${touch.clientX - touchOffsetX}px`;
+    touchDraggingElement.style.top = `${touch.clientY - touchOffsetY}px`;
+}
+
+// Saat jari bergerak sambil menyentuh layar
+function handleTouchMove(e) {
+    if (!touchDraggingElement) return; // Lakukan hanya jika sedang ada elemen yang di-drag
+    
+    e.preventDefault();
+    const touch = e.touches[0];
+    // Update terus posisi elemen mengikuti posisi jari
+    touchDraggingElement.style.left = `${touch.clientX - touchOffsetX}px`;
+    touchDraggingElement.style.top = `${touch.clientY - touchOffsetY}px`;
+}
+
+// Saat jari diangkat dari layar (proses drop)
+function handleTouchEnd(e) {
+    if (!touchDraggingElement) return; // Lakukan hanya jika ada elemen yang di-drag
+    
+    // Sembunyikan elemen yang di-drag agar kita bisa "melihat" elemen apa yang ada di bawahnya
+    touchDraggingElement.style.visibility = 'hidden'; 
+    const touch = e.changedTouches[0];
+    // Dapatkan elemen yang ada di titik koordinat jari terakhir
+    const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+    // Tampilkan kembali elemen yang di-drag
+    touchDraggingElement.style.visibility = 'visible';
+
+    // Kembalikan style elemen ke keadaan normal
+    touchDraggingElement.style.position = 'relative'; // Kembalikan ke flow normal
+    touchDraggingElement.style.zIndex = '';
+    touchDraggingElement.style.opacity = '1';
+    touchDraggingElement.style.transform = 'scale(1)';
+    touchDraggingElement.style.left = ''; // Hapus style posisi
+    touchDraggingElement.style.top = '';
+
+    // Cek apakah targetnya adalah drop-zone yang valid dan masih kosong
+    if (dropTarget && dropTarget.classList.contains('drop-target') && !dropTarget.hasChildNodes()) {
+        dropTarget.appendChild(touchDraggingElement); // Pindahkan elemen ke target
+        document.getElementById('dropSound').play();
+        checkCompletion1();
+    } 
+    // Jika tidak, elemen akan otomatis kembali ke tempatnya karena stylenya sudah direset
+    // dan kita tidak pernah memindahkannya dari parent aslinya di dalam HTML (DOM).
+    
+    // Reset variabel penanda
+    touchDraggingElement = null;
+}
+
+
+// ---- MODIFIKASI PADA FUNGSI showDragDrop1 ----
+function showDragDrop1(word) {
+    const shuffled = word.split('').sort(() => 0.5 - Math.random());
+    const letterZone = document.getElementById("letterZone1");
+    const dropZone = document.getElementById("dropZone1");
+    letterZone.innerHTML = "";
+    dropZone.innerHTML = "";
+
+    shuffled.forEach((char, index) => {
+        const letterDiv = document.createElement("div");
+        letterDiv.className = "letter";
+        letterDiv.textContent = char;
+        letterDiv.draggable = true; // Untuk mouse
+        letterDiv.id = `letter-${index}`;
+        
+        // Event untuk Mouse
+        letterDiv.addEventListener('dragstart', e => e.dataTransfer.setData("id", e.target.id));
+        
+        // Event untuk Sentuhan
+        letterDiv.addEventListener('touchstart', handleTouchStart, { passive: false });
+
+        letterZone.appendChild(letterDiv);
+    });
+
+    for (let i = 0; i < word.length; i++) {
+        const dropDiv = document.createElement("div");
+        dropDiv.className = "drop-target";
+        
+        // Event Drop untuk Mouse
+        dropDiv.addEventListener('dragover', e => e.preventDefault());
+        dropDiv.addEventListener('drop', e => {
+            e.preventDefault();
+            const id = e.dataTransfer.getData("id");
+            const draggedElement = document.getElementById(id);
+            if (e.target.className.includes('drop-target') && !e.target.hasChildNodes()) {
+                e.target.appendChild(draggedElement);
+                document.getElementById('dropSound').play();
+                checkCompletion1();
+            }
+        });
+        dropZone.appendChild(dropDiv);
+    }
+    
+    // Tambahkan event listener global untuk touchmove dan touchend saat modal aktif
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd);
+}
+
+function checkCompletion1() {
+    const dropTargets = document.querySelectorAll("#dropZone1 .drop-target");
+    let completed = true, word = "";
+    dropTargets.forEach(target => {
+        if (!target.firstChild) completed = false;
+        else word += target.firstChild.textContent;
+    });
+    if (completed) {
+        if (word === currentWord1) {
+            document.getElementById('successSound').play();
+            alertMessageDiv1.innerHTML = `✅ Benar!`;
+            alertMessageDiv1.style.backgroundColor = "#d5f5e3";
+            createConfetti();
+            resetTimer1();
+            setTimeout(() => {
+                modal1.style.display = "none";
+                showStage('stage-2');
+                resetGame2();
+            }, 2000);
+        } else {
+            alertMessageDiv1.innerHTML = "❌ Coba lagi!";
+            alertMessageDiv1.style.backgroundColor = "#fadbd8";
+        }
+    }
+}
+
+function startTimer1() {
+    let timeLeft = totalTime1;
+    timerBar1.style.width = '100%';
+    timerBar1.className = 'timer-bar';
+    countdown1 = setInterval(() => {
+        timeLeft--;
+        const progress = (timeLeft / totalTime1) * 100;
+        timerBar1.style.width = `${progress}%`;
+        if (progress < 50 && progress > 20) timerBar1.className = 'timer-bar yellow';
+        else if (progress <= 20) timerBar1.className = 'timer-bar red';
+        if (timeLeft <= 0) {
+            resetTimer1();
+            document.getElementById('timeoutSound').play();
+            alertMessageDiv1.innerHTML = "⏰ Waktu habis!";
+            setTimeout(() => {
+                modal1.style.display = "none";
+            }, 2000);
+        }
+    }, 1000);
+}
+
+function resetTimer1() {
+    clearInterval(countdown1);
+}
+
+function createConfetti() {
+    for (let i = 0; i < 100; i++) {
+        const c = document.createElement('div');
+        c.className = 'confetti';
+        c.style.left = `${Math.random()*100}vw`;
+        c.style.backgroundColor = `hsl(${Math.random()*360},100%,50%)`;
+        c.style.animationDuration = `${Math.random()*2+1}s`;
+        c.style.borderRadius = '50%';
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 3000);
+    }
+}
+
+document.getElementById('spinBtn1').addEventListener('click', spin1);
+
+// Modifikasi pada event penutup modal untuk membersihkan event listener touch
+document.getElementById("closeModal1").onclick = () => {
+    modal1.style.display = "none";
+    resetTimer1();
+    // Hapus event listener global saat tidak diperlukan untuk mencegah bug
+    document.removeEventListener('touchmove', handleTouchMove);
+    document.removeEventListener('touchend', handleTouchEnd);
+};
+loadImages1(drawWheel1);
+
+// --- STAGE 2 SCRIPT (Memory Match) ---
+const items2 = segments1.slice(0); const TIME_LIMIT2 = 40; let cards2 = [], flippedCards2 = [], matchedPairs2 = 0, gameStarted2 = false, gameActive2 = true, timerInterval2; const matchesDisplay2 = document.getElementById('matches2'), messageDisplay2 = document.getElementById('message2'), timerBar2 = document.getElementById('timer-bar-2'); function createCards2() { return [...items2, ...items2].sort(() => Math.random() - 0.5); } function renderCards2() { const cardRow1 = document.getElementById('card-row-1'), cardRow2 = document.getElementById('card-row-2'); cardRow1.innerHTML = ''; cardRow2.innerHTML = ''; cards2.forEach((card, index) => { const cardElement = document.createElement('div'); cardElement.className = 'card'; if (card.matched) cardElement.classList.add('matched'); if (card.flipped) cardElement.classList.add('flipped'); cardElement.innerHTML = card.flipped || card.matched ? `<img src="${card.img}" alt="${card.text}"><div class="text">${card.text}</div>` : ''; cardElement.addEventListener('click', () => flipCard2(index)); if (index < 6) cardRow1.appendChild(cardElement); else cardRow2.appendChild(cardElement); }); } function flipCard2(index) { if (!gameStarted2) { startTimer2(); gameStarted2 = true; } if (cards2[index].matched || cards2[index].flipped || flippedCards2.length >= 2 || !gameActive2) return; cards2[index].flipped = true; flippedCards2.push(index); renderCards2(); if (flippedCards2.length === 2) checkForMatch2(); } function checkForMatch2() { const [firstIndex, secondIndex] = flippedCards2; if (cards2[firstIndex].text === cards2[secondIndex].text) { cards2[firstIndex].matched = true; cards2[secondIndex].matched = true; matchedPairs2++; matchesDisplay2.textContent = matchedPairs2; flippedCards2 = []; if (matchedPairs2 === items2.length) endGame2(true); renderCards2(); } else { setTimeout(() => { cards2[firstIndex].flipped = false; cards2[secondIndex].flipped = false; flippedCards2 = []; renderCards2(); }, 1000); } } function startTimer2() { let timeLeft = TIME_LIMIT2; timerBar2.style.width = '100%'; timerBar2.className = 'timer-bar'; timerInterval2 = setInterval(() => { timeLeft--; const progress = (timeLeft / TIME_LIMIT2) * 100; timerBar2.style.width = `${progress}%`; if (progress < 50 && progress > 20) timerBar2.className = 'timer-bar yellow'; else if (progress <= 20) timerBar2.className = 'timer-bar red'; if (timeLeft <= 0) endGame2(false); }, 1000); } function stopTimer2() { clearInterval(timerInterval2); } function endGame2(isWin) { stopTimer2(); gameActive2 = false; if (isWin) { document.getElementById('successSound').play(); messageDisplay2.textContent = `Stage 2 Selesai!`; setTimeout(() => { showStage('stage-3'); initGame3(); }, 2000); } else { document.getElementById('timeoutSound').play(); messageDisplay2.textContent = "Waktu habis! Coba lagi."; } } function resetGame2() { stopTimer2(); cards2 = createCards2().map(item => ({ ...item, flipped: false, matched: false })); flippedCards2 = []; matchedPairs2 = 0; matchesDisplay2.textContent = matchedPairs2; timerBar2.style.width = '100%'; timerBar2.className = 'timer-bar'; gameStarted2 = false; gameActive2 = true; messageDisplay2.textContent = ''; renderCards2(); } document.getElementById('reset-btn2').addEventListener('click', resetGame2);
+
+
+// --- STAGE 3 SCRIPT (Image-Sentence Match) ---
+const items3 = [ { text: "Baju Adya basah karena hujan", img: "https://cdn-icons-png.flaticon.com/512/892/892458.png" }, { text: "Ayah membelikan aku Sepeda baru", img: "https://cdn-icons-png.flaticon.com/512/9842/9842386.png" }, { text: "Bianka kehilangan pensil", img: "https://cdn-icons-png.flaticon.com/512/732/732391.png" }, { text: "Buana memiliki buku baru", img: "https://cdn-icons-png.flaticon.com/512/5832/5832416.png" }, { text: "Mobil ayah dibawa ke bengkel", img: "https://cdn-icons-png.flaticon.com/512/3097/3097180.png" }, { text: "Mawar adalah bunga kesukaanku", img: "https://cdn-icons-png.flaticon.com/512/2926/2926754.png" }]; let selectedImage3, selectedWord3, matchedPairs3 = 0, attempts3 = 0, matchedItems3 = [], timer3, gameActive3 = true; const TIME_LIMIT3 = 40; const matchesDisplay3 = document.getElementById('matches3'), attemptsDisplay3 = document.getElementById('attempts3'), messageDisplay3 = document.getElementById('message3'), timerBar3 = document.getElementById('timer-bar-3'); function startTimer3() { let timeLeft = TIME_LIMIT3; timerBar3.style.width = '100%'; timerBar3.className = 'timer-bar'; gameActive3 = true; timer3 = setInterval(() => { timeLeft--; const progress = (timeLeft / TIME_LIMIT3) * 100; timerBar3.style.width = `${progress}%`; if (progress < 50 && progress > 20) timerBar3.className = 'timer-bar yellow'; else if (progress <= 20) timerBar3.className = 'timer-bar red'; if (timeLeft <= 0) { clearInterval(timer3); endGame3(); } }, 1000); } function endGame3() { gameActive3 = false; document.getElementById('timeoutSound').play(); messageDisplay3.textContent = "Waktu habis! Coba lagi."; document.querySelectorAll('#stage-3 .card:not(.matched)').forEach(card => card.classList.add('disabled')); } function initGame3() { const shuffledImages = [...items3].sort(() => 0.5 - Math.random()), shuffledWords = [...items3].sort(() => 0.5 - Math.random()); document.getElementById('images-container3').innerHTML = ''; document.getElementById('words-container3').innerHTML = ''; shuffledImages.forEach(item => { const card = document.createElement('div'); card.className = 'card'; card.dataset.text = item.text; card.innerHTML = `<img src="${item.img}" alt="gambar">`; card.addEventListener('click', () => selectImage3(card, item.text)); document.getElementById('images-container3').appendChild(card); }); shuffledWords.forEach(item => { const card = document.createElement('div'); card.className = 'card'; card.dataset.text = item.text; card.innerHTML = `<div class="text">${item.text}</div>`; card.addEventListener('click', () => selectWord3(card, item.text)); document.getElementById('words-container3').appendChild(card); }); selectedImage3 = null; selectedWord3 = null; matchedPairs3 = 0; attempts3 = 0; matchedItems3 = []; matchesDisplay3.textContent = matchedPairs3; attemptsDisplay3.textContent = attempts3; messageDisplay3.textContent = ''; startTimer3(); } function selectImage3(card, text) { if (!gameActive3 || matchedItems3.includes(text) || card.classList.contains('selected')) return; document.querySelectorAll('#images-container3 .card.selected').forEach(el => el.classList.remove('selected')); card.classList.add('selected'); selectedImage3 = text; checkMatch3(); } function selectWord3(card, text) { if (!gameActive3 || matchedItems3.includes(text) || card.classList.contains('selected')) return; document.querySelectorAll('#words-container3 .card.selected').forEach(el => el.classList.remove('selected')); card.classList.add('selected'); selectedWord3 = text; checkMatch3(); } function checkMatch3() { if (!gameActive3 || !selectedImage3 || !selectedWord3) return; attempts3++; attemptsDisplay3.textContent = attempts3; if (selectedImage3 === selectedWord3) { matchedPairs3++; matchesDisplay3.textContent = matchedPairs3; matchedItems3.push(selectedImage3); document.querySelectorAll(`#stage-3 .card[data-text="${selectedImage3}"]`).forEach(el => { el.classList.add('matched'); el.classList.remove('selected'); }); selectedImage3 = null; selectedWord3 = null; if (matchedPairs3 === items3.length) { clearInterval(timer3); gameActive3 = false; triggerGrandFinale(); messageDisplay3.textContent = `Selamat! Semua stage selesai!`; setTimeout(() => { showStage('end-screen'); }, 5000); } else { document.getElementById('dropSound').play(); messageDisplay3.textContent = "Benar!"; setTimeout(() => { messageDisplay3.textContent = ''; }, 1000); } } else { messageDisplay3.textContent = "Salah, coba lagi!"; setTimeout(() => { document.querySelectorAll('#stage-3 .card.selected').forEach(el => el.classList.remove('selected')); selectedImage3 = null; selectedWord3 = null; messageDisplay3.textContent = ''; }, 1000); } } document.getElementById('reset-btn3').addEventListener('click', initGame3);
+
+// Initialize the app by showing the start screen
+window.onload = () => { showStage('start-screen'); };
+</script>
+</body>
+</html>
