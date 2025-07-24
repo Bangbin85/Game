@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-	<link rel="icon" type="image/x-icon" href="https://lh3.googleusercontent.com/d/1_4llqCMNoBDmwDHsI7RYsCM6rSK5wEjw">	
+	<link rel="icon" type="image/x-icon" href="https://lh3.googleusercontent.com/d/1_4llqCMNoBDmwDHsI7RYsCM6rSK5wEjw">
     <style>
         :root {
             --primary-color: #d9534f; /* Merah Bendera */
@@ -184,7 +184,6 @@
         .level-content h2 { font-family: var(--font-title); margin-bottom: 1rem; font-size: 1.5rem; color: var(--dark-text);}
 
         /* LEVEL 1: MENJODOHKAN */
-/* LEVEL 1: MENJODOHKAN */
 .matching-container {
     display: flex;
     flex-wrap: wrap; /* Izinkan elemen untuk wrap ke baris baru */
@@ -205,9 +204,7 @@
     min-width: 120px; /* Lebar minimum untuk kolom */
 }
 
-/* Mengubah nama kelas dari instrument-box menjadi instrument-box, play-method-box menjadi play-method-box */
 .instrument-box, .play-method-box {
-    /* Lebar dan tinggi lebih fleksibel, gunakan max-width dan min-height */
     width: clamp(100px, 15vw, 200px); /* Ukuran yang lebih responsif */
     height: clamp(100px, 15vw, 70px); /* Buat aspek rasio kotak */
     border: 3px solid #ced4da;
@@ -481,7 +478,8 @@
 <body>
     
 	 <audio id="background-music" autoplay loop>
-          <source src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/Peppermill_Records/Primix_For_Kids/Pierlo_-_Singles/Primix_For_Kids_-_19_-_Up_It_Up_The_Gut.mp3" type="audio/mpeg">
+          <!-- Menggunakan URL audio yang lebih stabil untuk demonstrasi -->
+          <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
         Browser Anda tidak mendukung elemen audio.
     </audio>
 	
@@ -533,7 +531,8 @@
             <p id="end-message"></p>
             <button id="retry-button" class="btn">Main Lagi</button>
             <br>
-            <a href="index.html"><button class="btn" ><i style="color: red; text-decoration: none;"><i class="fa fa-home"></i></button></a>
+            <!-- Menambahkan ID unik ke tombol Home untuk selector JavaScript yang benar -->
+            <a href="index.html"><button id="home-button" class="btn" ><i style="color: red; text-decoration: none;"><i class="fa fa-home"></i></button></a>
         </div>
     </div>
 
@@ -569,6 +568,7 @@
         </div>
     </div>
 
+
     <div id="profilModal" class="modal-overlay hidden">
         <div class="modal-content profile-modal">
             <span class="close-modal">×</span>
@@ -587,6 +587,7 @@
                     </div>
                 </div>
             </div>
+            <!-- Menggunakan placeholder image yang pasti muncul -->
             <img src="https://lh3.googleusercontent.com/d/1ivUN8B8xdd4R8Kef_-wEqNx56_eeUv4w" alt="Background" class="profile-bg-img">
         </div>
     </div>
@@ -619,24 +620,25 @@
             // KONFIGURASI DAN ELEMEN GAME
             // =================================
             const instruments = [
-                { name: 'Suling Bambu', playMethod: 'Ditiup', img: '<img src="https://cdn-icons-png.flaticon.com/512/17855/17855697.png" alt="Suling Bambu">' },
-                { name: 'Angklung', playMethod: 'Digoyangkan', img: '<img src="https://cdn-icons-png.flaticon.com/512/4702/4702692.png" alt="Angklung">' },
-                { name: 'Gong', playMethod: 'Dipukul', img: '<img src="https://cdn-icons-png.flaticon.com/512/451/451939.png" alt="Gong">' },
-                { name: 'Gitar', playMethod: 'Dipetik', img: '<img src="https://cdn-icons-png.flaticon.com/512/2816/2816775.png" alt="Gitar">' },
-                { name: 'Kendang', playMethod: 'Dipukul', img: '<img src="https://cdn-icons-png.flaticon.com/512/1754/1754175.png" alt="Kendang">' },
-                { name: 'Biola', playMethod: 'Digesek', img: '<img src="https://cdn-icons-png.flaticon.com/512/16508/16508346.png" alt="Biola">' },
-                { name: 'Perkusi', playMethod: 'Digoyangkan', img: '<img src="https://cdn-icons-png.flaticon.com/512/11063/11063054.png" alt="Perkusi">' },
-                { name: 'Slenthem', playMethod: 'Dipukul', img: '<img src="https://cdn-icons-png.flaticon.com/512/1390/1390288.png" alt="Slenthem">' },
-                { name: 'Piano', playMethod: 'Ditekan', img: '<img src="https://cdn-icons-png.flaticon.com/512/4956/4956471.png" alt="Piano">' }
+                // Menggunakan placeholder images untuk memastikan gambar selalu muncul
+                { name: 'Suling Bambu', playMethod: 'Ditiup', img: '<img src="https://placehold.co/100x100/A0E7E0/000000?text=SULING" alt="Suling Bambu">' },
+                { name: 'Angklung', playMethod: 'Digoyangkan', img: '<img src="https://placehold.co/100x100/F0E68C/000000?text=ANGKLUNG" alt="Angklung">' },
+                { name: 'Gong', playMethod: 'Dipukul', img: '<img src="https://placehold.co/100x100/FFD700/000000?text=GONG" alt="Gong">' },
+                { name: 'Gitar', playMethod: 'Dipetik', img: '<img src="https://placehold.co/100x100/DDA0DD/000000?text=GITAR" alt="Gitar">' },
+                { name: 'Kendang', playMethod: 'Dipukul', img: '<img src="https://placehold.co/100x100/87CEEB/000000?text=KENDANG" alt="Kendang">' },
+                { name: 'Biola', playMethod: 'Digesek', img: '<img src="https://placehold.co/100x100/FFB6C1/000000?text=BIOLA" alt="Biola">' },
+                { name: 'Perkusi', playMethod: 'Digoyangkan', img: '<img src="https://placehold.co/100x100/98FB98/000000?text=PERKUSI" alt="Perkusi">' },
+                { name: 'Slenthem', playMethod: 'Dipukul', img: '<img src="https://placehold.co/100x100/ADD8E6/000000?text=SLENTHEM" alt="Slenthem">' },
+                { name: 'Piano', playMethod: 'Ditekan', img: '<img src="https://placehold.co/100x100/F08080/000000?text=PIANO" alt="Piano">' }
             ];
             const playMethods = [...new Set(instruments.map(a => a.playMethod))]; // Mengambil semua cara memainkan yang unik
 
             // Data untuk Level 4 (Tebak Cara Memainkan) - Pilihan sekarang berdasarkan NAMA INSTRUMEN
-            const level4Questions = [ // Mengganti nama variabel timeQuestions menjadi level4Questions
+            const level4Questions = [
                 {
                     id: 1,
                     question: "Alat musik ini dimainkan dengan cara 'Dipukul'. Manakah alat musik yang dimaksud?",
-                    answerName: "Gong", // Jawaban sekarang merujuk ke 'name' dari objek instrument
+                    answerName: "Gong", // Jawaban merujuk ke 'name' dari objek instrument
                     optionsNames: ["Suling Bambu", "Angklung", "Gong", "Biola"] // Opsi adalah nama alat musik
                 },
                 {
@@ -676,7 +678,7 @@
             const timerDisplay = document.getElementById('timer-display');
             const levelContents = document.querySelectorAll('.level-content');
             const particlesDiv = document.getElementById('particles-js');
-
+            const homeButton = document.getElementById('home-button'); // Mendapatkan tombol Home dengan ID baru
 
             // Modal Elements
             const petunjukBtn = document.getElementById('petunjuk-btn');
@@ -787,6 +789,7 @@
             function startGame() {
                 const backgroundMusic = document.getElementById('background-music');
                 if (backgroundMusic) {
+                    // Memutar musik latar belakang saat game dimulai (dipicu oleh interaksi pengguna)
                     backgroundMusic.play().catch(e => console.error("Gagal memutar musik:", e));
                 }
                 // Panggil resetGameStates setiap kali game dimulai untuk memastikan bersih
@@ -1127,17 +1130,17 @@
             // =================================
             function setupLevel4() {
                 document.getElementById('level-4').style.display = 'flex';
-                const questionTextElement = document.getElementById('level4-question-text'); // Mengubah ID
-                const optionsGridElement = document.getElementById('level4-options-grid'); // Mengubah ID
-                optionsGridElement.innerHTML = ''; // Bersihkan pilihan sebelumnya
+                const questionTextElement = document.getElementById('level4-question-text');
+                const optionsGridElement = document.getElementById('level4-options-grid');
+                optionsGridElement.innerHTML = '';
 
                 // Jika semua pertanyaan sudah dijawab untuk level ini, pindah ke level berikutnya (menang)
-                if (currentQuestionIndex >= level4Questions.length) { // Menggunakan level4Questions
+                if (currentQuestionIndex >= level4Questions.length) {
                     nextLevel(); 
                     return;
                 }
 
-                const currentQuestion = level4Questions[currentQuestionIndex]; // Menggunakan level4Questions
+                const currentQuestion = level4Questions[currentQuestionIndex];
                 questionTextElement.textContent = currentQuestion.question;
 
                 // Mengacak pilihan jawaban
@@ -1147,37 +1150,22 @@
                     const button = document.createElement('button');
                     button.className = 'option-btn';
                     
-                    // Cari objek instrument yang sesuai dengan optionName
-                    const instrumentMatch = instruments.find(inst => inst.name === optionName || inst.playMethod === optionName);
-
-                    // Jika optionName adalah nama alat musik, tampilkan gambar
-                    if (instrumentMatch && currentQuestion.answerName === instrumentMatch.playMethod) { // Ini adalah pertanyaan tentang cara memainkan, jawabannya adalah CARA. Opsi adalah INSTRUMEN.
-                        button.innerHTML = instrumentMatch.img + `<span style="font-size: 0.9em; margin-top: 5px;">${optionName}</span>`; // Tambahkan teks nama di bawah gambar
-                        button.dataset.answerValue = instrumentMatch.playMethod; // Simpan cara memainkan sebagai nilai jawaban
-                    } 
-                    else if (instrumentMatch && currentQuestion.answerName === instrumentMatch.name) { // Ini adalah pertanyaan tentang alat musik, jawabannya adalah NAMA INSTRUMEN. Opsi adalah CARA.
-                        button.innerHTML = instrumentMatch.img + `<span style="font-size: 0.9em; margin-top: 5px;">${optionName}</span>`;
-                        button.dataset.answerValue = instrumentMatch.name;
-                    }
-                    else { // Jika opsi adalah teks cara bermain (misal: "Digoyangkan")
-                        button.textContent = optionName; // Tampilkan teks saja
-                        button.dataset.answerValue = optionName; // Simpan teks sebagai nilai jawaban
-                    }
-                    
-                    // Ini adalah cara lebih sederhana untuk menempatkan konten ke tombol
-                    // Jika opsi adalah nama alat musik, tampilkan gambar + nama
+                    // Temukan instrumen berdasarkan nama opsi, jika ada
                     const foundInstrument = instruments.find(inst => inst.name === optionName);
+
                     if (foundInstrument) {
+                        // Jika opsi adalah nama instrumen, tampilkan gambar dan nama
                         button.innerHTML = foundInstrument.img + `<span style="font-size: 0.9em; margin-top: 5px;">${optionName}</span>`;
-                    } else { // Jika opsi adalah cara bermain (teks)
+                    } else {
+                        // Jika opsi adalah cara bermain (teks), tampilkan teks saja
                         button.textContent = optionName;
                     }
                     
-                    // Simpan nilai jawaban sebenarnya (yang akan dibandingkan)
-                    button.dataset.actualAnswer = optionName; // Simpan teks opsi sebagai nilai yang akan dibandingkan dengan currentQuestion.answerName
+                    // Simpan nilai opsi sebagai data yang akan dibandingkan
+                    button.dataset.actualAnswer = optionName; 
 
                     button.addEventListener('click', () => {
-                        handleTimeAnswer(button, button.dataset.actualAnswer, currentQuestion.answerName); // Membandingkan teks opsi dengan jawaban yang diharapkan
+                        handleTimeAnswer(button, button.dataset.actualAnswer, currentQuestion.answerName);
                     });
                     optionsGridElement.appendChild(button);
                 });
@@ -1187,26 +1175,26 @@
                 if (clickSound) clickSound();
 
                 // Nonaktifkan semua tombol setelah satu pilihan diklik
-                document.querySelectorAll('#level4-options-grid .option-btn').forEach(btn => { // Mengubah ID
+                document.querySelectorAll('#level4-options-grid .option-btn').forEach(btn => {
                     btn.disabled = true;
-                    // Tandai jawaban yang benar. Perlu dicocokkan dengan teks yang ditampilkan atau nilai data yang disimpan.
-                    if (btn.dataset.actualAnswer === correctAnswerText) { // Membandingkan dengan actualAnswer
+                    // Tandai jawaban yang benar.
+                    if (btn.dataset.actualAnswer === correctAnswerText) {
                         btn.classList.add('correct'); 
                     }
                 });
 
-                if (selectedOptionText === correctAnswerText) { // Membandingkan teks opsi dengan teks jawaban
+                if (selectedOptionText === correctAnswerText) {
                     if (correctSound) correctSound();
                     clickedButton.classList.add('correct');
                     setTimeout(() => {
-                        currentQuestionIndex++; // Lanjut ke pertanyaan berikutnya
-                        startLevel(); // Muat ulang level untuk pertanyaan berikutnya
+                        currentQuestionIndex++;
+                        startLevel();
                     }, 1000);
                 } else {
                     if (wrongSound) wrongSound();
                     clickedButton.classList.add('incorrect');
                     setTimeout(() => {
-                        levelFailed('Jawabanmu kurang tepat!'); // levelFailed akan membersihkan interval
+                        levelFailed('Jawabanmu kurang tepat!');
                     }, 1000);
                 }
             }
@@ -1256,7 +1244,8 @@
             });
 
             // Event listener untuk tombol Home di end-screen
-            document.querySelector('ahref="https://sites.google.com/view/bangbinedu/home" button').addEventListener('click', (event) => {
+            // Menggunakan ID baru yang valid untuk tombol Home
+            homeButton.addEventListener('click', (event) => {
                 event.preventDefault(); // Mencegah navigasi langsung
                 resetGameStates(); // Reset game state saat kembali ke home
                 particlesDiv.style.display = 'block'; // Tampilkan partikel lagi di layar awal
