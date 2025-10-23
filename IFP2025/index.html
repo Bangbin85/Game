@@ -499,6 +499,8 @@
                 
                 <div class="map-btn-container">
                     <!-- GAMBAR ALAS PETA BARU -->
+                    <!-- Catatan: Path gambar alas peta ini masih menggunakan URL eksternal. 
+                         Jika ini juga perlu diubah ke 'bangbinImg', ganti src di bawah. -->
                     <img src="https://lh3.googleusercontent.com/d/1PM0BCRh4kZJkTXa52losFAU_C_-do-0B" alt="Alas Peta" class="map-background-image">
                     
                     <h1 id="main-title" class="text-4xl md:text-5xl font-bold">Instrumen Musik Interaktif</h1>
@@ -709,23 +711,27 @@
     <script>
         // --- DATA ASET GLOBAL ---
         // (Sama seperti sebelumnya)
-		const alatMusikData = {
-				"Gendang":       { img: "bangbinImg/Kendang.png", soundUrl: "https://actions.google.com/sounds/v1/instruments/bass_drum.ogg" },
-				"Suling":        { img: "bangbinImg/Suling.png", soundUrl: "https://actions.google.com/sounds/v1/instruments/flute.ogg" },
-				"Sasando":       { img: "bangbinImg/Sasando.png", soundUrl: "https://actions.google.com/sounds/v1/instruments/classical_guitar.ogg" },
-				"Piano":         { img: "bangbinImg/Piano.png", soundUrl: "https://actions.google.com/sounds/v1/instruments/piano_key.ogg" },
-				"Arbab":         { img: "bangbinImg/Arbab.png", soundUrl: "https://actions.google.com/sounds/v1/instruments/classical_guitar.ogg" },
-				"Gamelan":       { img: "bangbinImg/Gamelan.png", soundUrl: "https://actions.google.com/sounds/v1/instruments/glockenspiel.ogg" },
-				"Genggong":      { img: "bangbinImg/Genggong.png", soundUrl: "https://actions.google.com/sounds/v1/instruments/wind_chimes.ogg" },
-				"Serune Kalee":  { img: "bangbinImg/SeruneKalee.png", soundUrl: "https://actions.google.com/sounds/v1/instruments/clarinet.ogg" },
-				"Kuriding":      { img: "bangbinImg/Kurinding.png", soundUrl: "https://actions.google.com/sounds/v1/instruments/classical_guitar.ogg" },
-				"Kolintang":     { img: "bangbinImg/Kolintang.png", soundUrl: "https://actions.google.com/sounds/v1/instruments/glockenspiel.ogg" },
-				"Tamborin":      { img: "bangbinImg/Tamborin.png", soundUrl: "https://actions.google.com/sounds/v1/instruments/tambourine.ogg" },
-				"Angklung":      { img: "bangbinImg/Angklung.png", soundUrl: "https://actions.google.com/sounds/v1/instruments/bongos.ogg" },
-				"Antoneng":      { img: "bangbinImg/Antoneng.png", soundUrl: "https://actions.google.com/sounds/v1/instruments/classical_guitar.ogg" },
-				"Keledi":        { img: "bangbinImg/Keledi.png", soundUrl: "https://actions.google.com/sounds/v1/instruments/clarinet.ogg" },
-				"Kuranting":     { img: "bangbinImg/Kuranting.png", soundUrl: "https://actions.google.com/sounds/v1/instruments/classical_guitar.ogg" }
-			};
+        // ===== PERUBAHAN DI SINI =====
+        // Semua 'img' dan 'soundUrl' diubah ke path lokal sesuai permintaan.
+        const alatMusikData = {
+			"Gendang":       { img: "bangbinImg/Kendang.png", soundUrl: "music/Gendang.mp3" },
+			"Suling":        { img: "bangbinImg/Suling.png", soundUrl: "music/Suling.mp3" },
+			"Sasando":       { img: "bangbinImg/Sasando.png", soundUrl: "music/Sasando.mp3" },
+			"Piano":         { img: "bangbinImg/Piano.png", soundUrl: "music/Piano.mp3" },
+			"Arbab":         { img: "bangbinImg/Arbab.png", soundUrl: "music/Arbab.mp3" },
+            "Gamelan":       { img: "bangbinImg/Gamelan.png", soundUrl: "music/Gamelan.mp3" },
+            "Genggong":      { img: "bangbinImg/Genggong.png", soundUrl: "music/Genggong.mp3" },
+            "Serune Kalee":  { img: "bangbinImg/SeruneKalee.png", soundUrl: "music/SeruneKalee.mp3" },
+            "Kuriding":      { img: "bangbinImg/Kuriding.png", soundUrl: "music/Kuriding.mp3" },
+            "Kolintang":     { img: "bangbinImg/Kolintang.png", soundUrl: "music/Kolintang.mp3" },
+            "Tamborin":      { img: "bangbinImg/Tamborin.png", soundUrl: "music/Tamborin.mp3" },
+            "Angklung":      { img: "bangbinImg/Angklung.png", soundUrl: "music/Angklung.mp3" },
+            "Antoneng":      { img: "bangbinImg/Antoneng.png", soundUrl: "music/Antoneng.mp3" },
+            "Keledi":        { img: "bangbinImg/Keledi.png", soundUrl: "music/Keledi.mp3" },
+            "Kuranting":     { img: "bangbinImg/Kuranting.png", soundUrl: "music/Kuranting.mp3" }
+        };
+        // ===== AKHIR PERUBAHAN =====
+
 
         // --- DATA SPESIFIK GALERI 3D ---
         // (Sama seperti sebelumnya)
@@ -978,11 +984,12 @@
                 if (!globalData) return;
                 
                 textureLoader.load(
-                    globalData.img, 
+                    globalData.img, // Ini sekarang menggunakan path lokal
                     (texture) => { material.map = texture; material.needsUpdate = true; },
                     undefined, 
                     (err) => {
-                        console.error('Gagal memuat tekstur:', globalData.img);
+                        // Fallback jika path lokal gagal (mis. file tidak ada)
+                        console.error('Gagal memuat tekstur lokal:', globalData.img);
                         textureLoader.load(
                             `https://placehold.co/${itemSize*100}x${itemSize*100}/e2e8f0/94a3b8?text=${inst.name.split(' ')[0]}`,
                             (placeholderTexture) => { material.map = placeholderTexture; material.needsUpdate = true; }
@@ -1043,13 +1050,13 @@
 
         function showInfo(data) {
             document.getElementById('modalTitle').textContent = data.name;
-            document.getElementById('modalImage').src = data.img;
+            document.getElementById('modalImage').src = data.img; // Path lokal
             document.getElementById('modalImage').alt = data.name;
             document.getElementById('modalJenis').textContent = data.jenis;
             document.getElementById('modalCara').textContent = data.cara;
             document.getElementById('modalAsal').textContent = data.asal;
             document.getElementById('modalDeskripsi').textContent = data.deskripsi;
-            currentSoundUrl = data.soundUrl;
+            currentSoundUrl = data.soundUrl; // Path lokal
             playSoundBtn.classList.toggle('hidden', !data.soundUrl);
             infoModal.classList.remove('hidden');
         }
@@ -1068,8 +1075,8 @@
         playSoundBtn.addEventListener('click', () => {
             if (currentSoundUrl) {
                 if (!audioPlayer.paused) audioPlayer.pause();
-                audioPlayer.src = currentSoundUrl;
-                audioPlayer.play().catch(error => console.error("Gagal memutar suara:", error));
+                audioPlayer.src = currentSoundUrl; // Memutar path lokal
+                audioPlayer.play().catch(error => console.error("Gagal memutar suara lokal:", error));
             }
         });
 
@@ -1122,7 +1129,7 @@
 
         game1PlayBtn.addEventListener('click', () => {
             if (game1Answer) {
-                const soundUrl = alatMusikData[game1Answer.name].soundUrl;
+                const soundUrl = alatMusikData[game1Answer.name].soundUrl; // Path lokal
                 if (!audioPlayer.paused) audioPlayer.pause();
                 audioPlayer.src = soundUrl;
                 audioPlayer.play().catch(e => console.error("Error memutar suara game:", e));
@@ -1188,7 +1195,7 @@
             gameItems.forEach(instrument => {
                 const globalData = alatMusikData[instrument.name];
                 const item = document.createElement('img');
-                item.src = globalData.img;
+                item.src = globalData.img; // Path lokal
                 item.alt = instrument.name;
                 item.title = instrument.name;
                 item.className = 'draggable-item w-16 h-16 object-contain bg-white/20 p-1 rounded-lg';
@@ -1293,7 +1300,7 @@
                 item.classList.remove('dragging');
                 item.removeEventListener('touchstart', onTouchStart);
                 game2ItemsToPlace--; 
-                const soundUrl = alatMusikData[item.dataset.name].soundUrl;
+                const soundUrl = alatMusikData[item.dataset.name].soundUrl; // Path lokal
                 if (!audioPlayer.paused) audioPlayer.pause();
                 audioPlayer.src = soundUrl;
                 audioPlayer.play().catch(e => console.error(e));
@@ -1400,7 +1407,7 @@
                 game3Matches++;
                 game3Feedback.textContent = `Pasangan Ditemukan: ${game3Matches} / ${game3TotalMatches}`;
                 
-                const soundUrl = alatMusikData[game3FirstCard.dataset.name].soundUrl;
+                const soundUrl = alatMusikData[game3FirstCard.dataset.name].soundUrl; // Path lokal
                 if (!audioPlayer.paused) audioPlayer.pause();
                 audioPlayer.src = soundUrl;
                 audioPlayer.play().catch(e => console.error(e));
@@ -1470,7 +1477,7 @@
         function loadGame4Images() {
             galleryInfo.forEach(inst => {
                 const img = new Image();
-                img.src = alatMusikData[inst.name].img;
+                img.src = alatMusikData[inst.name].img; // Path lokal
                 game4Images[inst.name] = img;
             });
         }
@@ -1494,7 +1501,7 @@
         function playTargetSound() {
             if (game4Target) {
                 if (!audioPlayer.paused) audioPlayer.pause();
-                audioPlayer.src = alatMusikData[game4Target.name].soundUrl;
+                audioPlayer.src = alatMusikData[gameTarge.name].soundUrl; // Path lokal
                 audioPlayer.play().catch(e => console.error(e));
             }
         }
@@ -1636,5 +1643,3 @@
     </script>
 </body>
 </html>
-
-
