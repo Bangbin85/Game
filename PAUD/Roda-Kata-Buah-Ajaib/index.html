@@ -257,6 +257,8 @@
             margin: clamp(15px, 2vh, 25px) 0;
             width: 100%; /* Lebar penuh dari kontainer */
             max-width: 900px; 
+            overflow-y: auto; /* PERUBAHAN: Izinkan scroll HANYA di grid jika perlu */
+            padding: 10px; /* Padding agar shadow terlihat */
         }
         /* Media query untuk layar kecil (ponsel) */
         @media (max-width: 600px) {
@@ -307,6 +309,7 @@
             backdrop-filter: blur(5px);
             margin-bottom: 10px;
             margin-top: 10px;
+            flex-shrink: 0; /* PERUBAHAN: Agar container text tidak ter-squish */
         }
         #fruit-intro-screen h2 {
             margin-top: 5px;
@@ -394,15 +397,22 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .modal-content {
             margin: auto; padding: clamp(20px, 3vw, 40px);  border-radius: 20px; /* Padding responsif */
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3); width: 90%; max-width: 950px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3); width: 90%; 
+            /* PERUBAHAN: max-width dikurangi */
+            max-width: 700px; 
             position: relative;
             /* PERUBAHAN: Tambahkan overflow-y jika konten modal terlalu padat */
             overflow-y: auto; 
         }
         #myModal .modal-content {
+             max-width: 950px; /* Kembalikan max-width untuk modal game utama */
             background: linear-gradient(to bottom, #87CEEB, #E0F6FF);
             height: 90vh; 
             display: flex; flex-direction: column;
+        }
+        /* PERUBAHAN: Target spesifik untuk modal pengembang dan hc */
+        #pengembangModal .modal-content, #hcModal .modal-content {
+            max-width: 700px; /* Lebar lebih kecil untuk modal ini */
         }
         .info-modal .modal-content {
             background: linear-gradient(to bottom, #ffffff, #eef2f3); color: #333; text-align: left;
@@ -622,9 +632,9 @@
         /* PERUBAHAN: Grid memory game responsif */
         .memory-game-container {
             display: grid;
-            /* Menggunakan auto-fit untuk jumlah kolom otomatis */
-            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-            gap: clamp(5px, 2vmin, 20px); 
+            /* PERUBAHAN: Paksa 4 kolom */
+            grid-template-columns: repeat(4, 1fr);
+            gap: clamp(5px, 1.5vmin, 15px); /* PERUBAHAN: Sedikit mengurangi gap */
             perspective: 1000px;
             width: 90%;
             max-width: 600px; /* Batas atas agar tidak terlalu lebar */
@@ -633,7 +643,8 @@
         @media (max-height: 600px) {
             .memory-game-container {
                 gap: 5px;
-                grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+                /* PERUBAHAN: Paksa 4 kolom juga di layar pendek */
+                grid-template-columns: repeat(4, 1fr); 
             }
         }
         
@@ -660,11 +671,11 @@
             align-items: center;
             border-radius: 15px; 
             box-shadow: 0 5px 12px rgba(0,0,0,0.1);
-            font-size: clamp(30px, 10vmin, 60px); /* PERUBAHAN: Responsif */
+            font-size: clamp(40px, 10vmin, 80px); /* PERUBAHAN: Diperbesar dari 30px & 60px */
         }
          @media (max-height: 600px) {
             .card-face {
-                font-size: clamp(20px, 8vmin, 40px);
+                font-size: clamp(30px, 8vmin, 50px); /* PERUBAHAN: Diperbesar dari 20px & 40px */
             }
         }
         
@@ -686,33 +697,31 @@
         
         .memory-card.matched .card-back {
             color: #2ecc71; 
-            font-size: clamp(35px, 12vmin, 70px); /* PERUBAHAN: Responsif */
+            font-size: clamp(40px, 12vmin, 80px); /* PERUBAHAN: Diperbesar dari 35px & 70px */
             background: white; 
         }
 
         .memory-card.matched .card-front {
             background: #2ecc71;
             color: white;
-            font-size: clamp(35px, 12vmin, 70px); /* PERUBAHAN: Responsif */
+            font-size: clamp(40px, 12vmin, 80px); /* PERUBAHAN: Diperbesar dari 35px & 70px */
         }
 		
         
         /* PERUBAHAN: Foto profil responsif */
         .profile-pic-container {
             perspective: 1000px;
-            border-radius: 50%;
             flex-shrink: 0;
             margin-right: 20px;
             overflow: hidden;
-            /* Ukuran responsif */
-            width: clamp(100px, 20vmin, 150px);
-            height: clamp(100px, 20vmin, 150px);
+            width: clamp(100px, 20vmin, 100px);
+            height: clamp(100px, 40vmin, 200px);
         }
 
         .profile-pic-container img {
             transition: transform 0.2s ease-out;
             width: 100%; /* Sesuaikan lebar */
-            height: 200%; /* Pertahankan rasio aspek 1:2 dari 150:300 */
+            height: 100%; /* Pertahankan rasio aspek 1:2 dari 150:300 */
             object-fit: cover;
             display: block;
         }
@@ -777,7 +786,6 @@
             background-color: rgba(255, 255, 255, 0.7);
             border: 2px solid #3498db;
             border-radius: 50%;
-            /* PERUBAHAN: Ukuran responsif */
             width: clamp(40px, 5vmin, 50px);
             height: clamp(40px, 5vmin, 50px);
             font-size: clamp(16px, 2.5vmin, 20px);
@@ -844,10 +852,10 @@
         <div class="wheel-container">
             <div id="animated-text-display"></div>
             <div class="pointer"></div>
-            <button id="spinBtn">Putar Roda</button>
             <!-- PERUBAHAN: Atribut width/height dihapus dari HTML, akan diatur oleh JS -->
             <canvas id="wheel"></canvas> 
         </div>
+        <button id="spinBtn">Putar Roda</button> <!-- PERUBAHAN: Dipindahkan ke luar wheel-container -->
     </div>
 
     <div id="petunjukModal" class="modal info-modal">
@@ -997,7 +1005,8 @@
     </div>
 
     <div id="pengembangModal" class="modal">
-        <div class="modal-content" style="background: linear-gradient(135deg, #4e54c8, #8f94fb); max-width: 850px; padding: 25px;">
+        <!-- PERUBAHAN: Menambahkan min-height 300px -->
+        <div class="modal-content" style="background: linear-gradient(135deg, #4e54c8, #8f94fb); max-width: 700px; padding: 25px; min-height: 200px;">
             <span class="close">×</span>
             <div class="modal-main-content">
                 <img src="image/Bangbin2.png" alt="Background" class="modal-bg-image">
@@ -2060,3 +2069,4 @@
     </script>
 </body>
 </html>
+
