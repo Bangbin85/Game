@@ -61,11 +61,15 @@
 		  src: url('fonts/inter-v20-latin-800.woff2') format('woff2'); 
 		}
 
+        /* PERUBAHAN: Mengatur ulang body agar pas di viewport tanpa scroll */
         body {
             text-align: center;
             font-family: 'Inter', sans-serif;
-            padding: 20px;
-            min-height: 100vh;
+            /* padding: 20px; */ /* Dihapus agar pas */
+            padding: 0;
+            /* min-height: 100vh; */ /* Diubah ke height */
+            height: 100vh;
+            width: 100vw; /* Ditambahkan */
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -73,9 +77,9 @@
             align-items: center;
             -webkit-user-select: none;
             user-select: none;
-            overflow-x: hidden; 
+            overflow: hidden; 
             background-color: #f0f0f0; 
-            box-sizing: border-box; 
+            box-sizing: border-box; /* Ditambahkan */
         }
 
         h1, h2, .fruit-name,
@@ -85,16 +89,16 @@
             font-family: 'Fredoka', cursive, sans-serif; 
         }
 
-
-        canvas#wheel { 
+        /* PERUBAHAN: Kanvas Roda sekarang responsif via CSS container */
+		canvas#wheel { 
             border-radius: 50%;
             border: 8px solid var(--white);
             box-shadow: 0 15px 35px rgba(0,0,0,0.2), 0 0 0 10px rgba(255,255,255,0.1), 0 0 0 15px rgba(255,255,255,0.05);
             transition: all 0.5s ease;
             display: block; 
-            max-width: 100%; 
-            width: 500px; 
-            height: auto; 
+            /* Ukuran kanvas sekarang 100% dari container-nya */
+            width: 100%;
+            height: 100%;
         }
 
         canvas#backgroundCanvas {
@@ -112,47 +116,45 @@
             font-size: clamp(4rem, 8vw, 8rem); 
             color: #d9534f;
             text-shadow:
-                -4px -4px 0 var(--white),
-                4px -4px 0 var(--white),
-                -4px 4px 0 var(--white),
-                4px 4px 0 var(--white),
-                0 -4px 0 var(--white),
-                0 4px 0 var(--white),
-                -4px 0 0 var(--white),
-                4px 0 0 var(--white),
-                6px 6px 0 #000000;
+                /* Menggunakan clamp untuk shadow yang responsif */
+                -2px -2px 0 var(--white), 2px -2px 0 var(--white),
+                -2px 2px 0 var(--white), 2px 2px 0 var(--white),
+                0 -2px 0 var(--white), 0 2px 0 var(--white),
+                -2px 0 0 var(--white), 2px 0 0 var(--white),
+                clamp(3px, 0.5vw, 6px) clamp(3px, 0.5vw, 6px) 0 #000000;
             margin-bottom: 1rem;
         }
 
         h2 {
             color: black;
-            font-size: 2.5rem; 
+            font-size: clamp(1.5rem, 4vw, 2.5rem); /* PERUBAHAN: Dibuat responsif */
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
             margin-bottom: 25px; 
         }
 
-        #welcome-screen {
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            width: 100%;
-            min-height: 100vh; 
-            padding: 20px 0;
-            box-sizing: border-box;
-        }
-        
-        #fruit-intro-screen {
+        /* PERUBAHAN: Menyesuaikan #welcome-screen dkk agar pas */
+        #welcome-screen, #fruit-intro-screen, #game-container {
             display: flex;
             flex-direction: column;
-            justify-content: space-around; 
             align-items: center;
             width: 100%;
-            min-height: 100vh; 
-            height: auto; 
-            overflow: hidden;
-            padding: 20px 0; 
+            height: 100%; /* Menggunakan 100% dari body (100vh) */
+            padding: 2vh 2vw; /* Padding responsif */
             box-sizing: border-box;
+            overflow: hidden; /* Kontainer internal juga tidak boleh scroll */
+        }
+        
+        #welcome-screen {
+            justify-content: center; /* Pusatkan konten welcome */
+        }
+
+        #fruit-intro-screen {
+            /* display: flex; */ /* Sudah di atas */
+            justify-content: center; /* Diubah dari space-around */
+            gap: 2vh; /* Menambah jarak antar elemen */
+            /* height: 100vh; */ /* Sudah di atas */
+            /* overflow: hidden; */ /* Sudah di atas */
+            /* padding-top: 0; */ /* Diatur oleh padding global */
         }
         .welcome-title-group {
             display: flex;
@@ -170,19 +172,19 @@
             left: 0;
             top: 50%;
             transform: translateY(-50%);
-            max-width: clamp(200px, 40vw, 500px);
+            max-width: clamp(200px, 30vw, 500px); /* PERUBAHAN: Lebar responsif */
             height: auto;
             object-fit: contain;
             filter: drop-shadow(3px 3px 2px rgba(0,0,0,0.3));
         }
 
         #welcome-screen .welcome-title-group h1 {
-            font-size: clamp(2.5rem, 10vw, 5rem); 
+            font-size: clamp(3.5rem, 6vw, 5rem); 
             margin-bottom: 0;
         }
 
         #welcome-screen p {
-            font-size: 1.5rem; 
+            font-size: clamp(1rem, 2.5vw, 1.5rem); /* PERUBAHAN: Responsif */
             color: #34495e;
             margin-top: -10px;
             margin-bottom: 40px;
@@ -191,9 +193,8 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 20px; 
+            gap: clamp(10px, 1.5vw, 20px); /* PERUBAHAN: Gap responsif */
             margin-top: 25px;
-            width: 90%; 
         }
         .bubble {
             position: absolute;
@@ -217,8 +218,9 @@
         }
 
         .welcome-btn, #startButton, #continueToGameBtn {
-            padding: 15px 30px; 
-            font-size: 1.4rem; 
+            /* PERUBAHAN: Padding dan font responsif */
+            padding: clamp(10px, 1.5vh, 15px) clamp(20px, 3vw, 30px); 
+            font-size: clamp(0.9rem, 2vw, 1.4rem); 
             color: white;
             border: none;
             border-radius: 50px;
@@ -229,8 +231,9 @@
         }
         #startButton, #continueToGameBtn {
             background: linear-gradient(45deg, #2ecc71, #27ae60);
-            padding: 20px 50px; 
-            font-size: 1.8rem; 
+            /* PERUBAHAN: Padding dan font responsif */
+            padding: clamp(15px, 2vh, 20px) clamp(30px, 5vw, 50px);
+            font-size: clamp(1.2rem, 3vw, 1.8rem); 
             text-transform: uppercase;
             margin-bottom: 20px;
             margin-top: 10px;
@@ -243,57 +246,67 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.25);
         }
 
+        /* PERUBAHAN: Menggunakan CSS Grid untuk fruit-grid */
         #fruit-grid {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 25px; 
-            margin: 25px 0;
-            width: 95%;
-            max-width: 95%; 
+            /* display: flex; */
+            display: grid; /* Diubah ke grid */
+            /* flex-wrap: wrap; */
+            grid-template-columns: repeat(3, 1fr); /* 3 kolom */
+            justify-content: center;
+            gap: clamp(10px, 2vw, 25px); /* Gap responsif */
+            margin: clamp(15px, 2vh, 25px) 0;
+            width: 100%; /* Lebar penuh dari kontainer */
+            max-width: 900px; 
         }
+        /* Media query untuk layar kecil (ponsel) */
+        @media (max-width: 600px) {
+            #fruit-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 kolom di ponsel */
+            }
+        }
+        
         .fruit-card {
             background: rgba(255, 255, 255, 0.8);
             border-radius: 20px;
-            padding: 20px; 
-            width: 100%; 
+            padding: clamp(10px, 2vw, 20px); /* Padding responsif */
+            /* width: 150px; */ /* DIHAPUS, lebar diatur oleh grid */
+            width: 100%; /* Ditambahkan */
+            box-sizing: border-box; /* Ditambahkan */
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             backdrop-filter: blur(5px);
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-sizing: border-box;
         }
         .fruit-card:hover {
             transform: scale(1.1);
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
         .fruit-emoji {
-            font-size: 80px; 
+            font-size: clamp(50px, 10vmin, 80px); /* PERUBAHAN: Responsif */
             cursor: pointer;
         }
         .fruit-name {
             margin-top: 15px;
-            font-size: 1.8rem; 
+            font-size: clamp(1.2rem, 4vmin, 1.8rem); /* PERUBAHAN: Responsif */
             color: #34495e;
         }
         .benefit-icon-container {
             margin-top: 15px;
-            font-size: 36px; 
+            font-size: clamp(30px, 8vmin, 36px); /* PERUBAHAN: Responsif */
             color: #3498db;
             cursor: pointer;
         }
 
         .intro-text-container {
             background: rgba(255, 255, 255, 0.7);
-            padding: 20px 40px; 
+            padding: clamp(10px, 2vh, 20px) clamp(20px, 4vw, 40px); /* Padding responsif */
             border-radius: 20px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             backdrop-filter: blur(5px);
             margin-bottom: 10px;
             margin-top: 10px;
-            width: 90%; 
-            box-sizing: border-box; 
         }
         #fruit-intro-screen h2 {
             margin-top: 5px;
@@ -302,17 +315,17 @@
         #fruit-intro-screen p {
             margin-top: 5px;
             margin-bottom: 5px;
-            font-size: 1.3rem; 
+            font-size: clamp(1rem, 2.5vw, 1.3rem); /* PERUBAHAN: Responsif */
         }
        
         #game-container {
             display: none; 
-            flex-direction: column;
+            /* flex-direction: column; */ /* Sudah di atas */
             justify-content: flex-start;
-            align-items: center;
-            width: 100%;
-            padding-top: 1vh;
-            box-sizing: border-box;
+            /* align-items: center; */ /* Sudah di atas */
+            /* width: 100%; */ /* Sudah di atas */
+            /* padding-top: 1vh; */ /* Diatur padding global */
+            /* box-sizing: border-box; */ /* Sudah di atas */
         }
         
         #game-container h1 {
@@ -321,25 +334,32 @@
             margin-bottom: 0.5rem; 
         }
 
-        
+        /* PERUBAHAN: Container roda sekarang responsif */
         .wheel-container {
             position: relative; 
             display: inline-block; 
             perspective: 1000px; 
-            margin: 10px 0;
-            width: 95%; 
-            max-width: 500px; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            margin: 1vh 0; /* Margin responsif */
+            /* Tentukan ukuran container, kanvas di dalamnya akan menyesuaikan */
+            width: 65vmin;
+            height: 65vmin;
+            max-width: 500px; /* Batas atas ukuran di 1920x1080 */
+            max-height: 500px;
         }
         .pointer {
             position: absolute; top: -30px;  left: 50%; transform: translateX(-50%);
-            width: 50px; height: 70px;  background: #e74c3c; clip-path: polygon(50% 100%, 0 0, 100% 0);
+            /* PERUBAHAN: Ukuran pointer responsif */
+            width: clamp(30px, 5vmin, 50px);
+            height: clamp(40px, 7vmin, 70px);
+            background: #e74c3c; clip-path: polygon(50% 100%, 0 0, 100% 0);
             z-index: 10; box-shadow: 0 -5px 15px rgba(0,0,0,0.2);
         }
         #spinBtn {
-            margin-top: 40px; padding: 20px 50px; font-size: 24px;  background: linear-gradient(45deg, #2ecc71, #27ae60);
+            /* PERUBAHAN: Tombol spin responsif */
+            margin-top: 20px; 
+            padding: clamp(12px, 2vh, 20px) clamp(30px, 5vw, 50px); 
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);  
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
             color: white; border: none; border-radius: 50px; cursor: pointer;
             box-shadow: 0 8px 15px rgba(46, 204, 113, 0.3); transition: all 0.2s ease-out;
             font-weight: bold; letter-spacing: 1px; text-transform: uppercase;
@@ -351,7 +371,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: clamp(3rem, 18vw, 6rem);
+            font-size: clamp(3rem, 10vmin, 6rem); /* PERUBAHAN: Responsif */
             font-weight: bold;
             color: white;
             text-shadow: 
@@ -370,28 +390,26 @@
             display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%;
             background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px); animation: fadeIn 0.3s ease;
             align-items: center; justify-content: center;
-            overflow-y: auto; 
         }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .modal-content {
-            margin: auto; padding: 40px;  border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3); 
-            width: 95%; 
-            box-sizing: border-box;
-            max-width: 950px; 
+            margin: auto; padding: clamp(20px, 3vw, 40px);  border-radius: 20px; /* Padding responsif */
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3); width: 90%; max-width: 950px; 
             position: relative;
+            /* PERUBAHAN: Tambahkan overflow-y jika konten modal terlalu padat */
+            overflow-y: auto; 
         }
         #myModal .modal-content {
             background: linear-gradient(to bottom, #87CEEB, #E0F6FF);
-            min-height: 90vh; 
-            height: auto; 
+            height: 90vh; 
             display: flex; flex-direction: column;
         }
         .info-modal .modal-content {
             background: linear-gradient(to bottom, #ffffff, #eef2f3); color: #333; text-align: left;
-            font-size: 1.3rem; 
+            font-size: clamp(0.9rem, 2.5vw, 1.3rem); /* PERUBAHAN: Responsif */
+            max-height: 90vh; /* Batas tinggi modal info */
         }
-        .info-modal h2 { text-align: center; color: #2c3e50; margin-top: 0; font-size: 2rem;  }
+        .info-modal h2 { text-align: center; color: #2c3e50; margin-top: 0; font-size: clamp(1.5rem, 3vw, 2rem);  }
         
         
         .petunjuk-list {
@@ -405,7 +423,7 @@
             margin-bottom: 15px;
         }
         .petunjuk-icon {
-            font-size: 3rem;
+            font-size: clamp(2rem, 5vw, 3rem); /* PERUBAHAN: Responsif */
             cursor: pointer;
             transition: transform 0.2s ease;
             user-select: none;
@@ -421,7 +439,7 @@
         
         
         .pustaka-kategori {
-            font-size: 1.6rem;
+            font-size: clamp(1.2rem, 3vw, 1.6rem); /* PERUBAHAN: Responsif */
             color: #2c3e50;
             margin-top: 25px;
             margin-bottom: 15px;
@@ -439,10 +457,10 @@
             align-items: center;
             gap: 15px;
             margin-bottom: 15px;
-            font-size: 1.1rem;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem); /* PERUBAHAN: Responsif */
         }
         .pustaka-icon {
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 3vw, 2rem); /* PERUBAHAN: Responsif */
             width: 40px;
             text-align: center;
             color: #3498db;
@@ -459,24 +477,25 @@
         }
         
         .close {
-            color: #aaa; font-size: 42px;  font-weight: bold; cursor: pointer; transition: all 0.2s ease;
-            position: absolute; top: 15px; right: 25px; z-index: 20;
+            color: #aaa; font-size: clamp(30px, 5vw, 42px);  font-weight: bold; cursor: pointer; transition: all 0.2s ease;
+            position: absolute; top: clamp(5px, 1.5vh, 15px); right: clamp(10px, 2vw, 25px); z-index: 20;
         }
         .close:hover, .close:focus { color: #e74c3c; transform: rotate(90deg) scale(1.2); }
 
         
         #game-area { flex-grow: 1; position: relative; width: 100%; overflow: hidden; padding-top: 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        #current-object-image { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); opacity: 0.6; z-index: 1; }
+        #current-object-image { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); opacity: 0.6; z-index: 1; font-size: clamp(80px, 15vh, 120px); /* PERUBAHAN: Responsif */ }
+        
+        /* PERUBAHAN: Huruf jatuh responsif */
         .letter { 
             position: absolute; 
-            font-size: clamp(2em, 8vw, 3em);
+            font-size: clamp(1.5em, 4vmin, 3em); /* Responsif */
             color: #2980b9; 
             background-color: white; 
-            padding: 10px;
-            width: auto;
-            height: auto;
-            min-width: 45px;
-            min-height: 45px;
+            padding: clamp(5px, 2vmin, 15px); /* Responsif */
+            width: auto; /* Otomatis */
+            height: auto; /* Otomatis */
+            min-width: 1.5em; /* Berdasarkan font */
             display: flex; 
             justify-content: center; 
             align-items: center; 
@@ -488,23 +507,22 @@
             z-index: 10; 
         }
         @keyframes fall { from { top: -80px; } to { top: 105%; } } 
-        #word-display-area { 
-            display: flex; 
-            gap: 15px;  
-            justify-content: center; 
-            padding: 25px 0; 
-            flex-wrap: wrap; 
-        }
+        
+        #word-display-area { display: flex; gap: clamp(5px, 1.5vw, 15px);  justify-content: center; padding: 25px 0; }
+        
+        /* PERUBAHAN: Kotak huruf responsif */
         .letter-box { 
-            width: clamp(50px, 16vw, 70px);
-            height: clamp(60px, 19vw, 80px);
+            width: clamp(40px, 12vw, 70px); /* Responsif */
+            height: clamp(50px, 14vw, 80px); /* Responsif */
+            max-width: 70px;
+            max-height: 80px;
             background-color: rgba(255, 255, 255, 0.7); 
             border-bottom: 6px solid #bdc3c7;  
             border-radius: 15px;  
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            font-size: clamp(2.5em, 12vw, 3.5em);
+            font-size: clamp(2em, 8vw, 3.5em);  /* Responsif */
             color: #2c3e50; 
         }
 
@@ -513,14 +531,17 @@
             display: flex;
             justify-content: space-around;
             align-items: center;
-            width: 95%;
+            width: 100%;
             max-width: 800px; 
             margin: 25px 0;
+            /* PERUBAHAN: Fleksibel di layar kecil */
+            flex-wrap: wrap;
+            gap: 20px;
         }
         .word-column, .image-column {
             display: flex;
             flex-direction: column;
-            gap: 30px; 
+            gap: clamp(15px, 2vh, 30px); /* PERUBAHAN: Gap responsif */
         }
         .match-item {
             background: white;
@@ -538,16 +559,17 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 18px rgba(0,0,0,0.15);
         }
+        /* PERUBAHAN: Item matching responsif */
         .match-item.word {
-            width: clamp(150px, 40vw, 200px);
-            height: 80px; 
-            font-size: 2rem; 
+            width: clamp(150px, 35vw, 200px); 
+            height: clamp(60px, 10vh, 80px); 
+            font-size: clamp(1.2rem, 4vw, 2rem); 
             color: #2c3e50;
         }
         .match-item.image {
-            width: clamp(80px, 20vw, 100px);
-            height: clamp(80px, 20vw, 100px);
-            font-size: clamp(3.5rem, 10vw, 5rem);
+            width: clamp(80px, 18vw, 100px); 
+            height: clamp(80px, 18vw, 100px); 
+            font-size: clamp(3rem, 10vw, 5rem); 
         }
         .match-item.selected {
             border-color: #3498db;
@@ -577,40 +599,49 @@
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            padding: 15px 25px;  
+            padding: clamp(5px, 1vh, 15px) clamp(10px, 2vw, 25px);  /* PERUBAHAN: Padding responsif */
             color: #2c3e50; 
-            flex-wrap: wrap; 
-            gap: 10px; 
         }
-        #round-display, #lives-display { font-size: 2rem;  }
-        .timer { font-size: 2rem;  }
+        #round-display, #lives-display { font-size: clamp(1.2rem, 3vw, 2rem);  } /* PERUBAHAN: Responsif */
+        .timer { font-size: clamp(1.2rem, 3vw, 2rem);  } /* PERUBAHAN: Responsif */
         .timer-progress { height: 10px;  background: linear-gradient(90deg, #2ecc71, #f39c12, #e74c3c); border-radius: 10px; transition: width 1s linear; width: 100%; }
         .timer.flash { animation: flash 0.5s infinite alternate; }
         @keyframes flash { from { color: #2c3e50; } to { color: #e74c3c; } }
         .confetti { position: fixed; width: 15px; height: 15px; background-color: #f00; animation: confetti-fall 3s linear forwards; z-index: 9999; pointer-events: none; }
         @keyframes confetti-fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
-        .alert-message { text-align: center; font-size: 1.5rem;  font-weight: bold; padding: 15px; color: #2c3e50; min-height: 35px;  }
+        .alert-message { text-align: center; font-size: clamp(1rem, 2.5vw, 1.5rem);  font-weight: bold; padding: 15px; color: #2c3e50; min-height: 35px;  } /* PERUBAHAN: Responsif */
         .custom-alert-overlay { visibility: hidden; opacity: 0; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 9998; display: flex; justify-content: center; align-items: center; transition: visibility 0s 0.3s, opacity 0.3s ease; }
         .custom-alert-overlay.show { visibility: visible; opacity: 1; transition: opacity 0.3s ease; }
-        .custom-alert-box { color: white; padding: 35px 45px;  border-radius: 20px; text-align: center; font-size: 1.8rem;  font-weight: bold; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-width: 80%; transform: scale(0.7); transition: transform 0.3s ease-out; line-height: 1.6; }
+        .custom-alert-box { color: white; padding: 35px 45px;  border-radius: 20px; text-align: center; font-size: clamp(1.2rem, 3vw, 1.8rem);  font-weight: bold; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-width: 80%; transform: scale(0.7); transition: transform 0.3s ease-out; line-height: 1.6; } /* PERUBAHAN: Responsif */
         .custom-alert-box.success { background: linear-gradient(135deg, #2ecc71, #28b463); }
         .custom-alert-box.failure { background: linear-gradient(135deg, #e74c3c, #c0392b); }
         .custom-alert-box.info { background: linear-gradient(135deg, #3498db, #2980b9); }
         .custom-alert-overlay.show .custom-alert-box { transform: scale(1); }
 
         
+        /* PERUBAHAN: Grid memory game responsif */
         .memory-game-container {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: clamp(10px, 3vw, 20px);
+            /* Menggunakan auto-fit untuk jumlah kolom otomatis */
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: clamp(5px, 2vmin, 20px); 
             perspective: 1000px;
-            width: 100%;
-            max-width: 600px; 
-            box-sizing: border-box;
+            width: 90%;
+            max-width: 600px; /* Batas atas agar tidak terlalu lebar */
         }
+        /* Media query untuk layar sangat pendek */
+        @media (max-height: 600px) {
+            .memory-game-container {
+                gap: 5px;
+                grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            }
+        }
+        
         .memory-card {
-            width: 100%; 
-            aspect-ratio: 1 / 1; 
+            /* width: 120px; */ /* DIHAPUS */
+            /* height: 120px; */ /* DIHAPUS */
+            width: 100%; /* Lebar 100% dari kolom grid */
+            aspect-ratio: 1 / 1; /* Membuat kartu selalu kotak */
             position: relative;
             transform-style: preserve-3d;
             transition: transform 0.6s;
@@ -629,8 +660,14 @@
             align-items: center;
             border-radius: 15px; 
             box-shadow: 0 5px 12px rgba(0,0,0,0.1);
-            font-size: clamp(30px, 10vw, 60px);
+            font-size: clamp(30px, 10vmin, 60px); /* PERUBAHAN: Responsif */
         }
+         @media (max-height: 600px) {
+            .card-face {
+                font-size: clamp(20px, 8vmin, 40px);
+            }
+        }
+        
         .card-front {
             background: linear-gradient(135deg, #f39c12, #f1c40f);
             color: white;
@@ -649,29 +686,33 @@
         
         .memory-card.matched .card-back {
             color: #2ecc71; 
-            font-size: clamp(35px, 11vw, 70px);
+            font-size: clamp(35px, 12vmin, 70px); /* PERUBAHAN: Responsif */
             background: white; 
         }
 
         .memory-card.matched .card-front {
             background: #2ecc71;
             color: white;
-            font-size: clamp(35px, 11vw, 70px);
+            font-size: clamp(35px, 12vmin, 70px); /* PERUBAHAN: Responsif */
         }
 		
         
+        /* PERUBAHAN: Foto profil responsif */
         .profile-pic-container {
             perspective: 1000px;
             border-radius: 50%;
             flex-shrink: 0;
             margin-right: 20px;
             overflow: hidden;
+            /* Ukuran responsif */
+            width: clamp(100px, 20vmin, 150px);
+            height: clamp(100px, 20vmin, 150px);
         }
 
         .profile-pic-container img {
             transition: transform 0.2s ease-out;
-            width: 150px;
-            height: 300px;
+            width: 100%; /* Sesuaikan lebar */
+            height: 200%; /* Pertahankan rasio aspek 1:2 dari 150:300 */
             object-fit: cover;
             display: block;
         }
@@ -709,6 +750,7 @@
             display: flex;
             align-items: center;
             width: 100%;
+            flex-wrap: wrap; /* Izinkan wrap di layar kecil */
         }
 
         .hc-logos {
@@ -721,7 +763,7 @@
         }
 
         .hc-logo {
-            height: 60px;
+            height: clamp(40px, 5vh, 60px); /* PERUBAHAN: Responsif */
             max-width: 150px;
             object-fit: contain;
         }
@@ -735,9 +777,10 @@
             background-color: rgba(255, 255, 255, 0.7);
             border: 2px solid #3498db;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 20px;
+            /* PERUBAHAN: Ukuran responsif */
+            width: clamp(40px, 5vmin, 50px);
+            height: clamp(40px, 5vmin, 50px);
+            font-size: clamp(16px, 2.5vmin, 20px);
             color: #3498db;
             cursor: pointer;
             display: flex;
@@ -751,199 +794,6 @@
             background-color: #3498db;
             color: white;
         }
-
-        
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            h1 {
-                text-shadow:
-                    -2px -2px 0 var(--white),
-                    2px -2px 0 var(--white),
-                    -2px 2px 0 var(--white),
-                    2px 2px 0 var(--white),
-                    3px 3px 0 #000000;
-            }
-            h2 {
-                font-size: 2rem;
-            }
-            .welcome-image {
-                max-width: 250px;
-            }
-            .welcome-buttons {
-                flex-direction: column;
-                align-items: center;
-                gap: 15px;
-                width: 100%;
-            }
-            .welcome-btn, #startButton, #continueToGameBtn {
-                width: 80%;
-                max-width: 350px; 
-                padding: 15px;
-                font-size: 1.2rem;
-                box-sizing: border-box;
-            }
-            #startButton, #continueToGameBtn {
-                font-size: 1.4rem;
-            }
-            #fruit-grid {
-                gap: 15px;
-                width: 95%;
-                grid-template-columns: repeat(3, 1fr); 
-            }
-            .fruit-card {
-                padding: 15px;
-            }
-            .fruit-emoji {
-                font-size: 60px;
-            }
-            .fruit-name {
-                font-size: 1.4rem;
-            }
-            .intro-text-container {
-                padding: 15px 20px;
-                width: 95%;
-            }
-            #fruit-intro-screen p {
-                font-size: 1rem;
-            }
-
-            #spinBtn {
-                margin-top: 20px;
-                padding: 15px 30px;
-                font-size: 18px;
-            }
-
-            .modal-content {
-                padding: 20px;
-                width: 95%;
-                box-sizing: border-box;
-            }
-            #myModal .modal-content {
-                padding: 10px;
-            }
-
-            #word-display-area {
-                gap: 8px;
-                padding: 15px 0;
-            }
-            
-            .matching-container {
-                flex-direction: column;
-                align-items: center;
-                gap: 25px;
-            }
-            .word-column, .image-column {
-                gap: 15px;
-                align-items: center;
-            }
-
-            .memory-game-container {
-                grid-template-columns: repeat(3, 1fr); 
-                gap: 10px;
-                width: 95%;
-                max-width: 450px; 
-            }
-            
-            .info-modal h2 {
-                font-size: 1.5rem;
-            }
-            .info-modal .modal-content {
-                font-size: 1rem;
-            }
-            .petunjuk-item {
-                flex-direction: column;
-                gap: 10px;
-                text-align: center;
-            }
-            .petunjuk-icon {
-                font-size: 2.5rem;
-            }
-            .petunjuk-item p {
-                text-align: center;
-            }
-            .pustaka-kategori {
-                font-size: 1.3rem;
-            }
-            .pustaka-item {
-                flex-direction: column;
-                gap: 5px;
-                text-align: center;
-            }
-            .pustaka-item div {
-                text-align: center;
-            }
-
-            .modal-main-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            .profile-pic-container {
-                margin-right: 0;
-                margin-bottom: 15px;
-            }
-             .profile-pic-container img {
-                width: 120px;
-                height: 240px; 
-            }
-            .modal-main-content div[style*="text-align: left"] {
-                text-align: center !important;
-            }
-            .modal-bg-image {
-                display: none; 
-            }
-
-            #info-panel {
-                flex-direction: column;
-                gap: 10px;
-                padding: 10px;
-            }
-            #round-display, #lives-display, .timer {
-                font-size: 1.2rem;
-            }
-            #info-panel div[style*="text-align: right"] {
-                text-align: center !important;
-                width: 100%;
-            }
-
-            .music-toggle-btn {
-                top: 10px;
-                right: 10px;
-                width: 40px;
-                height: 40px;
-                font-size: 16px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            h1 {
-                font-size: clamp(2.5rem, 15vw, 3rem); 
-            }
-            #welcome-screen .welcome-title-group h1 {
-                font-size: clamp(2rem, 10vw, 2.5rem);
-            }
-            .welcome-image {
-                max-width: 150px;
-            }
-            #fruit-grid {
-                grid-template-columns: repeat(2, 1fr); 
-                gap: 10px;
-            }
-            .letter-box {
-                width: clamp(40px, 12vw, 50px);
-                height: clamp(50px, 14vw, 60px);
-                font-size: clamp(2em, 8vw, 2.5em);
-            }
-            .memory-game-container {
-                gap: 8px;
-            }
-            .custom-alert-box {
-                font-size: 1.2rem;
-                padding: 20px;
-            }
-        }
-
 
     </style>
 </head>
@@ -963,6 +813,7 @@
     <div class="bubble"></div>
     <div class="bubble"></div>
 
+    <!-- PERUBAHAN: Atribut display:none dihapus, akan dikontrol oleh JS -->
     <div id="welcome-screen">
         <div class="welcome-title-group">
             <img src="image/Bangbin.png" alt="bangbin" class="welcome-image">
@@ -988,13 +839,14 @@
         <button id="continueToGameBtn">Lanjut Bermain</button>
     </div>
 
-    <div id="game-container">
+    <div id="game-container" style="display:none;"> <!-- PERUBAHAN: Ditambahkan style display:none agar konsisten -->
         <h1>Roda Kata Buah Ajaib</h1>
         <div class="wheel-container">
             <div id="animated-text-display"></div>
             <div class="pointer"></div>
-            <canvas id="wheel" width="500" height="500"></canvas> 
             <button id="spinBtn">Putar Roda</button>
+            <!-- PERUBAHAN: Atribut width/height dihapus dari HTML, akan diatur oleh JS -->
+            <canvas id="wheel"></canvas> 
         </div>
     </div>
 
@@ -1263,9 +1115,948 @@
 
 
     <script>
- 	const _0x658cfd=_0x171f;(function(_0x338e18,_0x498062){const _0xc9a818=_0x171f,_0x5c068b=_0x338e18();while(!![]){try{const _0x482313=-parseInt(_0xc9a818(0x22d))/0x1+parseInt(_0xc9a818(0x24b))/0x2*(parseInt(_0xc9a818(0x1f1))/0x3)+parseInt(_0xc9a818(0x20a))/0x4*(parseInt(_0xc9a818(0x220))/0x5)+parseInt(_0xc9a818(0x20c))/0x6*(parseInt(_0xc9a818(0x27a))/0x7)+parseInt(_0xc9a818(0x254))/0x8*(parseInt(_0xc9a818(0x281))/0x9)+-parseInt(_0xc9a818(0x200))/0xa+parseInt(_0xc9a818(0x2a8))/0xb*(-parseInt(_0xc9a818(0x1ea))/0xc);if(_0x482313===_0x498062)break;else _0x5c068b['push'](_0x5c068b['shift']());}catch(_0xd41db0){_0x5c068b['push'](_0x5c068b['shift']());}}}(_0x51a1,0x2ad3d));const welcomeScreen=document[_0x658cfd(0x23b)](_0x658cfd(0x272)),fruitIntroScreen=document[_0x658cfd(0x23b)](_0x658cfd(0x1ef)),fruitGrid=document[_0x658cfd(0x23b)](_0x658cfd(0x262)),continueToGameBtn=document['getElementById']('continueToGameBtn'),gameContainer=document[_0x658cfd(0x23b)]('game-container'),startButton=document[_0x658cfd(0x23b)]('startButton'),petunjukModal=document[_0x658cfd(0x23b)](_0x658cfd(0x2a7)),tujuanModal=document['getElementById'](_0x658cfd(0x242)),pustakaModal=document[_0x658cfd(0x23b)](_0x658cfd(0x2a9)),hcModal=document[_0x658cfd(0x23b)](_0x658cfd(0x222)),pengembangModal=document['getElementById'](_0x658cfd(0x20b)),petunjukBtn=document['getElementById'](_0x658cfd(0x2b4)),tujuanBtn=document[_0x658cfd(0x23b)](_0x658cfd(0x1f4)),pustakaBtn=document[_0x658cfd(0x23b)](_0x658cfd(0x2c0)),hcBtn=document[_0x658cfd(0x23b)](_0x658cfd(0x253)),pengembangBtn=document[_0x658cfd(0x23b)](_0x658cfd(0x210)),allCloseButtons=document['querySelectorAll'](_0x658cfd(0x25c)),canvasWheel=document[_0x658cfd(0x23b)](_0x658cfd(0x235)),ctxWheel=canvasWheel[_0x658cfd(0x266)]('2d'),spinBtn=document['getElementById'](_0x658cfd(0x293)),animatedTextDisplay=document[_0x658cfd(0x23b)](_0x658cfd(0x264)),modal=document['getElementById'](_0x658cfd(0x278)),gameArea=document[_0x658cfd(0x23b)]('game-area'),wordDisplayArea=document[_0x658cfd(0x23b)](_0x658cfd(0x241)),roundDisplay=document[_0x658cfd(0x23b)](_0x658cfd(0x256)),livesDisplay=document[_0x658cfd(0x23b)](_0x658cfd(0x2b5)),timerDiv=document['getElementById'](_0x658cfd(0x28e)),timerProgress=document[_0x658cfd(0x23b)](_0x658cfd(0x201)),alertMessageDiv=document[_0x658cfd(0x23b)]('alertMessage'),transitionAlert=document[_0x658cfd(0x23b)]('transition-alert'),transitionAlertContent=document[_0x658cfd(0x23b)]('transition-alert-content'),spinSound=document[_0x658cfd(0x23b)]('spinSound'),tickSound=document[_0x658cfd(0x23b)](_0x658cfd(0x27f)),successSound=document['getElementById'](_0x658cfd(0x28d)),timeoutSound=document['getElementById'](_0x658cfd(0x29f)),wrongSound=document[_0x658cfd(0x23b)](_0x658cfd(0x217)),foundSound=document[_0x658cfd(0x23b)](_0x658cfd(0x21d)),pairSound=document['getElementById'](_0x658cfd(0x2ae)),backgroundMusic=document[_0x658cfd(0x23b)]('backgroundMusic'),musicToggleBtn=document['getElementById']('musicToggleBtn'),segments=[{'text':_0x658cfd(0x1f0),'item':'🍎','benefitIcon':_0x658cfd(0x234),'benefitSound':_0x658cfd(0x206)},{'text':_0x658cfd(0x250),'item':'🍌','benefitIcon':'fa-bolt','benefitSound':'manfaat_pisang'},{'text':_0x658cfd(0x2b6),'item':'🥕','benefitIcon':_0x658cfd(0x2ad),'benefitSound':_0x658cfd(0x1f5)},{'text':'JERUK','item':'🍊','benefitIcon':_0x658cfd(0x258),'benefitSound':_0x658cfd(0x22f)},{'text':_0x658cfd(0x277),'item':'🍅','benefitIcon':'fa-leaf','benefitSound':_0x658cfd(0x289)},{'text':_0x658cfd(0x24a),'item':'🍇','benefitIcon':'fa-brain','benefitSound':'manfaat_anggur'}],segmentColors=[_0x658cfd(0x216),_0x658cfd(0x208),_0x658cfd(0x252),_0x658cfd(0x26d),_0x658cfd(0x21c),_0x658cfd(0x233)],centerX=canvasWheel['width']/0x2,centerY=canvasWheel['height']/0x2,radius=canvasWheel[_0x658cfd(0x2bc)]/0x2-0xa;let angle=0x0,spinning=![],currentRound=0x1,currentSegment,countdown,letterInterval,selectedWord=null,selectedImage=null,correctPairs_L2=0x0,flippedCards=[],matchedPairs_L3=0x0,lockBoard=![];function spin(){const _0x14654c=_0x658cfd;if(spinning)return;spinning=!![],spinSound['currentTime']=0x0,spinSound[_0x14654c(0x297)]();const _0x876c14=Math[_0x14654c(0x27e)]()*0x168+0x2d0*0x5,_0x8346b1=0xfa0,_0x1b9229=Date['now']();function _0x50a883(){const _0x5813d0=_0x14654c,_0x25b2ed=Date['now']()-_0x1b9229;if(_0x25b2ed<_0x8346b1){const _0x186cf0=easeOutCubic(_0x25b2ed/_0x8346b1);angle=_0x186cf0*_0x876c14*Math['PI']/0xb4,drawWheel(),requestAnimationFrame(_0x50a883);}else{spinning=![],spinSound[_0x5813d0(0x25b)]();const _0x198f32=angle%(0x2*Math['PI']),_0x1b4ec8=0x2*Math['PI']/segments[_0x5813d0(0x205)],_0x40cd49=(0x3*Math['PI']/0x2-_0x198f32+0x2*Math['PI'])%(0x2*Math['PI']),_0x123212=Math['floor'](_0x40cd49/_0x1b4ec8);currentSegment=segments[_0x123212],currentRound=0x1;const _0x59d729=_0x5813d0(0x2b8)+currentSegment[_0x5813d0(0x2b7)][_0x5813d0(0x25f)](),_0x3e5f57=document[_0x5813d0(0x23b)](_0x59d729);_0x3e5f57&&(_0x3e5f57[_0x5813d0(0x25e)]=0x0,_0x3e5f57[_0x5813d0(0x297)]()),setTimeout(()=>{animateText(currentSegment['text'],()=>{setTimeout(()=>{const _0x1b4e23=_0x171f;animatedTextDisplay[_0x1b4e23(0x23e)]='',startGame_Level1();},0x7d0);});},0x7d0);}}_0x50a883();}function startGame_Level1(){const _0x2e0fa2=_0x658cfd;prepareModalForLevel(0x1);let _0xd5bf74=0x3,_0x4d1034=currentSegment[_0x2e0fa2(0x2b7)][_0x2e0fa2(0x2ba)](''),_0x57be93=0x0;updateInfoPanel(0x1,_0xd5bf74),setupWordDisplay_Level1(),startTimer(0x3c,()=>endGame_Level1(![])),letterInterval=setInterval(()=>{createFallingLetter(_0x4d1034,_0x35fab8=>{const _0x1f1526=_0x171f;_0x35fab8?(_0x57be93++,_0x57be93===currentSegment[_0x1f1526(0x2b7)]['length']&&endGame_Level1(!![])):(_0xd5bf74--,updateInfoPanel(0x1,_0xd5bf74),_0xd5bf74<=0x0&&endGame_Level1(![]));});},0x4b0);}function _0x51a1(){const _0x40cf6f=['content','modal','sound-ayoTangkap','img','#4CAF50','save','appendChild','deg)\x20rotateY(','closePath','#FFEB3B','63807kADibh','animationDuration','manfaat_jeruk','<div\x20class=\x22memory-game-container\x22></div>','lineTo','#e91e63','#1abc9c','fa-heart','wheel','fruit','click','#9c27b0','createElement','fill','getElementById','Selamat!\x20Babak\x201\x20Selesai.<br>Bersiap\x20untuk\x20Babak\x202!','<i\x20class=\x22fas\x20fa-volume-up\x22></i>','innerHTML','word-column','selected','word-display-area','tujuanModal','className','rgba(0,0,0,0.1)','Babak\x20','audio[id^=\x22sound-\x22]','stopPropagation','querySelector','\x22></i>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','ANGGUR','2cOcWnD','transform','Luar\x20Biasa!\x20Babak\x202\x20Selesai.<br>Bersiap\x20untuk\x20Babak\x20Final!','none','clearRect','PISANG','#f44336','#e74c3c','hcBtn','1384oYnZQb','clientY','round-display','memory-card','fa-shield-alt','remove','.memory-game-container','pause','.close','onclick','currentTime','toLowerCase','backgroundColor','[data-letter-index=\x27','fruit-grid','fillRect','animated-text-display','flipped','getContext','stroke','flex','textAlign','quadraticCurveTo','show','sound-infoNamaBuah','#9b59b6','addEventListener','textContent','push','.modal','welcome-screen','custom-alert-box','sound','px\x20Arial','fillStyle','TOMAT','myModal','lineWidth','20419FYIPzQ','rotate','translate','rotateX(0deg)\x20rotateY(0deg)\x20scale(1)','random','tickSound','#myModal','9657qCSPfY','floor','shadowColor','#FF9F5F','shadowOffsetX','resize','innerWidth','80px\x20Arial','manfaat_tomat','.benefit-icon-container','block','textBaseline','successSound','timer','height','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<i\x20class=\x22fas\x20','contains','rotateX(','spinBtn','middle','.card-front','font','play','incorrect-pair','correct-pair','<i\x20class=\x22fas\x20','fillText','deg)\x20scale(1.1)','forEach','item','timeoutSound','matched','match-item\x20image','catch','.matching-container','Tangkap\x20huruf\x20yang\x20benar!','slice','paused','petunjukModal','33sEUPcg','pustakaModal','info','currentTarget','display','fa-eye','pairSound','\x22></i>','body','center','closest','parentElement','petunjukBtn','lives-display','WORTEL','text','sound-','#A4C49F','split','sort','width','dataset','Jodohkan\x20buah\x20dengan\x20manfaatnya!','pointerEvents','pustakaBtn','blueishGreen','1404924hWRfwk','target','restore','top','clientWidth','fruit-intro-screen','APEL','543714gfcSwr','flash','failure','tujuanBtn','manfaat_wortel','image-column','#F8D960','mouseleave','SELAMAT,\x20KAMU\x20HEBAT!\x20KAMU\x20TELAH\x20MENYELESAIKAN\x20SEMUA\x20TANTANGAN.<br>KAMU\x20HEBAT!','style','moveTo','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','image','beginPath','confetti','1727250kCHzMH','timerProgress','benefitIcon','load','orange','length','manfaat_apel','add','#e67e22','greenishGrey','57764OtphnN','pengembangModal','132bTTLzc','classList','.<br>Putar\x20roda\x20untuk\x20mencoba\x20lagi.','success','pengembangBtn','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22benefit-icon-container\x22\x20data-sound=\x22sound-','benefitSound','auto','size','sound-bukaKartu','#f1c40f','wrongSound','<div\x20id=\x22current-object-image\x22\x20style=\x22font-size:\x20120px;\x22>','sound-putarRoda','<i\x20class=\x22fas\x20fa-volume-mute\x22></i>','Anda\x20Gagal!\x20Kata\x20yang\x20benar:\x20','#3498db','foundSound','Waktu\x20Habis!<br>Putar\x20roda\x20untuk\x20mencoba\x20lagi.','div','115VuSpgm','letter','hcModal'];_0x51a1=function(){return _0x40cf6f;};return _0x51a1();}function endGame_Level1(_0x20c30c){const _0x31fe5f=_0x658cfd;resetAllIntervals(),_0x20c30c?(successSound[_0x31fe5f(0x25e)]=0x0,successSound[_0x31fe5f(0x297)](),showCustomAlert('info',_0x31fe5f(0x23c),0x7d0),setTimeout(startGame_Level2,0x834)):(modal[_0x31fe5f(0x1fa)][_0x31fe5f(0x2ac)]=_0x31fe5f(0x24e),timeoutSound['currentTime']=0x0,timeoutSound[_0x31fe5f(0x297)](),showCustomAlert('failure',_0x31fe5f(0x21b)+currentSegment['text']+_0x31fe5f(0x20e)));}function startGame_Level2(){prepareModalForLevel(0x2),updateInfoPanel(0x2),setupMatchingGame(),startTimer(0x3c,()=>endGame_Level2(![]));}function endGame_Level2(_0x5b2901){const _0x147d2b=_0x658cfd;resetAllIntervals(),_0x5b2901?(successSound[_0x147d2b(0x25e)]=0x0,successSound['play'](),showCustomAlert(_0x147d2b(0x2aa),_0x147d2b(0x24d),0x7d0),setTimeout(startGame_Level3,0x834)):(modal[_0x147d2b(0x1fa)]['display']=_0x147d2b(0x24e),wrongSound[_0x147d2b(0x25e)]=0x0,wrongSound[_0x147d2b(0x297)](),showCustomAlert(_0x147d2b(0x1f3),_0x147d2b(0x21e)));}function startGame_Level3(){prepareModalForLevel(0x3),updateInfoPanel(0x3),setupMemoryGame(),startTimer(0xf0,()=>endGame_Level3(![]));}function endGame_Level3(_0x4bc4bc){const _0x3dad7e=_0x658cfd;resetAllIntervals(),modal[_0x3dad7e(0x1fa)][_0x3dad7e(0x2ac)]='none',stopAllGameSounds(),_0x4bc4bc?(successSound[_0x3dad7e(0x25e)]=0x0,successSound[_0x3dad7e(0x297)](),createConfetti(),showCustomAlert(_0x3dad7e(0x20f),_0x3dad7e(0x1f9),0xfa0),setTimeout(()=>{const _0x197b01=_0x3dad7e;hcModal[_0x197b01(0x1fa)]['display']=_0x197b01(0x268),setTimeout(()=>{const _0xb085e0=_0x197b01;hcModal[_0xb085e0(0x1fa)][_0xb085e0(0x2ac)]=_0xb085e0(0x24e),pengembangModal[_0xb085e0(0x1fa)][_0xb085e0(0x2ac)]='flex',setTimeout(()=>{const _0x46a3f4=_0xb085e0;pengembangModal['style'][_0x46a3f4(0x2ac)]='none',gameContainer[_0x46a3f4(0x1fa)][_0x46a3f4(0x2ac)]=_0x46a3f4(0x24e),welcomeScreen[_0x46a3f4(0x1fa)][_0x46a3f4(0x2ac)]=_0x46a3f4(0x268);},0x1388);},0x1388);},0x1004)):(timeoutSound[_0x3dad7e(0x25e)]=0x0,timeoutSound[_0x3dad7e(0x297)](),showCustomAlert(_0x3dad7e(0x1f3),_0x3dad7e(0x21e)));}function stopAllGameSounds(){const _0x553b9b=_0x658cfd;document['querySelectorAll'](_0x553b9b(0x246))[_0x553b9b(0x29d)](_0x463a77=>{const _0x3699df=_0x553b9b;!_0x463a77[_0x3699df(0x2a6)]&&(_0x463a77[_0x3699df(0x25b)](),_0x463a77['currentTime']=0x0);});}function animateText(_0x149ac9,_0x3ea59f){const _0x9cb0e7=_0x658cfd;animatedTextDisplay[_0x9cb0e7(0x23e)]='';const _0xf0a63c=_0x149ac9['split']('');let _0x2faf68=0x0;const _0x16abc5=0x15e,_0x593815=setInterval(()=>{const _0xd93696=_0x9cb0e7;if(_0x2faf68<_0xf0a63c[_0xd93696(0x205)]){const _0x57e83f=_0xf0a63c[_0x2faf68];animatedTextDisplay[_0xd93696(0x23e)]+=_0x57e83f;const _0x468861=document[_0xd93696(0x23b)]('sound-'+_0x57e83f[_0xd93696(0x25f)]());_0x468861&&(_0x468861['currentTime']=0x0,_0x468861[_0xd93696(0x297)]()),_0x2faf68++;}else clearInterval(_0x593815),_0x3ea59f&&_0x3ea59f();},_0x16abc5);}function prepareModalForLevel(_0x3c3a4e){const _0x27d9fb=_0x658cfd;modal[_0x27d9fb(0x1fa)][_0x27d9fb(0x2ac)]='block',gameArea[_0x27d9fb(0x23e)]='',wordDisplayArea[_0x27d9fb(0x23e)]='',alertMessageDiv[_0x27d9fb(0x23e)]='',livesDisplay[_0x27d9fb(0x1fa)][_0x27d9fb(0x2ac)]='none',wordDisplayArea[_0x27d9fb(0x1fa)][_0x27d9fb(0x2ac)]=_0x27d9fb(0x24e),stopAllGameSounds();if(_0x3c3a4e===0x1){gameArea[_0x27d9fb(0x23e)]=_0x27d9fb(0x218)+currentSegment[_0x27d9fb(0x29e)]+'</div>',alertMessageDiv[_0x27d9fb(0x23e)]=_0x27d9fb(0x2a4),livesDisplay[_0x27d9fb(0x1fa)]['display']=_0x27d9fb(0x28b),wordDisplayArea[_0x27d9fb(0x1fa)][_0x27d9fb(0x2ac)]='flex';const _0xbb3369=document[_0x27d9fb(0x23b)](_0x27d9fb(0x225));_0xbb3369&&(_0xbb3369[_0x27d9fb(0x25e)]=0x0,_0xbb3369[_0x27d9fb(0x297)]());}else{if(_0x3c3a4e===0x2){alertMessageDiv[_0x27d9fb(0x23e)]='Jodohkan\x20kata\x20dengan\x20gambar\x20yang\x20benar!';const _0x112a97=document[_0x27d9fb(0x23b)]('sound-jodohkanBuah');_0x112a97&&(_0x112a97['currentTime']=0x0,_0x112a97[_0x27d9fb(0x297)]());}else{if(_0x3c3a4e===0x3){alertMessageDiv['innerHTML']=_0x27d9fb(0x2be);const _0x802221=document[_0x27d9fb(0x23b)](_0x27d9fb(0x215));_0x802221&&(_0x802221[_0x27d9fb(0x25e)]=0x0,_0x802221[_0x27d9fb(0x297)]());}}}}function _0x171f(_0x25f754,_0x43fb7c){const _0x51a13f=_0x51a1();return _0x171f=function(_0x171fd0,_0x2c8cda){_0x171fd0=_0x171fd0-0x1e9;let _0x491706=_0x51a13f[_0x171fd0];return _0x491706;},_0x171f(_0x25f754,_0x43fb7c);}function updateInfoPanel(_0x1a1a2d,_0x348530,_0xe797ef,_0x546e0d){const _0x20fe25=_0x658cfd;currentRound=_0x1a1a2d,roundDisplay[_0x20fe25(0x26f)]=_0x20fe25(0x245)+_0x1a1a2d,_0x348530!==null&&_0x348530!==undefined&&(livesDisplay[_0x20fe25(0x23e)]='NYAWA:\x20'+'❤️'['repeat'](_0x348530)),_0xe797ef!==undefined&&(timerDiv[_0x20fe25(0x26f)]=_0xe797ef,timerProgress[_0x20fe25(0x1fa)][_0x20fe25(0x2bc)]=_0xe797ef/_0x546e0d*0x64+'%');}function setupWordDisplay_Level1(){const _0x2ca8d5=_0x658cfd;wordDisplayArea[_0x2ca8d5(0x23e)]='',currentSegment[_0x2ca8d5(0x2b7)][_0x2ca8d5(0x2ba)]('')[_0x2ca8d5(0x29d)]((_0x28098c,_0x2e64d8)=>{const _0x4bf856=_0x2ca8d5,_0x17da05=document[_0x4bf856(0x239)](_0x4bf856(0x21f));_0x17da05[_0x4bf856(0x243)]='letter-box',_0x17da05[_0x4bf856(0x2bd)]['letterIndex']=_0x2e64d8,wordDisplayArea[_0x4bf856(0x229)](_0x17da05);});}function createFallingLetter(_0x40de33,_0x1d2619){const _0x13893d=_0x658cfd,_0x10146c=document[_0x13893d(0x239)](_0x13893d(0x21f));_0x10146c['className']=_0x13893d(0x221);const _0x32d4d1=Math[_0x13893d(0x27e)]()>0.4;let _0x3eec09,_0x5b37a3=_0x40de33['filter']((_0x39ffa7,_0xb7ddc8)=>!wordDisplayArea[_0x13893d(0x248)]('[data-letter-index=\x27'+_0xb7ddc8+'\x27]')[_0x13893d(0x26f)]);_0x32d4d1&&_0x5b37a3[_0x13893d(0x205)]>0x0?_0x3eec09=_0x5b37a3[Math[_0x13893d(0x282)](Math[_0x13893d(0x27e)]()*_0x5b37a3[_0x13893d(0x205)])]:_0x3eec09=String['fromCharCode'](0x41+Math['floor'](Math['random']()*0x1a));_0x10146c[_0x13893d(0x26f)]=_0x3eec09,_0x10146c['style']['left']=Math[_0x13893d(0x27e)]()*(gameArea[_0x13893d(0x1ee)]-0x46)+'px';const _0x39ed7c=0xa+Math[_0x13893d(0x27e)]()*0x4;_0x10146c[_0x13893d(0x1fa)][_0x13893d(0x22e)]=_0x39ed7c+'s',_0x10146c[_0x13893d(0x26e)](_0x13893d(0x237),()=>{const _0x3c5854=_0x13893d,_0x20a54f=document['getElementById'](_0x3c5854(0x2b8)+_0x3eec09['toLowerCase']());_0x20a54f&&(_0x20a54f[_0x3c5854(0x25e)]=0x0,_0x20a54f[_0x3c5854(0x297)]());let _0x1dae7d=![];for(let _0x5b54e0=0x0;_0x5b54e0<_0x40de33['length'];_0x5b54e0++){const _0x1ee2b9=wordDisplayArea[_0x3c5854(0x248)](_0x3c5854(0x261)+_0x5b54e0+'\x27]');if(_0x40de33[_0x5b54e0]===_0x3eec09&&_0x1ee2b9&&_0x1ee2b9['textContent']===''){_0x1ee2b9['textContent']=_0x3eec09,_0x1dae7d=!![],_0x1d2619(!![]);break;}}!_0x1dae7d&&(wrongSound[_0x3c5854(0x25e)]=0x0,wrongSound[_0x3c5854(0x297)](),_0x1d2619(![])),_0x10146c['remove']();}),gameArea[_0x13893d(0x229)](_0x10146c),setTimeout(()=>{const _0x27f5f6=_0x13893d;if(_0x10146c[_0x27f5f6(0x2b3)])_0x10146c[_0x27f5f6(0x259)]();},_0x39ed7c*0x3e8);}function setupMatchingGame(){const _0x3fef95=_0x658cfd;selectedWord=null,selectedImage=null,correctPairs_L2=0x0,gameArea['innerHTML']='\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22matching-container\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20id=\x22word-column\x22\x20class=\x22word-column\x22></div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20id=\x22image-column\x22\x20class=\x22image-column\x22></div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>';const _0xaa99b2=[...segments]['sort'](()=>0.5-Math[_0x3fef95(0x27e)]())[_0x3fef95(0x2a5)](0x0,0x4),_0x2e91e0=[..._0xaa99b2][_0x3fef95(0x2bb)](()=>0.5-Math[_0x3fef95(0x27e)]()),_0xb35b0b=[..._0xaa99b2][_0x3fef95(0x2bb)](()=>0.5-Math['random']()),_0x4c68a0=document['getElementById'](_0x3fef95(0x23f)),_0x193981=document[_0x3fef95(0x23b)](_0x3fef95(0x1f6));_0x2e91e0['forEach'](_0x1a822a=>{const _0xb8ee68=_0x3fef95,_0x48e466=document[_0xb8ee68(0x239)]('div');_0x48e466[_0xb8ee68(0x243)]='match-item\x20word',_0x48e466[_0xb8ee68(0x26f)]=_0x1a822a['text'],_0x48e466['dataset']['id']=_0x1a822a[_0xb8ee68(0x2b7)],_0x48e466[_0xb8ee68(0x26e)](_0xb8ee68(0x237),handleMatchItemClick),_0x4c68a0[_0xb8ee68(0x229)](_0x48e466);}),_0xb35b0b[_0x3fef95(0x29d)](_0x2ceaf1=>{const _0x82b489=_0x3fef95,_0x381f29=document[_0x82b489(0x239)]('div');_0x381f29[_0x82b489(0x243)]=_0x82b489(0x2a1),_0x381f29['textContent']=_0x2ceaf1[_0x82b489(0x29e)],_0x381f29[_0x82b489(0x2bd)]['id']=_0x2ceaf1[_0x82b489(0x2b7)],_0x381f29['addEventListener']('click',handleMatchItemClick),_0x193981[_0x82b489(0x229)](_0x381f29);});}function handleMatchItemClick(_0x53cd09){const _0x5f4bff=_0x658cfd,_0x488ea4=_0x53cd09[_0x5f4bff(0x2ab)];if(_0x488ea4[_0x5f4bff(0x20d)][_0x5f4bff(0x291)](_0x5f4bff(0x299)))return;stopAllGameSounds();const _0x1b6c7f=_0x5f4bff(0x2b8)+_0x488ea4['dataset']['id'][_0x5f4bff(0x25f)](),_0x51c057=document[_0x5f4bff(0x23b)](_0x1b6c7f);_0x51c057&&(_0x51c057[_0x5f4bff(0x25e)]=0x0,_0x51c057[_0x5f4bff(0x297)]());if(_0x488ea4[_0x5f4bff(0x20d)][_0x5f4bff(0x291)]('word')){if(selectedWord)selectedWord[_0x5f4bff(0x20d)][_0x5f4bff(0x259)](_0x5f4bff(0x240));selectedWord=_0x488ea4,selectedWord['classList'][_0x5f4bff(0x207)](_0x5f4bff(0x240));}else{if(_0x488ea4[_0x5f4bff(0x20d)][_0x5f4bff(0x291)](_0x5f4bff(0x1fd))){if(selectedImage)selectedImage[_0x5f4bff(0x20d)]['remove'](_0x5f4bff(0x240));selectedImage=_0x488ea4,selectedImage[_0x5f4bff(0x20d)][_0x5f4bff(0x207)]('selected');}}if(selectedWord&&selectedImage){if(selectedWord['dataset']['id']===selectedImage[_0x5f4bff(0x2bd)]['id'])pairSound[_0x5f4bff(0x25e)]=0x0,pairSound[_0x5f4bff(0x297)](),selectedWord[_0x5f4bff(0x20d)]['add'](_0x5f4bff(0x299)),selectedImage[_0x5f4bff(0x20d)][_0x5f4bff(0x207)](_0x5f4bff(0x299)),selectedWord[_0x5f4bff(0x20d)][_0x5f4bff(0x259)]('selected'),selectedImage[_0x5f4bff(0x20d)][_0x5f4bff(0x259)](_0x5f4bff(0x240)),selectedWord=null,selectedImage=null,correctPairs_L2++,correctPairs_L2===0x4&&endGame_Level2(!![]);else{wrongSound[_0x5f4bff(0x25e)]=0x0,wrongSound[_0x5f4bff(0x297)]();const _0x37c37b=selectedWord,_0x6a59a3=selectedImage;_0x37c37b[_0x5f4bff(0x20d)]['add'](_0x5f4bff(0x298)),_0x6a59a3[_0x5f4bff(0x20d)][_0x5f4bff(0x207)](_0x5f4bff(0x298)),document[_0x5f4bff(0x248)]('.matching-container')['style'][_0x5f4bff(0x2bf)]=_0x5f4bff(0x24e),setTimeout(()=>{const _0x55f2fb=_0x5f4bff;_0x37c37b['classList'][_0x55f2fb(0x259)](_0x55f2fb(0x240),_0x55f2fb(0x298)),_0x6a59a3[_0x55f2fb(0x20d)][_0x55f2fb(0x259)]('selected',_0x55f2fb(0x298)),document['querySelector'](_0x55f2fb(0x2a3))[_0x55f2fb(0x1fa)]['pointerEvents']=_0x55f2fb(0x213);},0x1f4),selectedWord=null,selectedImage=null;}}}function setupMemoryGame(){const _0x5c1d3f=_0x658cfd;matchedPairs_L3=0x0,flippedCards=[],lockBoard=![],gameArea[_0x5c1d3f(0x23e)]=_0x5c1d3f(0x230);const _0xd9f53d=gameArea[_0x5c1d3f(0x248)](_0x5c1d3f(0x25a)),_0x487e92=[...segments],_0x5b68a0=[];_0x487e92[_0x5c1d3f(0x29d)](_0x46883c=>{const _0x483e66=_0x5c1d3f;_0x5b68a0['push']({'type':_0x483e66(0x236),'id':_0x46883c[_0x483e66(0x2b7)],'content':_0x46883c[_0x483e66(0x29e)],'sound':'sound-'+_0x46883c[_0x483e66(0x2b7)]['toLowerCase']()}),_0x5b68a0[_0x483e66(0x270)]({'type':'benefit','id':_0x46883c[_0x483e66(0x2b7)],'content':_0x483e66(0x29a)+_0x46883c['benefitIcon']+_0x483e66(0x2af),'sound':'sound-'+_0x46883c[_0x483e66(0x212)]});}),_0x5b68a0[_0x5c1d3f(0x2bb)](()=>0.5-Math[_0x5c1d3f(0x27e)]()),_0x5b68a0[_0x5c1d3f(0x29d)](_0x1d01e4=>{const _0x1673d4=_0x5c1d3f,_0x1adbda=document['createElement']('div');_0x1adbda[_0x1673d4(0x243)]=_0x1673d4(0x257),_0x1adbda[_0x1673d4(0x2bd)]['id']=_0x1d01e4['id'],_0x1adbda[_0x1673d4(0x2bd)][_0x1673d4(0x274)]=_0x1d01e4['sound'],_0x1adbda['innerHTML']='\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22card-face\x20card-front\x22>?</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22card-face\x20card-back\x22>'+_0x1d01e4[_0x1673d4(0x223)]+_0x1673d4(0x1fc),_0x1adbda['addEventListener'](_0x1673d4(0x237),handleCardClick),_0xd9f53d[_0x1673d4(0x229)](_0x1adbda);});}function handleCardClick(_0x5cc4b5){const _0x3c16be=_0x658cfd,_0x4ed009=_0x5cc4b5[_0x3c16be(0x2ab)];if(lockBoard||flippedCards[_0x3c16be(0x205)]>=0x2||_0x4ed009['classList'][_0x3c16be(0x291)](_0x3c16be(0x265)))return;stopAllGameSounds();const _0x42d218=_0x4ed009[_0x3c16be(0x2bd)]['sound'],_0x6655be=document[_0x3c16be(0x23b)](_0x42d218);_0x6655be&&(_0x6655be[_0x3c16be(0x25e)]=0x0,_0x6655be['play']()),_0x4ed009['classList'][_0x3c16be(0x207)]('flipped'),flippedCards[_0x3c16be(0x270)](_0x4ed009),flippedCards[_0x3c16be(0x205)]===0x2&&(lockBoard=!![],checkForMatch());}function checkForMatch(){const _0x4464bb=_0x658cfd,[_0x48d12b,_0x1c6e44]=flippedCards;_0x48d12b[_0x4464bb(0x2bd)]['id']===_0x1c6e44[_0x4464bb(0x2bd)]['id']?(pairSound['currentTime']=0x0,pairSound[_0x4464bb(0x297)](),_0x48d12b['classList']['add'](_0x4464bb(0x2a0)),_0x1c6e44['classList'][_0x4464bb(0x207)](_0x4464bb(0x2a0)),_0x48d12b[_0x4464bb(0x248)]('.card-front')[_0x4464bb(0x23e)]='<i\x20class=\x22fas\x20fa-check\x22></i>',_0x1c6e44[_0x4464bb(0x248)](_0x4464bb(0x295))[_0x4464bb(0x23e)]='<i\x20class=\x22fas\x20fa-check\x22></i>',_0x48d12b[_0x4464bb(0x20d)][_0x4464bb(0x259)](_0x4464bb(0x265)),_0x1c6e44[_0x4464bb(0x20d)]['remove'](_0x4464bb(0x265)),matchedPairs_L3++,flippedCards=[],lockBoard=![],matchedPairs_L3===segments[_0x4464bb(0x205)]&&endGame_Level3(!![])):(wrongSound[_0x4464bb(0x25e)]=0x0,wrongSound['play'](),setTimeout(()=>{const _0x23f8a2=_0x4464bb;_0x48d12b[_0x23f8a2(0x20d)][_0x23f8a2(0x259)](_0x23f8a2(0x265)),_0x1c6e44['classList'][_0x23f8a2(0x259)]('flipped'),flippedCards=[],lockBoard=![];},0x3e8));}function showCustomAlert(_0x467475,_0x3f319b,_0x2cea8a=0xbb8){const _0x870482=_0x658cfd;transitionAlertContent[_0x870482(0x23e)]=_0x3f319b,transitionAlertContent['className']=_0x870482(0x273),transitionAlertContent[_0x870482(0x20d)][_0x870482(0x207)](_0x467475),transitionAlert['classList'][_0x870482(0x207)]('show'),setTimeout(()=>{const _0xfc9306=_0x870482;transitionAlert['classList'][_0xfc9306(0x259)](_0xfc9306(0x26b));},_0x2cea8a);}function startTimer(_0x2670a8,_0x3ff47b){resetAllIntervals();let _0x47b85a=_0x2670a8;const _0x44b6b9=_0x2670a8;updateInfoPanel(currentRound,null,_0x47b85a,_0x44b6b9),countdown=setInterval(()=>{const _0xc83417=_0x171f;_0x47b85a--,updateInfoPanel(currentRound,null,_0x47b85a,_0x44b6b9),_0x47b85a<=0x5&&_0x47b85a>0x0&&(tickSound[_0xc83417(0x25e)]=0x0,tickSound[_0xc83417(0x297)](),timerDiv[_0xc83417(0x20d)]['add']('flash')),_0x47b85a<=0x0&&_0x3ff47b();},0x3e8);}function resetAllIntervals(){const _0x4c0041=_0x658cfd;clearInterval(countdown),clearInterval(letterInterval),timerDiv['classList'][_0x4c0041(0x259)](_0x4c0041(0x1f2)),document['querySelectorAll']('.letter')[_0x4c0041(0x29d)](_0x134c15=>_0x134c15[_0x4c0041(0x259)]());}function drawWheel(){const _0x2a82a3=_0x658cfd,_0x55a55a=0x2*Math['PI']/segments[_0x2a82a3(0x205)];ctxWheel[_0x2a82a3(0x24f)](0x0,0x0,canvasWheel['width'],canvasWheel[_0x2a82a3(0x28f)]);for(let _0x1a897c=0x0;_0x1a897c<segments[_0x2a82a3(0x205)];_0x1a897c++){const _0x10e15a=angle+_0x1a897c*_0x55a55a,_0x4d3bfd=_0x10e15a+_0x55a55a;ctxWheel['beginPath'](),ctxWheel[_0x2a82a3(0x1fb)](centerX,centerY),ctxWheel['arc'](centerX,centerY,radius,_0x10e15a,_0x4d3bfd),ctxWheel[_0x2a82a3(0x22b)](),ctxWheel[_0x2a82a3(0x276)]=segmentColors[_0x1a897c],ctxWheel[_0x2a82a3(0x23a)](),ctxWheel['strokeStyle']=_0x2a82a3(0x244),ctxWheel[_0x2a82a3(0x279)]=0x4,ctxWheel[_0x2a82a3(0x267)](),ctxWheel[_0x2a82a3(0x228)](),ctxWheel[_0x2a82a3(0x27c)](centerX,centerY),ctxWheel[_0x2a82a3(0x27b)](_0x10e15a+_0x55a55a/0x2);const _0x3c78f7=segments[_0x1a897c][_0x2a82a3(0x29e)];_0x3c78f7&&(ctxWheel[_0x2a82a3(0x269)]=_0x2a82a3(0x2b1),ctxWheel[_0x2a82a3(0x28c)]=_0x2a82a3(0x294),ctxWheel[_0x2a82a3(0x296)]=_0x2a82a3(0x288),ctxWheel[_0x2a82a3(0x29b)](_0x3c78f7,radius*0.7,0x0)),ctxWheel[_0x2a82a3(0x1ec)]();}}function easeOutCubic(_0x1bfaed){return--_0x1bfaed*_0x1bfaed*_0x1bfaed+0x1;}function createConfetti(){const _0x4e069e=_0x658cfd,_0x129167=[_0x4e069e(0x251),_0x4e069e(0x232),_0x4e069e(0x238),'#2196f3',_0x4e069e(0x227),_0x4e069e(0x22c)];for(let _0x4d42d6=0x0;_0x4d42d6<0x64;_0x4d42d6++){const _0x4d2950=document['createElement'](_0x4e069e(0x21f));_0x4d2950[_0x4e069e(0x243)]=_0x4e069e(0x1ff),_0x4d2950[_0x4e069e(0x1fa)]['left']=Math[_0x4e069e(0x27e)]()*0x64+'vw',_0x4d2950[_0x4e069e(0x1fa)][_0x4e069e(0x260)]=_0x129167[Math[_0x4e069e(0x282)](Math[_0x4e069e(0x27e)]()*_0x129167[_0x4e069e(0x205)])],_0x4d2950[_0x4e069e(0x1fa)][_0x4e069e(0x22e)]=Math['random']()*0x2+0x1+'s',document[_0x4e069e(0x2b0)][_0x4e069e(0x229)](_0x4d2950),setTimeout(()=>{const _0x51893b=_0x4e069e;_0x4d2950[_0x51893b(0x259)]();},0xbb8);}}function populateFruitGrid(){const _0x8e58e2=_0x658cfd;fruitGrid[_0x8e58e2(0x23e)]='',segments[_0x8e58e2(0x29d)](_0x55261a=>{const _0x428f9d=_0x8e58e2,_0x319622=document[_0x428f9d(0x239)](_0x428f9d(0x21f));_0x319622[_0x428f9d(0x243)]='fruit-card',_0x319622['innerHTML']='\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22fruit-emoji\x22\x20data-sound=\x22sound-'+_0x55261a[_0x428f9d(0x2b7)]['toLowerCase']()+'\x22>'+_0x55261a[_0x428f9d(0x29e)]+'</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22fruit-name\x22>'+_0x55261a[_0x428f9d(0x2b7)]+_0x428f9d(0x211)+_0x55261a['benefitSound']+_0x428f9d(0x290)+_0x55261a[_0x428f9d(0x202)]+_0x428f9d(0x249),_0x319622['querySelector']('.fruit-emoji')[_0x428f9d(0x26e)](_0x428f9d(0x237),_0x4ca8be=>{const _0x542229=_0x428f9d;_0x4ca8be[_0x542229(0x247)](),stopAllGameSounds();const _0x54ec38=_0x4ca8be['currentTarget'][_0x542229(0x2bd)][_0x542229(0x274)],_0x2c1366=document[_0x542229(0x23b)](_0x54ec38);_0x2c1366&&(_0x2c1366[_0x542229(0x25e)]=0x0,_0x2c1366[_0x542229(0x297)]());}),_0x319622[_0x428f9d(0x248)](_0x428f9d(0x28a))[_0x428f9d(0x26e)]('click',_0x308cec=>{const _0x5adf76=_0x428f9d;_0x308cec['stopPropagation'](),stopAllGameSounds();const _0x4a0f45=_0x308cec[_0x5adf76(0x2ab)][_0x5adf76(0x2bd)]['sound'],_0x47544c=document[_0x5adf76(0x23b)](_0x4a0f45);_0x47544c&&(_0x47544c[_0x5adf76(0x25e)]=0x0,_0x47544c[_0x5adf76(0x297)]());}),fruitGrid[_0x428f9d(0x229)](_0x319622);});}startButton[_0x658cfd(0x26e)](_0x658cfd(0x237),()=>{const _0x1f7c1e=_0x658cfd;welcomeScreen[_0x1f7c1e(0x1fa)][_0x1f7c1e(0x2ac)]=_0x1f7c1e(0x24e),fruitIntroScreen[_0x1f7c1e(0x1fa)][_0x1f7c1e(0x2ac)]=_0x1f7c1e(0x268),populateFruitGrid(),stopAllGameSounds();const _0x420a9e=document['getElementById'](_0x1f7c1e(0x26c));_0x420a9e&&(_0x420a9e[_0x1f7c1e(0x25e)]=0x0,_0x420a9e['play']()),backgroundMusic[_0x1f7c1e(0x2a6)]&&backgroundMusic[_0x1f7c1e(0x297)]()[_0x1f7c1e(0x2a2)](_0x4d194e=>{console['log']('Autoplay\x20musik\x20dicegah\x20oleh\x20browser:',_0x4d194e);});}),continueToGameBtn[_0x658cfd(0x26e)](_0x658cfd(0x237),()=>{const _0xd6292d=_0x658cfd;fruitIntroScreen['style'][_0xd6292d(0x2ac)]=_0xd6292d(0x24e),gameContainer['style'][_0xd6292d(0x2ac)]=_0xd6292d(0x268),stopAllGameSounds();const _0x3f2c20=document[_0xd6292d(0x23b)](_0xd6292d(0x219));_0x3f2c20&&(_0x3f2c20[_0xd6292d(0x25e)]=0x0,_0x3f2c20[_0xd6292d(0x297)]());}),petunjukBtn[_0x658cfd(0x26e)](_0x658cfd(0x237),()=>{const _0x33fa13=_0x658cfd;petunjukModal[_0x33fa13(0x1fa)]['display']=_0x33fa13(0x268);}),tujuanBtn[_0x658cfd(0x26e)](_0x658cfd(0x237),()=>{const _0x7ce33f=_0x658cfd;tujuanModal[_0x7ce33f(0x1fa)][_0x7ce33f(0x2ac)]=_0x7ce33f(0x268);}),pustakaBtn['addEventListener'](_0x658cfd(0x237),()=>{const _0x29026=_0x658cfd;pustakaModal[_0x29026(0x1fa)]['display']=_0x29026(0x268);}),hcBtn['addEventListener'](_0x658cfd(0x237),()=>{const _0x395ad8=_0x658cfd;hcModal['style'][_0x395ad8(0x2ac)]=_0x395ad8(0x268);}),pengembangBtn[_0x658cfd(0x26e)](_0x658cfd(0x237),()=>{const _0x3d8c10=_0x658cfd;pengembangModal[_0x3d8c10(0x1fa)][_0x3d8c10(0x2ac)]=_0x3d8c10(0x268);}),petunjukModal[_0x658cfd(0x26e)](_0x658cfd(0x237),_0x3eda2a=>{const _0x19da38=_0x658cfd,_0x205e2c=_0x3eda2a[_0x19da38(0x1eb)];if(_0x205e2c[_0x19da38(0x20d)][_0x19da38(0x291)]('petunjuk-icon')){const _0x5e6354=_0x205e2c[_0x19da38(0x2bd)][_0x19da38(0x274)],_0x5cb4b8=document['getElementById'](_0x5e6354);_0x5cb4b8&&(stopAllGameSounds(),_0x5cb4b8[_0x19da38(0x25e)]=0x0,_0x5cb4b8[_0x19da38(0x297)]());}}),allCloseButtons['forEach'](_0x265fec=>{const _0x31398d=_0x658cfd;_0x265fec[_0x31398d(0x25d)]=function(){const _0x1f2880=_0x31398d;let _0x57c9b2=this[_0x1f2880(0x2b2)](_0x1f2880(0x271));_0x57c9b2&&(_0x57c9b2[_0x1f2880(0x1fa)][_0x1f2880(0x2ac)]=_0x1f2880(0x24e),stopAllGameSounds()),this[_0x1f2880(0x2b2)](_0x1f2880(0x280))&&resetAllIntervals();};}),spinBtn[_0x658cfd(0x26e)](_0x658cfd(0x237),spin),window['onclick']=_0x363196=>{const _0x3be6d0=_0x658cfd;_0x363196[_0x3be6d0(0x1eb)][_0x3be6d0(0x20d)][_0x3be6d0(0x291)](_0x3be6d0(0x224))&&(_0x363196['target'][_0x3be6d0(0x1fa)][_0x3be6d0(0x2ac)]=_0x3be6d0(0x24e),stopAllGameSounds(),_0x363196[_0x3be6d0(0x1eb)]['id']===_0x3be6d0(0x278)&&resetAllIntervals());};backgroundMusic&&(backgroundMusic['volume']=0.2);musicToggleBtn[_0x658cfd(0x26e)]('click',()=>{const _0x499f9e=_0x658cfd;backgroundMusic[_0x499f9e(0x2a6)]?(backgroundMusic[_0x499f9e(0x297)](),musicToggleBtn[_0x499f9e(0x23e)]=_0x499f9e(0x23d)):(backgroundMusic[_0x499f9e(0x25b)](),musicToggleBtn[_0x499f9e(0x23e)]=_0x499f9e(0x21a));}),drawWheel();const bgCanvas=document[_0x658cfd(0x23b)]('backgroundCanvas'),bgCtx=bgCanvas[_0x658cfd(0x266)]('2d');function resizeBgCanvas(){const _0x11ef7d=_0x658cfd;bgCanvas[_0x11ef7d(0x2bc)]=window[_0x11ef7d(0x287)],bgCanvas['height']=window['innerHeight'],drawBackground();}window[_0x658cfd(0x26e)](_0x658cfd(0x203),resizeBgCanvas),window[_0x658cfd(0x26e)](_0x658cfd(0x286),resizeBgCanvas);const colors={'greenishGrey':_0x658cfd(0x2b9),'yellow':_0x658cfd(0x1f7),'orange':_0x658cfd(0x284),'blueishGreen':'#8CC4C3'};function drawBackground(){const _0x1effeb=_0x658cfd,_0x11f495=bgCanvas['width'],_0x3c90ad=bgCanvas[_0x1effeb(0x28f)];bgCtx['fillStyle']=colors[_0x1effeb(0x1e9)],bgCtx[_0x1effeb(0x263)](0x0,0x0,_0x11f495,_0x3c90ad),bgCtx[_0x1effeb(0x276)]=colors[_0x1effeb(0x209)],bgCtx['beginPath'](),bgCtx[_0x1effeb(0x1fb)](0x0,0x0),bgCtx[_0x1effeb(0x231)](_0x11f495*0.65,0x0),bgCtx[_0x1effeb(0x26a)](_0x11f495*0.4,_0x3c90ad*0.3,_0x11f495*0.1,_0x3c90ad),bgCtx[_0x1effeb(0x231)](0x0,_0x3c90ad),bgCtx['closePath'](),bgCtx[_0x1effeb(0x23a)](),bgCtx[_0x1effeb(0x276)]=colors['yellow'],bgCtx[_0x1effeb(0x1fe)](),bgCtx[_0x1effeb(0x1fb)](_0x11f495*0.3,0x0),bgCtx['lineTo'](_0x11f495*0.9,0x0),bgCtx[_0x1effeb(0x26a)](_0x11f495*0.8,_0x3c90ad*0.4,_0x11f495*0.05,_0x3c90ad),bgCtx['lineTo'](_0x11f495*0.05,_0x3c90ad),bgCtx[_0x1effeb(0x22b)](),bgCtx['fill'](),bgCtx[_0x1effeb(0x276)]=colors[_0x1effeb(0x204)],bgCtx[_0x1effeb(0x1fe)](),bgCtx[_0x1effeb(0x1fb)](_0x11f495*0.7,0x0),bgCtx['lineTo'](_0x11f495,0x0),bgCtx[_0x1effeb(0x231)](_0x11f495,_0x3c90ad*0.8),bgCtx[_0x1effeb(0x26a)](_0x11f495*0.7,_0x3c90ad*0.6,_0x11f495*0.4,_0x3c90ad),bgCtx[_0x1effeb(0x22b)](),bgCtx['fill'](),drawItems();}const fruitsAndVeggiesData=[{'item':'🍎','size':0x32,'rot':0x0,'x':0.06,'y':0.18},{'item':'🍌','size':0xc8,'rot':-0xf,'x':0.2,'y':0.48},{'item':'🥕','size':0xc8,'rot':0xa,'x':0.4,'y':0.35},{'item':'🍇','size':0x5a,'rot':-0x19,'x':0.5,'y':0.5},{'item':'🍊','size':0xc8,'rot':0x14,'x':0.55,'y':0.6},{'item':'🍓','size':0x4b,'rot':-0x8,'x':0.35,'y':0.7},{'item':'🍉','size':0x3c,'rot':0x5,'x':0.85,'y':0.5},{'item':'🍍','size':0x50,'rot':0x1e,'x':0.85,'y':0.1},{'item':'🍅','size':0x3c,'rot':0xa,'x':0.4,'y':0.9},{'item':'🥑','size':0x32,'rot':0x0,'x':0.65,'y':0.75},{'item':'🥦','size':0x46,'rot':0x14,'x':0.25,'y':0.03},{'item':'🌽','size':0x3c,'rot':-0x5,'x':0.7,'y':0.05},{'item':'🥝','size':0x50,'rot':0xf,'x':0.18,'y':0.88},{'item':'🍑','size':0xc8,'rot':-0xa,'x':0.9,'y':0.3},{'item':'🍒','size':0x5a,'rot':0x19,'x':0.02,'y':0.6},{'item':'🍋','size':0x46,'rot':0x0,'x':0.5,'y':0.15},{'item':'🍆','size':0x41,'rot':-0x14,'x':0.95,'y':0.55},{'item':'🥥','size':0x4b,'rot':0xa,'x':0.3,'y':0.92},{'item':'🥭','size':0x96,'rot':-0xf,'x':0.7,'y':0.95},{'item':'🍐','size':0x3c,'rot':0x1e,'x':0.1,'y':0.3}];function drawItems(){const _0x3785e8=_0x658cfd;fruitsAndVeggiesData[_0x3785e8(0x29d)](_0x50ee79=>{const _0x5f1b39=_0x3785e8,_0x6df2ad=bgCanvas[_0x5f1b39(0x2bc)]*_0x50ee79['x'],_0x6c434f=bgCanvas[_0x5f1b39(0x28f)]*_0x50ee79['y'];bgCtx[_0x5f1b39(0x228)](),bgCtx[_0x5f1b39(0x27c)](_0x6df2ad,_0x6c434f),bgCtx['rotate'](_0x50ee79['rot']*Math['PI']/0xb4),bgCtx[_0x5f1b39(0x296)]=_0x50ee79[_0x5f1b39(0x214)]+_0x5f1b39(0x275),bgCtx[_0x5f1b39(0x283)]='rgba(0,\x200,\x200,\x200.4)',bgCtx['shadowBlur']=0x5,bgCtx[_0x5f1b39(0x285)]=0x3,bgCtx['shadowOffsetY']=0x3,bgCtx['fillText'](_0x50ee79[_0x5f1b39(0x29e)],0x0,0x0),bgCtx[_0x5f1b39(0x1ec)]();});}const profilePicContainer=document[_0x658cfd(0x248)]('.profile-pic-container');if(profilePicContainer){const profilePic=profilePicContainer[_0x658cfd(0x248)](_0x658cfd(0x226)),maxRotate=0x19;profilePicContainer[_0x658cfd(0x26e)]('mousemove',_0x1513ae=>{const _0x480438=_0x658cfd,_0x1e83f3=profilePicContainer['getBoundingClientRect'](),_0x4bad32=_0x1513ae['clientX']-_0x1e83f3['left'],_0x17cd59=_0x1513ae[_0x480438(0x255)]-_0x1e83f3[_0x480438(0x1ed)],_0x2d6d0d=(_0x4bad32/_0x1e83f3[_0x480438(0x2bc)]-0.5)*0x2*maxRotate,_0x3dbdca=(_0x17cd59/_0x1e83f3[_0x480438(0x28f)]-0.5)*0x2*maxRotate*-0x1;profilePic['style']['transform']=_0x480438(0x292)+_0x3dbdca+_0x480438(0x22a)+_0x2d6d0d+_0x480438(0x29c);}),profilePicContainer[_0x658cfd(0x26e)](_0x658cfd(0x1f8),()=>{const _0x1ba759=_0x658cfd;profilePic[_0x1ba759(0x1fa)][_0x1ba759(0x24c)]=_0x1ba759(0x27d);});}
+        
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const fruitIntroScreen = document.getElementById('fruit-intro-screen');
+        const fruitGrid = document.getElementById('fruit-grid');
+        const continueToGameBtn = document.getElementById('continueToGameBtn');
+        const gameContainer = document.getElementById('game-container');
+        const startButton = document.getElementById('startButton');
+        const petunjukModal = document.getElementById('petunjukModal');
+        const tujuanModal = document.getElementById('tujuanModal');
+        const pustakaModal = document.getElementById('pustakaModal');
+        const hcModal = document.getElementById('hcModal');
+        const pengembangModal = document.getElementById('pengembangModal');
+        const petunjukBtn = document.getElementById('petunjukBtn');
+        const tujuanBtn = document.getElementById('tujuanBtn');
+        const pustakaBtn = document.getElementById('pustakaBtn');
+        const hcBtn = document.getElementById('hcBtn');
+        const pengembangBtn = document.getElementById('pengembangBtn');
+        const allCloseButtons = document.querySelectorAll('.close');
+        const canvasWheel = document.getElementById('wheel');
+        const ctxWheel = canvasWheel.getContext('2d');
+        const spinBtn = document.getElementById('spinBtn');
+        const animatedTextDisplay = document.getElementById('animated-text-display');
+        const modal = document.getElementById("myModal");
+        const gameArea = document.getElementById('game-area');
+        const wordDisplayArea = document.getElementById('word-display-area');
+        const roundDisplay = document.getElementById('round-display');
+        const livesDisplay = document.getElementById('lives-display');
+        const timerDiv = document.getElementById("timer");
+        const timerProgress = document.getElementById("timerProgress");
+        const alertMessageDiv = document.getElementById("alertMessage");
+        const transitionAlert = document.getElementById('transition-alert');
+        const transitionAlertContent = document.getElementById('transition-alert-content');
+        const spinSound = document.getElementById('spinSound');
+        const tickSound = document.getElementById('tickSound');
+        const successSound = document.getElementById('successSound');
+        const timeoutSound = document.getElementById('timeoutSound');
+        const wrongSound = document.getElementById('wrongSound');
+        const foundSound = document.getElementById('foundSound');
+		const pairSound = document.getElementById('pairSound');
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const musicToggleBtn = document.getElementById('musicToggleBtn');
+
+
+        
+        const segments = [
+            { text: 'APEL', item: '🍎', benefitIcon: 'fa-heart', benefitSound: 'manfaat_apel' },
+            { text: 'PISANG', item: '🍌', benefitIcon: 'fa-bolt', benefitSound: 'manfaat_pisang' },
+            { text: 'WORTEL', item: '🥕', benefitIcon: 'fa-eye', benefitSound: 'manfaat_wortel' },
+            { text: 'JERUK', item: '🍊', benefitIcon: 'fa-shield-alt', benefitSound: 'manfaat_jeruk' },
+            { text: 'TOMAT', item: '🍅', benefitIcon: 'fa-leaf', benefitSound: 'manfaat_tomat' },
+            { text: 'ANGGUR', item: '🍇', benefitIcon: 'fa-brain', benefitSound: 'manfaat_anggur' }
+        ];
+
+        const segmentColors = ["#f1c40f", "#e67e22", "#e74c3c", "#9b59b6", "#3498db", "#1abc9c"];
+        
+        // PERUBAHAN: centerX, centerY, dan radius akan diatur di dalam drawWheel()
+        // const centerX = canvasWheel.width / 2;
+        // const centerY = canvasWheel.height / 2;
+        // const radius = canvasWheel.width / 2 - 10;
+        
+        let angle = 0;
+        let spinning = false;
+        let currentRound = 1;
+        let currentSegment;
+        let countdown;
+        let letterInterval;
+
+        
+        let selectedWord = null;
+        let selectedImage = null;
+        let correctPairs_L2 = 0;
+
+        
+        let flippedCards = [];
+        let matchedPairs_L3 = 0;
+        let lockBoard = false;
+
+        
+        function spin() {
+            if (spinning) return;
+            spinning = true;
+            spinSound.currentTime = 0; spinSound.play();
+            const spinAngle = Math.random() * 360 + 720 * 5;
+            const duration = 4000;
+            const startTime = Date.now();
+
+            function animate() {
+                const elapsed = Date.now() - startTime;
+                if (elapsed < duration) {
+                    const progress = easeOutCubic(elapsed / duration);
+                    angle = (progress * spinAngle * Math.PI) / 180;
+                    drawWheel();
+                    requestAnimationFrame(animate);
+                } else {
+                    spinning = false;
+                    spinSound.pause();
+                    const finalAngle = angle % (2 * Math.PI);
+                    const arc = (2 * Math.PI) / segments.length;
+                    const pointerAngle = (3 * Math.PI / 2 - finalAngle + 2 * Math.PI) % (2 * Math.PI);
+                    const index = Math.floor(pointerAngle / arc);
+                    currentSegment = segments[index];
+                    currentRound = 1;
+                    
+                    const fruitSoundId = `sound-${currentSegment.text.toLowerCase()}`;
+                    const fruitSound = document.getElementById(fruitSoundId);
+                    if (fruitSound) {
+                        fruitSound.currentTime = 0;
+                        fruitSound.play();
+                    }
+
+					setTimeout(() => {
+                                                
+                        animateText(currentSegment.text, () => {
+                            setTimeout(() => {
+                                animatedTextDisplay.innerHTML = ''; 
+                                startGame_Level1();
+                            }, 2000); 
+                        });
+
+                    }, 2000); 
+
+                }
+            }
+            animate();
+        }
+
+        
+        function startGame_Level1() {
+            prepareModalForLevel(1);
+            let lives = 3;
+            let lettersToGuess = currentSegment.text.split('');
+            let guessedLettersCount = 0;
+            updateInfoPanel(1, lives);
+            setupWordDisplay_Level1();
+            startTimer(60, () => endGame_Level1(false));
+            letterInterval = setInterval(() => {
+                createFallingLetter(lettersToGuess, (isCorrect) => {
+                    if (isCorrect) {
+                        guessedLettersCount++;
+                        if (guessedLettersCount === currentSegment.text.length) {
+                            endGame_Level1(true);
+                        }
+                    } else {
+                        lives--;
+                        updateInfoPanel(1, lives);
+                        if (lives <= 0) {
+                            endGame_Level1(false);
+                        }
+                    }
+                });
+            }, 1200);
+        }
+
+        function endGame_Level1(isWin) {
+            resetAllIntervals();
+            if (isWin) {
+                successSound.currentTime = 0; successSound.play();
+                showCustomAlert('info', `Selamat! Babak 1 Selesai.<br>Bersiap untuk Babak 2!`, 2000);
+                setTimeout(startGame_Level2, 2100);
+            } else {
+                modal.style.display = "none";
+                timeoutSound.currentTime = 0; timeoutSound.play();
+                showCustomAlert('failure', `Anda Gagal! Kata yang benar: ${currentSegment.text}.<br>Putar roda untuk mencoba lagi.`);
+            }
+        }
+
+        
+        function startGame_Level2() {
+            prepareModalForLevel(2);
+            updateInfoPanel(2);
+            setupMatchingGame();
+            startTimer(60, () => endGame_Level2(false));
+        }
+
+        function endGame_Level2(isWin) {
+            resetAllIntervals();
+            if (isWin) {
+                successSound.currentTime = 0; successSound.play();
+                showCustomAlert('info', `Luar Biasa! Babak 2 Selesai.<br>Bersiap untuk Babak Final!`, 2000);
+                setTimeout(startGame_Level3, 2100);
+            } else {
+                modal.style.display = "none";
+                wrongSound.currentTime = 0; wrongSound.play();
+                showCustomAlert('failure', `Waktu Habis!<br>Putar roda untuk mencoba lagi.`);
+            }
+        }
+
+        
+        function startGame_Level3() {
+            prepareModalForLevel(3);
+            updateInfoPanel(3);
+            setupMemoryGame();
+            startTimer(240, () => endGame_Level3(false));
+        }
+
+        function endGame_Level3(isWin) {
+            resetAllIntervals();
+            modal.style.display = "none"; 
+            stopAllGameSounds(); 
+
+            if (isWin) {
+                
+                successSound.currentTime = 0; successSound.play();
+                createConfetti();
+                showCustomAlert('success', `SELAMAT, KAMU HEBAT! KAMU TELAH MENYELESAIKAN SEMUA TANTANGAN.<br>KAMU HEBAT!`, 4000);
+                
+                
+                setTimeout(() => {
+                    hcModal.style.display = 'flex';
+                    
+                    
+                    setTimeout(() => {
+                        hcModal.style.display = 'none';
+                        pengembangModal.style.display = 'flex';
+
+                        
+                        setTimeout(() => {
+                            pengembangModal.style.display = 'none';
+                            gameContainer.style.display = 'none';
+                            welcomeScreen.style.display = 'flex';
+                        }, 5000); 
+
+                    }, 5000); 
+
+                }, 4100); 
+
+            } else {
+                timeoutSound.currentTime = 0; timeoutSound.play();
+                showCustomAlert('failure', `Waktu Habis!<br>Putar roda untuk mencoba lagi.`);
+            }
+        }
+
+        
+        
+        
+        function stopAllGameSounds() {
+            
+            document.querySelectorAll('audio[id^="sound-"]').forEach(audio => {
+                if (!audio.paused) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+            });
+        }
+
+        function animateText(text, callback) {
+            animatedTextDisplay.innerHTML = ''; 
+            const letters = text.split('');
+            let i = 0;
+            const intervalTime = 350; 
+
+            const interval = setInterval(() => {
+                if (i < letters.length) {
+                    const letter = letters[i];
+                    animatedTextDisplay.innerHTML += letter;
+                    const letterSound = document.getElementById(`sound-${letter.toLowerCase()}`);
+                    if (letterSound) {
+                        letterSound.currentTime = 0;
+                        letterSound.play();
+                    }
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    if (callback) {
+                        callback(); 
+                    }
+                }
+            }, intervalTime); 
+        }
+
+        function prepareModalForLevel(level) {
+            modal.style.display = "block";
+            gameArea.innerHTML = '';
+            wordDisplayArea.innerHTML = '';
+            alertMessageDiv.innerHTML = '';
+            livesDisplay.style.display = 'none';
+            wordDisplayArea.style.display = 'none';
+
+            stopAllGameSounds();
+
+            if (level === 1) {
+                gameArea.innerHTML = `<div id="current-object-image" style="font-size: 120px;">${currentSegment.item}</div>`; 
+                alertMessageDiv.innerHTML = 'Tangkap huruf yang benar!';
+                livesDisplay.style.display = 'block';
+                wordDisplayArea.style.display = 'flex';
+
+                const sound1 = document.getElementById('sound-ayoTangkap');
+                if (sound1) {
+                    sound1.currentTime = 0;
+                    sound1.play();
+                }
+
+            } else if (level === 2) {
+                alertMessageDiv.innerHTML = `Jodohkan kata dengan gambar yang benar!`;
+                
+                const sound2 = document.getElementById('sound-jodohkanBuah');
+                if (sound2) {
+                    sound2.currentTime = 0;
+                    sound2.play();
+                }
+
+            } else if (level === 3) {
+                alertMessageDiv.innerHTML = 'Jodohkan buah dengan manfaatnya!';
+
+                const sound3 = document.getElementById('sound-bukaKartu');
+                if (sound3) {
+                    sound3.currentTime = 0;
+                    sound3.play();
+                }
+            }
+        }
+        function updateInfoPanel(round, lives, time, initialDuration) {
+            currentRound = round;
+            roundDisplay.textContent = `Babak ${round}`;
+            if (lives !== null && lives !== undefined) {
+                livesDisplay.innerHTML = `NYAWA: ${'❤️'.repeat(lives)}`;
+            }
+            if (time !== undefined) {
+                timerDiv.textContent = time;
+                timerProgress.style.width = `${(time / initialDuration) * 100}%`;
+            }
+        }
+        function setupWordDisplay_Level1() {
+            wordDisplayArea.innerHTML = '';
+            currentSegment.text.split('').forEach((_, i) => {
+                const box = document.createElement('div');
+                box.className = 'letter-box';
+                box.dataset.letterIndex = i;
+                wordDisplayArea.appendChild(box);
+            });
+        }
+        function createFallingLetter(lettersToGuess, onResult) {
+            const letter = document.createElement('div');
+            letter.className = 'letter';
+            const isCorrectLetter = Math.random() > 0.4;
+            let char;
+            let neededLetters = lettersToGuess.filter((val, i) => !wordDisplayArea.querySelector(`[data-letter-index='${i}']`).textContent);
+            if (isCorrectLetter && neededLetters.length > 0) {
+                char = neededLetters[Math.floor(Math.random() * neededLetters.length)];
+            } else {
+                char = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+            }
+            letter.textContent = char;
+            letter.style.left = `${Math.random() * (gameArea.clientWidth - 70)}px`; 
+            const fallDuration = 10 + Math.random() * 4; 
+            letter.style.animationDuration = `${fallDuration}s`;
+            letter.addEventListener('click', () => {
+                const letterSound = document.getElementById(`sound-${char.toLowerCase()}`);
+                if (letterSound) {
+                    letterSound.currentTime = 0;
+                    letterSound.play();
+                }
+
+                let found = false;
+                for (let i = 0; i < lettersToGuess.length; i++) {
+                    const box = wordDisplayArea.querySelector(`[data-letter-index='${i}']`);
+                    if (lettersToGuess[i] === char && box && box.textContent === '') {
+                        box.textContent = char;
+                        found = true;
+                        onResult(true);
+                        break;
+                    }
+                }
+                if (!found) {
+                    wrongSound.currentTime = 0;
+                    wrongSound.play();
+                    onResult(false);
+                }
+                letter.remove();
+            });
+            gameArea.appendChild(letter);
+            setTimeout(() => { if (letter.parentElement) letter.remove(); }, fallDuration * 1000);
+        }
+
+        function setupMatchingGame() {
+            selectedWord = null;
+            selectedImage = null;
+            correctPairs_L2 = 0;
+
+            gameArea.innerHTML = `
+                <div class="matching-container">
+                    <div id="word-column" class="word-column"></div>
+                    <div id="image-column" class="image-column"></div>
+                </div>`;
+            
+            const gameItems = [...segments].sort(() => 0.5 - Math.random()).slice(0, 4);
+            const words = [...gameItems].sort(() => 0.5 - Math.random());
+            const images = [...gameItems].sort(() => 0.5 - Math.random());
+            
+            const wordColumn = document.getElementById('word-column');
+            const imageColumn = document.getElementById('image-column');
+
+            words.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'match-item word';
+                div.textContent = item.text;
+                div.dataset.id = item.text;
+                div.addEventListener('click', handleMatchItemClick);
+                wordColumn.appendChild(div);
+            });
+
+            images.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'match-item image';
+                div.textContent = item.item;
+                div.dataset.id = item.text;
+                div.addEventListener('click', handleMatchItemClick);
+                imageColumn.appendChild(div);
+            });
+        }
+
+        function handleMatchItemClick(event) {
+            const clickedItem = event.currentTarget;
+            if (clickedItem.classList.contains('correct-pair')) return;
+
+            stopAllGameSounds(); 
+            const soundId = `sound-${clickedItem.dataset.id.toLowerCase()}`;
+            const soundElement = document.getElementById(soundId);
+            if (soundElement) {
+                soundElement.currentTime = 0;
+                soundElement.play();
+            }
+
+            if (clickedItem.classList.contains('word')) {
+                if (selectedWord) selectedWord.classList.remove('selected');
+                selectedWord = clickedItem;
+                selectedWord.classList.add('selected');
+            } else if (clickedItem.classList.contains('image')) {
+                if (selectedImage) selectedImage.classList.remove('selected');
+                selectedImage = clickedItem;
+                selectedImage.classList.add('selected');
+            }
+
+            if (selectedWord && selectedImage) {
+                if (selectedWord.dataset.id === selectedImage.dataset.id) {
+                    pairSound.currentTime = 0;
+                    pairSound.play();
+                    
+                    selectedWord.classList.add('correct-pair');
+                    selectedImage.classList.add('correct-pair');
+                    selectedWord.classList.remove('selected');
+                    selectedImage.classList.remove('selected');
+
+                    selectedWord = null;
+                    selectedImage = null;
+                    correctPairs_L2++;
+
+                    if (correctPairs_L2 === 4) {
+                        endGame_Level2(true);
+                    }
+                } else {
+                    wrongSound.currentTime = 0;
+                    wrongSound.play();
+                    const tempWord = selectedWord;
+                    const tempImage = selectedImage;
+                    tempWord.classList.add('incorrect-pair');
+                    tempImage.classList.add('incorrect-pair');
+                    
+                    document.querySelector('.matching-container').style.pointerEvents = 'none';
+
+                    setTimeout(() => {
+                        tempWord.classList.remove('selected', 'incorrect-pair');
+                        tempImage.classList.remove('selected', 'incorrect-pair');
+                         document.querySelector('.matching-container').style.pointerEvents = 'auto';
+                    }, 500);
+                    
+                    selectedWord = null;
+                    selectedImage = null;
+                }
+            }
+        }
+
+        function setupMemoryGame() {
+            matchedPairs_L3 = 0;
+            flippedCards = [];
+            lockBoard = false;
+            gameArea.innerHTML = '<div class="memory-game-container"></div>';
+            const container = gameArea.querySelector('.memory-game-container');
+
+            const gameItems = [...segments];
+            const cards = [];
+            gameItems.forEach(item => {
+                cards.push({ type: 'fruit', id: item.text, content: item.item, sound: `sound-${item.text.toLowerCase()}` });
+                cards.push({ type: 'benefit', id: item.text, content: `<i class="fas ${item.benefitIcon}"></i>`, sound: `sound-${item.benefitSound}` });
+            });
+
+            cards.sort(() => 0.5 - Math.random());
+
+            cards.forEach(cardData => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.dataset.id = cardData.id;
+                card.dataset.sound = cardData.sound;
+                card.innerHTML = `
+                    <div class="card-face card-front">?</div>
+                    <div class="card-face card-back">${cardData.content}</div>
+                `;
+                card.addEventListener('click', handleCardClick);
+                container.appendChild(card);
+            });
+        }
+
+        function handleCardClick(event) {
+            const clickedCard = event.currentTarget;
+            if (lockBoard || flippedCards.length >= 2 || clickedCard.classList.contains('flipped')) return;
+
+            stopAllGameSounds(); 
+
+            
+            
+
+            const soundId = clickedCard.dataset.sound;
+            const soundElement = document.getElementById(soundId);
+            if (soundElement) {
+                soundElement.currentTime = 0;
+                soundElement.play();
+            }
+
+            clickedCard.classList.add('flipped');
+            flippedCards.push(clickedCard);
+
+            if (flippedCards.length === 2) {
+                lockBoard = true;
+                checkForMatch();
+            }
+        }
+
+        function checkForMatch() {
+            const [card1, card2] = flippedCards;
+            if (card1.dataset.id === card2.dataset.id) {
+                pairSound.currentTime = 0;
+                pairSound.play();
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+
+                card1.querySelector('.card-front').innerHTML = '<i class="fas fa-check"></i>';
+                card2.querySelector('.card-front').innerHTML = '<i class="fas fa-check"></i>';
+                
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                
+                matchedPairs_L3++;
+                flippedCards = [];
+                lockBoard = false;
+                if (matchedPairs_L3 === segments.length) {
+                    endGame_Level3(true);
+                }
+            } else {
+                wrongSound.currentTime = 0;
+                wrongSound.play();
+                setTimeout(() => {
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                    flippedCards = [];
+                    lockBoard = false;
+                }, 1000);
+            }
+        }
+
+        function showCustomAlert(type, message, duration = 3000) {
+            transitionAlertContent.innerHTML = message;
+            transitionAlertContent.className = 'custom-alert-box';
+            transitionAlertContent.classList.add(type);
+            transitionAlert.classList.add('show');
+            setTimeout(() => {
+                transitionAlert.classList.remove('show');
+            }, duration);
+        }
+        function startTimer(duration, onTimeout) {
+            resetAllIntervals();
+            let timeLeft = duration;
+            const initialDuration = duration;
+            updateInfoPanel(currentRound, null, timeLeft, initialDuration);
+            countdown = setInterval(() => {
+                timeLeft--;
+                updateInfoPanel(currentRound, null, timeLeft, initialDuration);
+                if (timeLeft <= 5 && timeLeft > 0) { tickSound.currentTime = 0; tickSound.play(); timerDiv.classList.add('flash'); }
+                if (timeLeft <= 0) { onTimeout(); }
+            }, 1000);
+        }
+        function resetAllIntervals() {
+            clearInterval(countdown);
+            clearInterval(letterInterval);
+            timerDiv.classList.remove('flash');
+            document.querySelectorAll('.letter').forEach(l => l.remove());
+        }
+
+        // PERUBAHAN: Fungsi untuk menyesuaikan ukuran kanvas roda
+        function resizeCanvas() {
+            const container = document.querySelector('.wheel-container');
+            // Pastikan container terlihat sebelum mengukur
+            if (container.clientWidth === 0 || container.clientHeight === 0) return; 
+
+            // Gunakan ukuran terkecil dari container
+            const size = Math.min(container.clientWidth, container.clientHeight);
+            
+            // Set atribut resolusi kanvas
+            canvasWheel.width = size;
+            canvasWheel.height = size;
+            
+            // Gambar ulang roda dengan ukuran baru
+            drawWheel();
+        }
+
+
+        function drawWheel() {
+            // PERUBAHAN: Kalkulasi dinamis di dalam fungsi
+            const centerX = canvasWheel.width / 2;
+            const centerY = canvasWheel.height / 2;
+            const radius = canvasWheel.width / 2 - 10; // 10px padding
+
+            const arc = (2 * Math.PI) / segments.length;
+            ctxWheel.clearRect(0,0,canvasWheel.width,canvasWheel.height);
+            for (let i = 0; i < segments.length; i++) {
+                const startAngle = angle + i * arc;
+                const endAngle = startAngle + arc;
+                ctxWheel.beginPath();
+                ctxWheel.moveTo(centerX, centerY);
+                ctxWheel.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctxWheel.closePath();
+                ctxWheel.fillStyle = segmentColors[i];
+                ctxWheel.fill();
+                ctxWheel.strokeStyle = 'rgba(0,0,0,0.1)';
+                ctxWheel.lineWidth = 4;
+                ctxWheel.stroke();
+                ctxWheel.save();
+                ctxWheel.translate(centerX, centerY);
+                ctxWheel.rotate(startAngle + arc / 2);
+                const item = segments[i].item;
+                if (item) {
+                    ctxWheel.textAlign = 'center';
+                    ctxWheel.textBaseline = 'middle';
+                    // PERUBAHAN: Ukuran font emoji dibuat relatif terhadap radius
+                    ctxWheel.font = `${radius * 0.3}px Arial`; 
+                    ctxWheel.fillText(item, radius * 0.7, 0);
+                }
+                ctxWheel.restore();
+            }
+        }
+        function easeOutCubic(t) { return (--t) * t * t + 1; }
+
+        function createConfetti() {
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#2196f3', '#4CAF50', '#FFEB3B'];
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = `${Math.random() * 2 + 1}s`;
+                document.body.appendChild(confetti);
+                setTimeout(() => { confetti.remove(); }, 3000);
+            }
+        }
+
+        function populateFruitGrid() {
+            fruitGrid.innerHTML = ''; 
+            segments.forEach(segment => {
+                const card = document.createElement('div');
+                card.className = 'fruit-card';
+                card.innerHTML = `
+                    <div class="fruit-emoji" data-sound="sound-${segment.text.toLowerCase()}">${segment.item}</div>
+                    <div class="fruit-name">${segment.text}</div>
+                    <div class="benefit-icon-container" data-sound="sound-${segment.benefitSound}">
+                        <i class="fas ${segment.benefitIcon}"></i>
+                    </div>
+                `;
+                
+                card.querySelector('.fruit-emoji').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    stopAllGameSounds(); 
+                    const soundId = e.currentTarget.dataset.sound;
+                    const soundElement = document.getElementById(soundId);
+                    if (soundElement) {
+                        soundElement.currentTime = 0;
+                        soundElement.play();
+                    }
+                });
+                
+                card.querySelector('.benefit-icon-container').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    stopAllGameSounds(); 
+                    const soundId = e.currentTarget.dataset.sound;
+                    const soundElement = document.getElementById(soundId);
+                    if (soundElement) {
+                        soundElement.currentTime = 0;
+                        soundElement.play();
+                    }
+                });
+
+                fruitGrid.appendChild(card);
+            });
+        }
+
+        
+        startButton.addEventListener('click', () => {
+            welcomeScreen.style.display = 'none';
+            fruitIntroScreen.style.display = 'flex';
+            populateFruitGrid();
+
+            stopAllGameSounds(); 
+            const infoSound = document.getElementById('sound-infoNamaBuah');
+            if (infoSound) {
+                infoSound.currentTime = 0;
+                infoSound.play();
+            }
+            
+            if (backgroundMusic.paused) {
+                backgroundMusic.play().catch(error => {
+                    console.log("Autoplay musik dicegah oleh browser:", error);
+                });
+            }
+        });
+
+        continueToGameBtn.addEventListener('click', () => {
+            fruitIntroScreen.style.display = 'none';
+            gameContainer.style.display = 'flex';
+
+            // PERUBAHAN: Panggil resizeCanvas setelah container terlihat
+            // Menggunakan setTimeout untuk memastikan DOM telah di-render
+            setTimeout(resizeCanvas, 0);
+
+            stopAllGameSounds(); 
+            const putarRodaSound = document.getElementById('sound-putarRoda');
+            if (putarRodaSound) {
+                putarRodaSound.currentTime = 0;
+                putarRodaSound.play();
+            }
+        });
+
+        petunjukBtn.addEventListener('click', () => { petunjukModal.style.display = 'flex'; });
+        tujuanBtn.addEventListener('click', () => { tujuanModal.style.display = 'flex'; });
+        pustakaBtn.addEventListener('click', () => { pustakaModal.style.display = 'flex'; });
+        hcBtn.addEventListener('click', () => { hcModal.style.display = 'flex'; });
+        pengembangBtn.addEventListener('click', () => { pengembangModal.style.display = 'flex'; });
+
+        
+        petunjukModal.addEventListener('click', (event) => {
+            const target = event.target;
+            if (target.classList.contains('petunjuk-icon')) {
+                const soundId = target.dataset.sound;
+                const soundElement = document.getElementById(soundId);
+                if (soundElement) {
+                    stopAllGameSounds(); 
+                    
+                    
+                    soundElement.currentTime = 0;
+                    soundElement.play();
+                }
+            }
+        });
+
+        allCloseButtons.forEach(button => {
+            button.onclick = function() {
+                let modalToClose = this.closest('.modal');
+                if (modalToClose) {
+                    modalToClose.style.display = "none";
+                    stopAllGameSounds(); 
+                     
+                     
+                }
+                if (this.closest('#myModal')) {
+                    resetAllIntervals();
+                }
+            }
+        });
+
+        spinBtn.addEventListener('click', spin);
+
+        window.onclick = (event) => {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = "none";
+                stopAllGameSounds(); 
+                 
+                 
+                if (event.target.id === 'myModal') {
+                    resetAllIntervals();
+                }
+            }
+        };
+
+        
+        if (backgroundMusic) {
+            backgroundMusic.volume = 0.2; 
+        }
+
+        musicToggleBtn.addEventListener('click', () => {
+            if (backgroundMusic.paused) {
+                backgroundMusic.play();
+                musicToggleBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+            } else {
+                backgroundMusic.pause();
+                musicToggleBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            }
+        });
+
+        
+        // PERUBAHAN: Panggil resizeCanvas() alih-alih drawWheel()
+        // drawWheel();
+        // resizeCanvas() akan dipanggil saat load dan resize background
+        // dan juga saat #game-container ditampilkan
+    </script>
+	
+    <script>
+        
+        const bgCanvas = document.getElementById('backgroundCanvas');
+        const bgCtx = bgCanvas.getContext('2d');
+
+        function resizeBgCanvas() {
+            bgCanvas.width = window.innerWidth;
+            bgCanvas.height = window.innerHeight;
+            drawBackground();
+            
+            // PERUBAHAN: Panggil resizeCanvas Roda setiap kali background di-resize
+            // Ini memastikan roda juga ikut menyesuaikan ukuran
+            if (gameContainer.style.display === 'flex') {
+                 resizeCanvas();
+            }
+        }
+
+        window.addEventListener('load', resizeBgCanvas);
+        window.addEventListener('resize', resizeBgCanvas);
+
+        const colors = {
+            greenishGrey: '#A4C49F',
+            yellow: '#F8D960',
+            orange: '#FF9F5F',
+            blueishGreen: '#8CC4C3'
+        };
+
+        function drawBackground() {
+            const width = bgCanvas.width;
+            const height = bgCanvas.height;
+
+            bgCtx.fillStyle = colors.blueishGreen;
+            bgCtx.fillRect(0, 0, width, height);
+
+            bgCtx.fillStyle = colors.greenishGrey;
+            bgCtx.beginPath();
+            bgCtx.moveTo(0, 0);
+            bgCtx.lineTo(width * 0.65, 0);
+            bgCtx.quadraticCurveTo(width * 0.4, height * 0.3, width * 0.1, height);
+            bgCtx.lineTo(0, height);
+            bgCtx.closePath();
+            bgCtx.fill();
+
+            bgCtx.fillStyle = colors.yellow;
+            bgCtx.beginPath();
+            bgCtx.moveTo(width * 0.30, 0);
+            bgCtx.lineTo(width * 0.90, 0);
+            bgCtx.quadraticCurveTo(width * 0.8, height * 0.4, width * 0.05, height);
+            bgCtx.lineTo(width * 0.05, height);
+            bgCtx.closePath();
+            bgCtx.fill();
+
+            bgCtx.fillStyle = colors.orange;
+            bgCtx.beginPath();
+            bgCtx.moveTo(width * 0.70, 0);
+            bgCtx.lineTo(width, 0);
+            bgCtx.lineTo(width, height * 0.80);
+            bgCtx.quadraticCurveTo(width * 0.7, height * 0.6, width * 0.40, height);
+            bgCtx.closePath();
+            bgCtx.fill();
+
+            drawItems(); 
+        }
+
+        
+        const fruitsAndVeggiesData = [
+            { item: '🍎', size: 50, rot: 0, x: 0.06, y: 0.18 },
+            { item: '🍌', size: 200, rot: -15, x: 0.20, y: 0.48 },
+            { item: '🥕', size: 200, rot: 10, x: 0.40, y: 0.35 },
+            { item: '🍇', size: 90, rot: -25, x: 0.50, y: 0.50 },
+            { item: '🍊', size: 200, rot: 20, x: 0.55, y: 0.60 },
+            { item: '🍓', size: 75, rot: -8, x: 0.35, y: 0.70 },
+            { item: '🍉', size: 60, rot: 5, x: 0.85, y: 0.50 },
+            { item: '🍍', size: 80, rot: 30, x: 0.85, y: 0.10 },
+            { item: '🍅', size: 60, rot: 10, x: 0.40, y: 0.90 },
+            { item: '🥑', size: 50, rot: 0, x: 0.65, y: 0.75 },
+            { item: '🥦', size: 70, rot: 20, x: 0.25, y: 0.03 },
+            { item: '🌽', size: 60, rot: -5, x: 0.70, y: 0.05 },
+            { item: '🥝', size: 80, rot: 15, x: 0.18, y: 0.88 },
+            { item: '🍑', size: 200, rot: -10, x: 0.90, y: 0.30 },
+            { item: '🍒', size: 90, rot: 25, x: 0.02, y: 0.60 },
+            { item: '🍋', size: 70, rot: 0, x: 0.50, y: 0.15 },
+            { item: '🍆', size: 65, rot: -20, x: 0.95, y: 0.55 },
+            { item: '🥥', size: 75, rot: 10, x: 0.30, y: 0.92 },
+            { item: '🥭', size: 150, rot: -15, x: 0.70, y: 0.95 },
+            { item: '🍐', size: 60, rot: 30, x: 0.10, y: 0.30 },
+        ];
+
+        
+        function drawItems() {
+            fruitsAndVeggiesData.forEach(data => {
+                const x = bgCanvas.width * data.x;
+                const y = bgCanvas.height * data.y;
+                
+                // PERUBAHAN: Skalakan ukuran item berdasarkan lebar layar
+                const scaleFactor = bgCanvas.width / 1920; // 1920 sebagai dasar
+                const itemSize = data.size * Math.max(scaleFactor, 0.5); // Jangan terlalu kecil
+
+                bgCtx.save();
+                bgCtx.translate(x, y);
+                bgCtx.rotate(data.rot * Math.PI / 180);
+                // bgCtx.font = `${data.size}px Arial`;
+                bgCtx.font = `${itemSize}px Arial`; // Gunakan ukuran yang disesuaikan
+
+                bgCtx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+                bgCtx.shadowBlur = 5;
+                bgCtx.shadowOffsetX = 3;
+                bgCtx.shadowOffsetY = 3;
+
+                bgCtx.fillText(data.item, 0, 0);
+
+                bgCtx.restore();
+            });
+        }
+    </script>
+	<script>
+        
+        const profilePicContainer = document.querySelector('.profile-pic-container');
+        if (profilePicContainer) {
+            const profilePic = profilePicContainer.querySelector('img');
+            const maxRotate = 25; 
+
+            profilePicContainer.addEventListener('mousemove', (e) => {
+                const rect = profilePicContainer.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+
+                
+                const rotateY = ((mouseX / rect.width) - 0.5) * 2 * maxRotate;
+                const rotateX = (((mouseY / rect.height) - 0.5) * 2 * maxRotate) * -1;
+
+                
+                profilePic.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.1)`;
+            });
+
+            profilePicContainer.addEventListener('mouseleave', () => {
+                
+                profilePic.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+            });
+        }
     </script>
 </body>
 </html>
-
-
