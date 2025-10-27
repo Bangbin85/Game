@@ -1,0 +1,42 @@
+﻿/* nac_audio_text.css */
+
+.nac_audio_text {
+    margin:0px;
+    padding:5px;
+    box-sizing:border-box;
+    -webkit-column-break-inside:avoid;
+    page-break-inside:avoid;
+    break-inside: avoid;
+}
+
+.nac_audio_text.nac_audio_left,
+.nac_audio_text.nac_audio_right {
+    display:flex;
+    flex-flow:row nowrap;
+    align-items:center;
+}
+
+.nac_audio_text .nac_audio_button {
+    flex-shrink:0;
+}
+
+.nac_audio_text .nac_audio_description {
+    flex-grow:1;
+    margin:0px;
+    padding:5px;
+}
+
+.nac_audio_text .nac_audio_description p {
+    margin:0px;
+    padding:0px;
+}
+
+.nac_audio_text.nac_audio_left .nac_audio_button,
+.nac_audio_text.nac_audio_right .nac_audio_description {
+    order:1;
+}
+
+.nac_audio_text.nac_audio_left .nac_audio_description,
+.nac_audio_text.nac_audio_right .nac_audio_button {
+    order:2;
+}
