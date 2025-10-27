@@ -60,16 +60,13 @@
 		  font-weight: 800;
 		  src: url('fonts/inter-v20-latin-800.woff2') format('woff2'); 
 		}
-
-        /* PERUBAHAN: Mengatur ulang body agar pas di viewport tanpa scroll */
+        
         body {
             text-align: center;
             font-family: 'Inter', sans-serif;
-            /* padding: 20px; */ /* Dihapus agar pas */
             padding: 0;
-            /* min-height: 100vh; */ /* Diubah ke height */
             height: 100vh;
-            width: 100vw; /* Ditambahkan */
+            width: 100vw; 
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -79,7 +76,7 @@
             user-select: none;
             overflow: hidden; 
             background-color: #f0f0f0; 
-            box-sizing: border-box; /* Ditambahkan */
+            box-sizing: border-box; 
         }
 
         h1, h2, .fruit-name,
@@ -89,14 +86,12 @@
             font-family: 'Fredoka', cursive, sans-serif; 
         }
 
-        /* PERUBAHAN: Kanvas Roda sekarang responsif via CSS container */
 		canvas#wheel { 
             border-radius: 50%;
             border: 8px solid var(--white);
             box-shadow: 0 15px 35px rgba(0,0,0,0.2), 0 0 0 10px rgba(255,255,255,0.1), 0 0 0 15px rgba(255,255,255,0.05);
             transition: all 0.5s ease;
             display: block; 
-            /* Ukuran kanvas sekarang 100% dari container-nya */
             width: 100%;
             height: 100%;
         }
@@ -115,8 +110,7 @@
         h1 {
             font-size: clamp(4rem, 8vw, 8rem); 
             color: #d9534f;
-            text-shadow:
-                /* Menggunakan clamp untuk shadow yang responsif */
+            text-shadow:    
                 -2px -2px 0 var(--white), 2px -2px 0 var(--white),
                 -2px 2px 0 var(--white), 2px 2px 0 var(--white),
                 0 -2px 0 var(--white), 0 2px 0 var(--white),
@@ -127,34 +121,29 @@
 
         h2 {
             color: black;
-            font-size: clamp(1.5rem, 4vw, 2.5rem); /* PERUBAHAN: Dibuat responsif */
+            font-size: clamp(1.5rem, 4vw, 2.5rem); 
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
             margin-bottom: 25px; 
         }
 
-        /* PERUBAHAN: Menyesuaikan #welcome-screen dkk agar pas */
         #welcome-screen, #fruit-intro-screen, #game-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 100%;
-            height: 100%; /* Menggunakan 100% dari body (100vh) */
-            padding: 2vh 2vw; /* Padding responsif */
+            height: 100%; 
+            padding: 2vh 2vw; 
             box-sizing: border-box;
-            overflow: hidden; /* Kontainer internal juga tidak boleh scroll */
+            overflow: hidden; 
         }
         
         #welcome-screen {
-            justify-content: center; /* Pusatkan konten welcome */
+            justify-content: center; 
         }
 
         #fruit-intro-screen {
-            /* display: flex; */ /* Sudah di atas */
-            justify-content: center; /* Diubah dari space-around */
-            gap: 2vh; /* Menambah jarak antar elemen */
-            /* height: 100vh; */ /* Sudah di atas */
-            /* overflow: hidden; */ /* Sudah di atas */
-            /* padding-top: 0; */ /* Diatur oleh padding global */
+            justify-content: center; 
+            gap: 2vh; 
         }
         .welcome-title-group {
             display: flex;
@@ -172,7 +161,7 @@
             left: 0;
             top: 50%;
             transform: translateY(-50%);
-            max-width: clamp(200px, 30vw, 500px); /* PERUBAHAN: Lebar responsif */
+            max-width: clamp(200px, 30vw, 500px); 
             height: auto;
             object-fit: contain;
             filter: drop-shadow(3px 3px 2px rgba(0,0,0,0.3));
@@ -184,7 +173,7 @@
         }
 
         #welcome-screen p {
-            font-size: clamp(1rem, 2.5vw, 1.5rem); /* PERUBAHAN: Responsif */
+            font-size: clamp(1rem, 2.5vw, 1.5rem); 
             color: #34495e;
             margin-top: -10px;
             margin-bottom: 40px;
@@ -193,7 +182,7 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: clamp(10px, 1.5vw, 20px); /* PERUBAHAN: Gap responsif */
+            gap: clamp(10px, 1.5vw, 20px); 
             margin-top: 25px;
         }
         .bubble {
@@ -218,7 +207,6 @@
         }
 
         .welcome-btn, #startButton, #continueToGameBtn {
-            /* PERUBAHAN: Padding dan font responsif */
             padding: clamp(10px, 1.5vh, 15px) clamp(20px, 3vw, 30px); 
             font-size: clamp(0.9rem, 2vw, 1.4rem); 
             color: white;
@@ -231,7 +219,6 @@
         }
         #startButton, #continueToGameBtn {
             background: linear-gradient(45deg, #2ecc71, #27ae60);
-            /* PERUBAHAN: Padding dan font responsif */
             padding: clamp(15px, 2vh, 20px) clamp(30px, 5vw, 50px);
             font-size: clamp(1.2rem, 3vw, 1.8rem); 
             text-transform: uppercase;
@@ -246,34 +233,31 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.25);
         }
 
-        /* PERUBAHAN: Menggunakan CSS Grid untuk fruit-grid */
         #fruit-grid {
-            /* display: flex; */
-            display: grid; /* Diubah ke grid */
-            /* flex-wrap: wrap; */
-            grid-template-columns: repeat(3, 1fr); /* 3 kolom */
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
             justify-content: center;
-            gap: clamp(10px, 2vw, 25px); /* Gap responsif */
+            gap: clamp(10px, 2vw, 25px); 
             margin: clamp(15px, 2vh, 25px) 0;
-            width: 100%; /* Lebar penuh dari kontainer */
+            width: 100%; 
             max-width: 900px; 
-            overflow-y: auto; /* PERUBAHAN: Izinkan scroll HANYA di grid jika perlu */
-            padding: 10px; /* Padding agar shadow terlihat */
+            overflow-y: auto; 
+            padding: 10px; 
         }
         /* Media query untuk layar kecil (ponsel) */
         @media (max-width: 600px) {
             #fruit-grid {
-                grid-template-columns: repeat(2, 1fr); /* 2 kolom di ponsel */
+                grid-template-columns: repeat(2, 1fr); 
             }
         }
         
         .fruit-card {
             background: rgba(255, 255, 255, 0.8);
             border-radius: 20px;
-            padding: clamp(10px, 2vw, 20px); /* Padding responsif */
-            /* width: 150px; */ /* DIHAPUS, lebar diatur oleh grid */
-            width: 100%; /* Ditambahkan */
-            box-sizing: border-box; /* Ditambahkan */
+            padding: clamp(10px, 2vw, 20px); 
+            
+            width: 100%; 
+            box-sizing: border-box; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             backdrop-filter: blur(5px);
@@ -286,30 +270,30 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
         .fruit-emoji {
-            font-size: clamp(50px, 10vmin, 80px); /* PERUBAHAN: Responsif */
+            font-size: clamp(50px, 10vmin, 80px); 
             cursor: pointer;
         }
         .fruit-name {
             margin-top: 15px;
-            font-size: clamp(1.2rem, 4vmin, 1.8rem); /* PERUBAHAN: Responsif */
+            font-size: clamp(1.2rem, 4vmin, 1.8rem); 
             color: #34495e;
         }
         .benefit-icon-container {
             margin-top: 15px;
-            font-size: clamp(30px, 8vmin, 36px); /* PERUBAHAN: Responsif */
+            font-size: clamp(30px, 8vmin, 36px); 
             color: #3498db;
             cursor: pointer;
         }
 
         .intro-text-container {
             background: rgba(255, 255, 255, 0.7);
-            padding: clamp(10px, 2vh, 20px) clamp(20px, 4vw, 40px); /* Padding responsif */
+            padding: clamp(10px, 2vh, 20px) clamp(20px, 4vw, 40px); 
             border-radius: 20px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             backdrop-filter: blur(5px);
             margin-bottom: 10px;
             margin-top: 10px;
-            flex-shrink: 0; /* PERUBAHAN: Agar container text tidak ter-squish */
+            flex-shrink: 0; 
         }
         #fruit-intro-screen h2 {
             margin-top: 5px;
@@ -318,17 +302,12 @@
         #fruit-intro-screen p {
             margin-top: 5px;
             margin-bottom: 5px;
-            font-size: clamp(1rem, 2.5vw, 1.3rem); /* PERUBAHAN: Responsif */
+            font-size: clamp(1rem, 2.5vw, 1.3rem); 
         }
        
         #game-container {
             display: none; 
-            /* flex-direction: column; */ /* Sudah di atas */
             justify-content: flex-start;
-            /* align-items: center; */ /* Sudah di atas */
-            /* width: 100%; */ /* Sudah di atas */
-            /* padding-top: 1vh; */ /* Diatur padding global */
-            /* box-sizing: border-box; */ /* Sudah di atas */
         }
         
         #game-container h1 {
@@ -337,28 +316,24 @@
             margin-bottom: 0.5rem; 
         }
 
-        /* PERUBAHAN: Container roda sekarang responsif */
         .wheel-container {
             position: relative; 
             display: inline-block; 
             perspective: 1000px; 
-            margin: 1vh 0; /* Margin responsif */
-            /* Tentukan ukuran container, kanvas di dalamnya akan menyesuaikan */
+            margin: 1vh 0; 
             width: 65vmin;
             height: 65vmin;
-            max-width: 500px; /* Batas atas ukuran di 1920x1080 */
+            max-width: 500px; 
             max-height: 500px;
         }
         .pointer {
             position: absolute; top: -30px;  left: 50%; transform: translateX(-50%);
-            /* PERUBAHAN: Ukuran pointer responsif */
             width: clamp(30px, 5vmin, 50px);
             height: clamp(40px, 7vmin, 70px);
             background: #e74c3c; clip-path: polygon(50% 100%, 0 0, 100% 0);
             z-index: 10; box-shadow: 0 -5px 15px rgba(0,0,0,0.2);
         }
         #spinBtn {
-            /* PERUBAHAN: Tombol spin responsif */
             margin-top: 20px; 
             padding: clamp(12px, 2vh, 20px) clamp(30px, 5vw, 50px); 
             font-size: clamp(1.1rem, 2.5vw, 1.5rem);  
@@ -374,7 +349,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: clamp(3rem, 10vmin, 6rem); /* PERUBAHAN: Responsif */
+            font-size: clamp(3rem, 10vmin, 6rem); 
             font-weight: bold;
             color: white;
             text-shadow: 
@@ -388,7 +363,6 @@
             letter-spacing: 0.5rem;
         }
 
-        
         .modal {
             display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%;
             background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px); animation: fadeIn 0.3s ease;
@@ -396,31 +370,30 @@
         }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .modal-content {
-            margin: auto; padding: clamp(20px, 3vw, 40px);  border-radius: 20px; /* Padding responsif */
+            margin: auto; padding: clamp(20px, 3vw, 40px);  border-radius: 20px; 
             box-shadow: 0 20px 50px rgba(0,0,0,0.3); width: 90%; 
-            /* PERUBAHAN: max-width dikurangi */
+            
             max-width: 700px; 
             position: relative;
-            /* PERUBAHAN: Tambahkan overflow-y jika konten modal terlalu padat */
+            
             overflow-y: auto; 
         }
         #myModal .modal-content {
-             max-width: 950px; /* Kembalikan max-width untuk modal game utama */
+             max-width: 950px; 
             background: linear-gradient(to bottom, #87CEEB, #E0F6FF);
             height: 90vh; 
             display: flex; flex-direction: column;
         }
-        /* PERUBAHAN: Target spesifik untuk modal pengembang dan hc */
+        
         #pengembangModal .modal-content, #hcModal .modal-content {
-            max-width: 700px; /* Lebar lebih kecil untuk modal ini */
+            max-width: 700px; 
         }
         .info-modal .modal-content {
             background: linear-gradient(to bottom, #ffffff, #eef2f3); color: #333; text-align: left;
-            font-size: clamp(0.9rem, 2.5vw, 1.3rem); /* PERUBAHAN: Responsif */
-            max-height: 90vh; /* Batas tinggi modal info */
+            font-size: clamp(0.9rem, 2.5vw, 1.3rem); 
+            max-height: 90vh; 
         }
         .info-modal h2 { text-align: center; color: #2c3e50; margin-top: 0; font-size: clamp(1.5rem, 3vw, 2rem);  }
-        
         
         .petunjuk-list {
             list-style-type: none;
@@ -433,7 +406,7 @@
             margin-bottom: 15px;
         }
         .petunjuk-icon {
-            font-size: clamp(2rem, 5vw, 3rem); /* PERUBAHAN: Responsif */
+            font-size: clamp(2rem, 5vw, 3rem); 
             cursor: pointer;
             transition: transform 0.2s ease;
             user-select: none;
@@ -447,9 +420,8 @@
             flex-grow: 1;
         }
         
-        
         .pustaka-kategori {
-            font-size: clamp(1.2rem, 3vw, 1.6rem); /* PERUBAHAN: Responsif */
+            font-size: clamp(1.2rem, 3vw, 1.6rem); 
             color: #2c3e50;
             margin-top: 25px;
             margin-bottom: 15px;
@@ -467,10 +439,10 @@
             align-items: center;
             gap: 15px;
             margin-bottom: 15px;
-            font-size: clamp(0.9rem, 2.5vw, 1.1rem); /* PERUBAHAN: Responsif */
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem); 
         }
         .pustaka-icon {
-            font-size: clamp(1.5rem, 3vw, 2rem); /* PERUBAHAN: Responsif */
+            font-size: clamp(1.5rem, 3vw, 2rem); 
             width: 40px;
             text-align: center;
             color: #3498db;
@@ -491,21 +463,20 @@
             position: absolute; top: clamp(5px, 1.5vh, 15px); right: clamp(10px, 2vw, 25px); z-index: 20;
         }
         .close:hover, .close:focus { color: #e74c3c; transform: rotate(90deg) scale(1.2); }
-
         
         #game-area { flex-grow: 1; position: relative; width: 100%; overflow: hidden; padding-top: 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        #current-object-image { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); opacity: 0.6; z-index: 1; font-size: clamp(80px, 15vh, 120px); /* PERUBAHAN: Responsif */ }
+        #current-object-image { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); opacity: 0.6; z-index: 1; font-size: clamp(80px, 15vh, 120px);  }
         
-        /* PERUBAHAN: Huruf jatuh responsif */
+        
         .letter { 
             position: absolute; 
-            font-size: clamp(1.5em, 4vmin, 3em); /* Responsif */
+            font-size: clamp(1.5em, 4vmin, 3em); 
             color: #2980b9; 
             background-color: white; 
-            padding: clamp(5px, 2vmin, 15px); /* Responsif */
-            width: auto; /* Otomatis */
-            height: auto; /* Otomatis */
-            min-width: 1.5em; /* Berdasarkan font */
+            padding: clamp(5px, 2vmin, 15px); 
+            width: auto; 
+            height: auto; 
+            min-width: 1.5em; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
@@ -520,10 +491,9 @@
         
         #word-display-area { display: flex; gap: clamp(5px, 1.5vw, 15px);  justify-content: center; padding: 25px 0; }
         
-        /* PERUBAHAN: Kotak huruf responsif */
         .letter-box { 
-            width: clamp(40px, 12vw, 70px); /* Responsif */
-            height: clamp(50px, 14vw, 80px); /* Responsif */
+            width: clamp(40px, 12vw, 70px); 
+            height: clamp(50px, 14vw, 80px); 
             max-width: 70px;
             max-height: 80px;
             background-color: rgba(255, 255, 255, 0.7); 
@@ -532,11 +502,10 @@
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            font-size: clamp(2em, 8vw, 3.5em);  /* Responsif */
+            font-size: clamp(2em, 8vw, 3.5em);  
             color: #2c3e50; 
         }
 
-        
         .matching-container {
             display: flex;
             justify-content: space-around;
@@ -544,14 +513,14 @@
             width: 100%;
             max-width: 800px; 
             margin: 25px 0;
-            /* PERUBAHAN: Fleksibel di layar kecil */
+            
             flex-wrap: wrap;
             gap: 20px;
         }
         .word-column, .image-column {
             display: flex;
             flex-direction: column;
-            gap: clamp(15px, 2vh, 30px); /* PERUBAHAN: Gap responsif */
+            gap: clamp(15px, 2vh, 30px); 
         }
         .match-item {
             background: white;
@@ -569,7 +538,7 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 18px rgba(0,0,0,0.15);
         }
-        /* PERUBAHAN: Item matching responsif */
+        
         .match-item.word {
             width: clamp(150px, 35vw, 200px); 
             height: clamp(60px, 10vh, 80px); 
@@ -609,50 +578,45 @@
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            padding: clamp(5px, 1vh, 15px) clamp(10px, 2vw, 25px);  /* PERUBAHAN: Padding responsif */
+            padding: clamp(5px, 1vh, 15px) clamp(10px, 2vw, 25px);  
             color: #2c3e50; 
         }
-        #round-display, #lives-display { font-size: clamp(1.2rem, 3vw, 2rem);  } /* PERUBAHAN: Responsif */
-        .timer { font-size: clamp(1.2rem, 3vw, 2rem);  } /* PERUBAHAN: Responsif */
+        #round-display, #lives-display { font-size: clamp(1.2rem, 3vw, 2rem);  } 
+        .timer { font-size: clamp(1.2rem, 3vw, 2rem);  } 
         .timer-progress { height: 10px;  background: linear-gradient(90deg, #2ecc71, #f39c12, #e74c3c); border-radius: 10px; transition: width 1s linear; width: 100%; }
         .timer.flash { animation: flash 0.5s infinite alternate; }
         @keyframes flash { from { color: #2c3e50; } to { color: #e74c3c; } }
         .confetti { position: fixed; width: 15px; height: 15px; background-color: #f00; animation: confetti-fall 3s linear forwards; z-index: 9999; pointer-events: none; }
         @keyframes confetti-fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
-        .alert-message { text-align: center; font-size: clamp(1rem, 2.5vw, 1.5rem);  font-weight: bold; padding: 15px; color: #2c3e50; min-height: 35px;  } /* PERUBAHAN: Responsif */
+        .alert-message { text-align: center; font-size: clamp(1rem, 2.5vw, 1.5rem);  font-weight: bold; padding: 15px; color: #2c3e50; min-height: 35px;  } 
         .custom-alert-overlay { visibility: hidden; opacity: 0; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 9998; display: flex; justify-content: center; align-items: center; transition: visibility 0s 0.3s, opacity 0.3s ease; }
         .custom-alert-overlay.show { visibility: visible; opacity: 1; transition: opacity 0.3s ease; }
-        .custom-alert-box { color: white; padding: 35px 45px;  border-radius: 20px; text-align: center; font-size: clamp(1.2rem, 3vw, 1.8rem);  font-weight: bold; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-width: 80%; transform: scale(0.7); transition: transform 0.3s ease-out; line-height: 1.6; } /* PERUBAHAN: Responsif */
+        .custom-alert-box { color: white; padding: 35px 45px;  border-radius: 20px; text-align: center; font-size: clamp(1.2rem, 3vw, 1.8rem);  font-weight: bold; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-width: 80%; transform: scale(0.7); transition: transform 0.3s ease-out; line-height: 1.6; } 
         .custom-alert-box.success { background: linear-gradient(135deg, #2ecc71, #28b463); }
         .custom-alert-box.failure { background: linear-gradient(135deg, #e74c3c, #c0392b); }
         .custom-alert-box.info { background: linear-gradient(135deg, #3498db, #2980b9); }
         .custom-alert-overlay.show .custom-alert-box { transform: scale(1); }
 
-        
-        /* PERUBAHAN: Grid memory game responsif */
         .memory-game-container {
             display: grid;
-            /* PERUBAHAN: Paksa 4 kolom */
             grid-template-columns: repeat(4, 1fr);
-            gap: clamp(5px, 1.5vmin, 15px); /* PERUBAHAN: Sedikit mengurangi gap */
+            gap: clamp(5px, 1.5vmin, 15px); 
             perspective: 1000px;
             width: 90%;
-            max-width: 600px; /* Batas atas agar tidak terlalu lebar */
+            max-width: 600px; 
         }
-        /* Media query untuk layar sangat pendek */
+        
         @media (max-height: 600px) {
             .memory-game-container {
                 gap: 5px;
-                /* PERUBAHAN: Paksa 4 kolom juga di layar pendek */
+                
                 grid-template-columns: repeat(4, 1fr); 
             }
         }
         
         .memory-card {
-            /* width: 120px; */ /* DIHAPUS */
-            /* height: 120px; */ /* DIHAPUS */
-            width: 100%; /* Lebar 100% dari kolom grid */
-            aspect-ratio: 1 / 1; /* Membuat kartu selalu kotak */
+            width: 100%; 
+            aspect-ratio: 1 / 1; 
             position: relative;
             transform-style: preserve-3d;
             transition: transform 0.6s;
@@ -671,11 +635,11 @@
             align-items: center;
             border-radius: 15px; 
             box-shadow: 0 5px 12px rgba(0,0,0,0.1);
-            font-size: clamp(40px, 10vmin, 80px); /* PERUBAHAN: Diperbesar dari 30px & 60px */
+            font-size: clamp(40px, 10vmin, 80px); 
         }
          @media (max-height: 600px) {
             .card-face {
-                font-size: clamp(30px, 8vmin, 50px); /* PERUBAHAN: Diperbesar dari 20px & 40px */
+                font-size: clamp(30px, 8vmin, 50px); 
             }
         }
         
@@ -697,18 +661,16 @@
         
         .memory-card.matched .card-back {
             color: #2ecc71; 
-            font-size: clamp(40px, 12vmin, 80px); /* PERUBAHAN: Diperbesar dari 35px & 70px */
+            font-size: clamp(40px, 12vmin, 80px); 
             background: white; 
         }
 
         .memory-card.matched .card-front {
             background: #2ecc71;
             color: white;
-            font-size: clamp(40px, 12vmin, 80px); /* PERUBAHAN: Diperbesar dari 35px & 70px */
+            font-size: clamp(40px, 12vmin, 80px); 
         }
-		
-        
-        /* PERUBAHAN: Foto profil responsif */
+		       
         .profile-pic-container {
             perspective: 1000px;
             flex-shrink: 0;
@@ -720,8 +682,8 @@
 
         .profile-pic-container img {
             transition: transform 0.2s ease-out;
-            width: 100%; /* Sesuaikan lebar */
-            height: 100%; /* Pertahankan rasio aspek 1:2 dari 150:300 */
+            width: 100%; 
+            height: 100%; 
             object-fit: cover;
             display: block;
         }
@@ -759,7 +721,7 @@
             display: flex;
             align-items: center;
             width: 100%;
-            flex-wrap: wrap; /* Izinkan wrap di layar kecil */
+            flex-wrap: wrap; 
         }
 
         .hc-logos {
@@ -772,7 +734,7 @@
         }
 
         .hc-logo {
-            height: clamp(40px, 5vh, 60px); /* PERUBAHAN: Responsif */
+            height: clamp(40px, 5vh, 60px); 
             max-width: 150px;
             object-fit: contain;
         }
@@ -780,8 +742,8 @@
         
         .music-toggle-btn {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: clamp(15px, 2.5vmin, 25px);
+            right: clamp(15px, 2.5vmin, 25px);
             z-index: 1000;
             background-color: rgba(255, 255, 255, 0.7);
             border: 2px solid #3498db;
@@ -821,7 +783,7 @@
     <div class="bubble"></div>
     <div class="bubble"></div>
 
-    <!-- PERUBAHAN: Atribut display:none dihapus, akan dikontrol oleh JS -->
+    
     <div id="welcome-screen">
         <div class="welcome-title-group">
             <img src="image/Bangbin.png" alt="bangbin" class="welcome-image">
@@ -847,15 +809,15 @@
         <button id="continueToGameBtn">Lanjut Bermain</button>
     </div>
 
-    <div id="game-container" style="display:none;"> <!-- PERUBAHAN: Ditambahkan style display:none agar konsisten -->
+    <div id="game-container" style="display:none;"> 
         <h1>Roda Kata Buah Ajaib</h1>
         <div class="wheel-container">
             <div id="animated-text-display"></div>
             <div class="pointer"></div>
-            <!-- PERUBAHAN: Atribut width/height dihapus dari HTML, akan diatur oleh JS -->
+            
             <canvas id="wheel"></canvas> 
         </div>
-        <button id="spinBtn">Putar Roda</button> <!-- PERUBAHAN: Dipindahkan ke luar wheel-container -->
+        <button id="spinBtn">Putar Roda</button> 
     </div>
 
     <div id="petunjukModal" class="modal info-modal">
@@ -1005,7 +967,7 @@
     </div>
 
     <div id="pengembangModal" class="modal">
-        <!-- PERUBAHAN: Menambahkan min-height 300px -->
+        
         <div class="modal-content" style="background: linear-gradient(135deg, #4e54c8, #8f94fb); max-width: 700px; padding: 25px; min-height: 200px;">
             <span class="close">×</span>
             <div class="modal-main-content">
@@ -1123,8 +1085,7 @@
     <audio id="sound-z" src="sound/Z.mp3" preload="auto"></audio>
 
 
-    <script>
-        
+    <script>    
         const welcomeScreen = document.getElementById('welcome-screen');
         const fruitIntroScreen = document.getElementById('fruit-intro-screen');
         const fruitGrid = document.getElementById('fruit-grid');
@@ -1165,9 +1126,7 @@
 		const pairSound = document.getElementById('pairSound');
         const backgroundMusic = document.getElementById('backgroundMusic');
         const musicToggleBtn = document.getElementById('musicToggleBtn');
-
-
-        
+       
         const segments = [
             { text: 'APEL', item: '🍎', benefitIcon: 'fa-heart', benefitSound: 'manfaat_apel' },
             { text: 'PISANG', item: '🍌', benefitIcon: 'fa-bolt', benefitSound: 'manfaat_pisang' },
@@ -1178,30 +1137,20 @@
         ];
 
         const segmentColors = ["#f1c40f", "#e67e22", "#e74c3c", "#9b59b6", "#3498db", "#1abc9c"];
-        
-        // PERUBAHAN: centerX, centerY, dan radius akan diatur di dalam drawWheel()
-        // const centerX = canvasWheel.width / 2;
-        // const centerY = canvasWheel.height / 2;
-        // const radius = canvasWheel.width / 2 - 10;
-        
+      
         let angle = 0;
         let spinning = false;
         let currentRound = 1;
         let currentSegment;
         let countdown;
-        let letterInterval;
-
-        
+        let letterInterval;  
         let selectedWord = null;
         let selectedImage = null;
-        let correctPairs_L2 = 0;
-
-        
+        let correctPairs_L2 = 0;    
         let flippedCards = [];
         let matchedPairs_L3 = 0;
         let lockBoard = false;
-
-        
+   
         function spin() {
             if (spinning) return;
             spinning = true;
@@ -1329,8 +1278,7 @@
                 successSound.currentTime = 0; successSound.play();
                 createConfetti();
                 showCustomAlert('success', `SELAMAT, KAMU HEBAT! KAMU TELAH MENYELESAIKAN SEMUA TANTANGAN.<br>KAMU HEBAT!`, 4000);
-                
-                
+        
                 setTimeout(() => {
                     hcModal.style.display = 'flex';
                     
@@ -1344,9 +1292,9 @@
                             pengembangModal.style.display = 'none';
                             gameContainer.style.display = 'none';
                             welcomeScreen.style.display = 'flex';
-                        }, 5000); 
+                        }, 3000); 
 
-                    }, 5000); 
+                    }, 3000); 
 
                 }, 4100); 
 
@@ -1355,10 +1303,7 @@
                 showCustomAlert('failure', `Waktu Habis!<br>Putar roda untuk mencoba lagi.`);
             }
         }
-
-        
-        
-        
+      
         function stopAllGameSounds() {
             
             document.querySelectorAll('audio[id^="sound-"]').forEach(audio => {
@@ -1611,7 +1556,6 @@
             });
 
             cards.sort(() => 0.5 - Math.random());
-
             cards.forEach(cardData => {
                 const card = document.createElement('div');
                 card.className = 'memory-card';
@@ -1631,9 +1575,6 @@
             if (lockBoard || flippedCards.length >= 2 || clickedCard.classList.contains('flipped')) return;
 
             stopAllGameSounds(); 
-
-            
-            
 
             const soundId = clickedCard.dataset.sound;
             const soundElement = document.getElementById(soundId);
@@ -1711,30 +1652,21 @@
             document.querySelectorAll('.letter').forEach(l => l.remove());
         }
 
-        // PERUBAHAN: Fungsi untuk menyesuaikan ukuran kanvas roda
+        
         function resizeCanvas() {
-            const container = document.querySelector('.wheel-container');
-            // Pastikan container terlihat sebelum mengukur
-            if (container.clientWidth === 0 || container.clientHeight === 0) return; 
-
-            // Gunakan ukuran terkecil dari container
-            const size = Math.min(container.clientWidth, container.clientHeight);
-            
-            // Set atribut resolusi kanvas
+            const container = document.querySelector('.wheel-container');           
+            if (container.clientWidth === 0 || container.clientHeight === 0) return;           
+            const size = Math.min(container.clientWidth, container.clientHeight);           
             canvasWheel.width = size;
-            canvasWheel.height = size;
-            
-            // Gambar ulang roda dengan ukuran baru
+            canvasWheel.height = size;           
             drawWheel();
         }
 
 
-        function drawWheel() {
-            // PERUBAHAN: Kalkulasi dinamis di dalam fungsi
+        function drawWheel() {          
             const centerX = canvasWheel.width / 2;
             const centerY = canvasWheel.height / 2;
-            const radius = canvasWheel.width / 2 - 10; // 10px padding
-
+            const radius = canvasWheel.width / 2 - 10; 
             const arc = (2 * Math.PI) / segments.length;
             ctxWheel.clearRect(0,0,canvasWheel.width,canvasWheel.height);
             for (let i = 0; i < segments.length; i++) {
@@ -1756,7 +1688,7 @@
                 if (item) {
                     ctxWheel.textAlign = 'center';
                     ctxWheel.textBaseline = 'middle';
-                    // PERUBAHAN: Ukuran font emoji dibuat relatif terhadap radius
+                    
                     ctxWheel.font = `${radius * 0.3}px Arial`; 
                     ctxWheel.fillText(item, radius * 0.7, 0);
                 }
@@ -1812,7 +1744,6 @@
                         soundElement.play();
                     }
                 });
-
                 fruitGrid.appendChild(card);
             });
         }
@@ -1839,12 +1770,8 @@
 
         continueToGameBtn.addEventListener('click', () => {
             fruitIntroScreen.style.display = 'none';
-            gameContainer.style.display = 'flex';
-
-            // PERUBAHAN: Panggil resizeCanvas setelah container terlihat
-            // Menggunakan setTimeout untuk memastikan DOM telah di-render
+            gameContainer.style.display = 'flex';   
             setTimeout(resizeCanvas, 0);
-
             stopAllGameSounds(); 
             const putarRodaSound = document.getElementById('sound-putarRoda');
             if (putarRodaSound) {
@@ -1858,8 +1785,6 @@
         pustakaBtn.addEventListener('click', () => { pustakaModal.style.display = 'flex'; });
         hcBtn.addEventListener('click', () => { hcModal.style.display = 'flex'; });
         pengembangBtn.addEventListener('click', () => { pengembangModal.style.display = 'flex'; });
-
-        
         petunjukModal.addEventListener('click', (event) => {
             const target = event.target;
             if (target.classList.contains('petunjuk-icon')) {
@@ -1920,14 +1845,6 @@
         });
 
         
-        // PERUBAHAN: Panggil resizeCanvas() alih-alih drawWheel()
-        // drawWheel();
-        // resizeCanvas() akan dipanggil saat load dan resize background
-        // dan juga saat #game-container ditampilkan
-    </script>
-	
-    <script>
-        
         const bgCanvas = document.getElementById('backgroundCanvas');
         const bgCtx = bgCanvas.getContext('2d');
 
@@ -1936,8 +1853,8 @@
             bgCanvas.height = window.innerHeight;
             drawBackground();
             
-            // PERUBAHAN: Panggil resizeCanvas Roda setiap kali background di-resize
-            // Ini memastikan roda juga ikut menyesuaikan ukuran
+            
+            
             if (gameContainer.style.display === 'flex') {
                  resizeCanvas();
             }
@@ -1956,10 +1873,8 @@
         function drawBackground() {
             const width = bgCanvas.width;
             const height = bgCanvas.height;
-
             bgCtx.fillStyle = colors.blueishGreen;
             bgCtx.fillRect(0, 0, width, height);
-
             bgCtx.fillStyle = colors.greenishGrey;
             bgCtx.beginPath();
             bgCtx.moveTo(0, 0);
@@ -1968,7 +1883,6 @@
             bgCtx.lineTo(0, height);
             bgCtx.closePath();
             bgCtx.fill();
-
             bgCtx.fillStyle = colors.yellow;
             bgCtx.beginPath();
             bgCtx.moveTo(width * 0.30, 0);
@@ -1977,7 +1891,6 @@
             bgCtx.lineTo(width * 0.05, height);
             bgCtx.closePath();
             bgCtx.fill();
-
             bgCtx.fillStyle = colors.orange;
             bgCtx.beginPath();
             bgCtx.moveTo(width * 0.70, 0);
@@ -1989,8 +1902,7 @@
 
             drawItems(); 
         }
-
-        
+  
         const fruitsAndVeggiesData = [
             { item: '🍎', size: 50, rot: 0, x: 0.06, y: 0.18 },
             { item: '🍌', size: 200, rot: -15, x: 0.20, y: 0.48 },
@@ -2018,30 +1930,21 @@
         function drawItems() {
             fruitsAndVeggiesData.forEach(data => {
                 const x = bgCanvas.width * data.x;
-                const y = bgCanvas.height * data.y;
-                
-                // PERUBAHAN: Skalakan ukuran item berdasarkan lebar layar
-                const scaleFactor = bgCanvas.width / 1920; // 1920 sebagai dasar
-                const itemSize = data.size * Math.max(scaleFactor, 0.5); // Jangan terlalu kecil
-
+                const y = bgCanvas.height * data.y;         
+                const scaleFactor = bgCanvas.width / 1920; 
+                const itemSize = data.size * Math.max(scaleFactor, 0.5); 
                 bgCtx.save();
                 bgCtx.translate(x, y);
-                bgCtx.rotate(data.rot * Math.PI / 180);
-                // bgCtx.font = `${data.size}px Arial`;
-                bgCtx.font = `${itemSize}px Arial`; // Gunakan ukuran yang disesuaikan
-
+                bgCtx.rotate(data.rot * Math.PI / 180);      
+                bgCtx.font = `${itemSize}px Arial`; 
                 bgCtx.shadowColor = 'rgba(0, 0, 0, 0.4)';
                 bgCtx.shadowBlur = 5;
                 bgCtx.shadowOffsetX = 3;
                 bgCtx.shadowOffsetY = 3;
-
                 bgCtx.fillText(data.item, 0, 0);
-
                 bgCtx.restore();
             });
         }
-    </script>
-	<script>
         
         const profilePicContainer = document.querySelector('.profile-pic-container');
         if (profilePicContainer) {
@@ -2051,13 +1954,9 @@
             profilePicContainer.addEventListener('mousemove', (e) => {
                 const rect = profilePicContainer.getBoundingClientRect();
                 const mouseX = e.clientX - rect.left;
-                const mouseY = e.clientY - rect.top;
-
-                
+                const mouseY = e.clientY - rect.top;    
                 const rotateY = ((mouseX / rect.width) - 0.5) * 2 * maxRotate;
                 const rotateX = (((mouseY / rect.height) - 0.5) * 2 * maxRotate) * -1;
-
-                
                 profilePic.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.1)`;
             });
 
