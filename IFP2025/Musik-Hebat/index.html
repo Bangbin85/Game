@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -6,8 +7,7 @@
     <title>Pusat Alat Musik Interaktif</title>
     <!-- Memuat Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Memuat Three.js (library 3D) --><script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- Memuat OrbitControls (untuk menggerakkan kamera) --><script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- SKRIP THREE.JS DAN ORBITCONTROLS DIHAPUS -->
 
     <!-- MEMUAT FONT AWESOME (UNTUK IKON PETA) --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -15,20 +15,23 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
 
-    <!-- MEMUAT VANTA.JS WAVES (UNTUK BACKGROUND LAUT 3D) --><script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.waves.min.js"></script>
+    <!-- SCRIPT VANTA.JS DIHAPUS TOTAL -->
 
     <style>
         /* Mengatur font default */
         body {
             font-family: 'Inter', sans-serif;
             background-color: #1e3a8a; /* Fallback jika vanta gagal */
+            /* LATAR GRADASI BIRU BARU */
+            background-image: linear-gradient(to bottom, #3b82f6, #1e3a8a);
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden; 
         }
 
-        /* Container untuk background 3D Vanta */
+        /* Container untuk background 3D Vanta (DIHAPUS) */
+        /*
         #vanta-bg {
             position: fixed;
             top: 0;
@@ -37,6 +40,7 @@
             height: 100%;
             z-index: 0;
         }
+        */
 
         /* Konten Section */
         main {
@@ -178,21 +182,23 @@
             z-index: 2;
         }
 
-        /* Style untuk ikon yang terkunci */
+        /* Style untuk ikon yang terkunci (SEMUA ATURAN .locked DIHAPUS) */
+        /*
         .map-btn.locked {
             cursor: not-allowed;
         }
         .map-btn.locked .map-icon {
-            filter: grayscale(100%) opacity(0.5); /* Tidak berwarna dan pudar */
-            animation: none; /* Hentikan animasi */
-            transform: translateY(0); /* Pastikan tidak bergerak */
+            filter: grayscale(100%) opacity(0.5); 
+            animation: none; 
+            transform: translateY(0); 
         }
         .map-btn.locked .map-btn-text {
-            color: #a0aec0; /* Teks lebih pudar */
+            color: #a0aec0; 
         }
         .map-btn.locked:hover .map-icon {
-            transform: translateY(0); /* Pastikan tidak bergerak saat hover */
+            transform: translateY(0); 
         }
+        */
         
         /* Keyframes untuk animasi bounce */
         @keyframes bounce {
@@ -313,15 +319,7 @@
         /* --- AKHIR STYLE PETA IKON --- */
 
 
-        /* Memastikan canvas 3D menutupi seluruh layar di belakang konten */
-        #musicCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-        }
+        /* CANVAS 3D DIHAPUS */
 
         /* Konten UI harus berada di atas canvas */
         .content-wrapper {
@@ -337,6 +335,35 @@
             from { opacity: 0; transform: translate(-50%, -45%); }
             to { opacity: 1; transform: translate(-50%, -50%); }
         }
+
+        /* --- STYLE BARU UNTUK GALERI MATERI 2D --- */
+        .materi-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(5px); /* Efek blur/kaca */
+        }
+        .materi-card:hover {
+            transform: translateY(-5px) scale(1.03);
+            background-color: rgba(255, 255, 255, 0.2);
+            border-color: white;
+        }
+        .materi-card img {
+            width: 100%;
+            height: 120px; /* Tinggi tetap */
+            object-fit: contain; /* Agar gambar tidak gepeng */
+            margin-bottom: 0.75rem;
+        }
+        .materi-card p {
+            font-weight: 600;
+            color: white;
+            font-size: 1.1rem;
+        }
+
 
         /* --- STYLE UNTUK GAME --- */
         /* Game 1: Tebak Suara */
@@ -491,7 +518,8 @@
 </head>
 <body class="bg-gray-900 text-white overflow-hidden">
     
-    <!-- BACKGROUND 3D LAUT BERGELOMBANG --><div id="vanta-bg"></div>
+    <!-- BACKGROUND 3D LAUT BERGELOMBANG (DIHAPUS) -->
+    <!-- <div id="vanta-bg"></div> -->
 
     <!-- KONTEN UTAMA (CONTAINER SECTION) --><main class="w-full relative">
         <section id="section-map" class="section-content" style="position: relative;">
@@ -513,19 +541,24 @@
                         <i class="fa-solid fa-location-dot map-icon"></i>
                         <span class="map-btn-text">Level 1</span>
                     </button>
-                    <!-- Tombol Level 2 (Terkunci dengan ikon) --><button id="map-btn-level2" class="map-btn locked" disabled>
+                    
+                    <!-- Tombol Level 2 (Sudah diperbaiki) -->
+                    <button id="map-btn-level2" class="map-btn">
                         <i class="fa-solid fa-location-dot map-icon"></i>
                         <span class="map-btn-text">Level 2</span>
                     </button>
-                    <!-- Tombol Level 3 (Terkunci dengan ikon) --><button id="map-btn-level3" class="map-btn locked" disabled>
+                    <!-- Tombol Level 3 (Sudah diperbaiki) -->
+                    <button id="map-btn-level3" class="map-btn">
                         <i class="fa-solid fa-location-dot map-icon"></i>
                         <span class="map-btn-text">Level 3</span>
                     </button>
-                    <!-- Tombol Level 4 (Terkunci dengan ikon) --><button id="map-btn-level4" class="map-btn locked" disabled>
+                    <!-- Tombol Level 4 (Sudah diperbaiki) -->
+                    <button id="map-btn-level4" class="map-btn">
                         <i class="fa-solid fa-location-dot map-icon"></i>
                         <span class="map-btn-text">Level 4</span>
                     </button>
-                    <!-- Tombol Final (Terkunci dengan ikon) --><button id="map-btn-final" class="map-btn locked" disabled>
+                    <!-- Tombol Final (Sudah diperbaiki) -->
+                    <button id="map-btn-final" class="map-btn">
                         <i class="fa-solid fa-location-dot map-icon"></i>
                         <span class="map-btn-text">Selesai</span>
                     </button>
@@ -534,15 +567,24 @@
         </section>
 
 
-        <!-- ===== SECTION 1: MATERI 3D ===== --><section id="section-materi" class="section-content hidden">
-            <!-- Canvas untuk render 3D --><canvas id="musicCanvas"></canvas>
-            <!-- Konten Teks di Atas 3D --><div class="content-wrapper p-8 text-center">
-                <h1 class="text-4xl md:text-5xl font-bold mb-2 text-shadow-lg">Galeri Alat Musik 3D</h1>
-                <p class="text-lg md:text-xl text-gray-200 mb-4">Klik pada alat musik untuk melihat informasi.</p>
-                <!-- TOMBOL KEMBALI BARU --><button id="materi-back-btn" class="btn-3d text-sm">
-                    <i class="fa-solid fa-map mr-2"></i> Kembali ke Peta
-                </button>
+        <!-- ===== SECTION 1: MATERI 2D (DIUBAH) ===== --><section id="section-materi" class="section-content hidden">
+            <!-- Wrapper untuk semua konten (termasuk grid) agar bisa scroll -->
+            <div class="w-full h-full overflow-y-auto p-4 md:p-8">
+                <!-- Konten Teks di Atas (sama seperti sebelumnya) -->
+                <div class="content-wrapper text-center mb-8">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-2 text-shadow-lg">Galeri Alat Musik</h1>
+                    <p class="text-lg md:text-xl text-gray-200 mb-4">Klik pada alat musik untuk melihat informasi.</p>
+                    <button id="materi-back-btn" class="btn-3d text-sm">
+                        <i class="fa-solid fa-map mr-2"></i> Kembali ke Peta
+                    </button>
+                </div>
+                
+                <!-- GRID GALERI 2D BARU -->
+                <div id="materi-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 max-w-7xl mx-auto pb-8">
+                    <!-- Akan diisi oleh JavaScript -->
+                </div>
             </div>
+
             <!-- Modal Informasi (Awalnya tersembunyi) --><div id="infoModal" class="hidden fixed top-1/2 left-1/2 -translate-x-1-2 -translate-y-1-2 w-11/12 max-w-lg bg-white text-gray-900 rounded-2xl shadow-2xl p-6 md:p-8 z-50">
                 <button id="closeModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-3xl leading-none">&times;</button>
                 <div class="flex flex-col md:flex-row items-center gap-6">
@@ -766,6 +808,14 @@
         let level2Completed = false;
         let level3Completed = false;
         let level4Completed = false;
+        
+        // Variabel status inisialisasi
+        let materiGalleryInitialized = false; // BARU: Untuk galeri 2D
+        let game1Initialized = false;
+        let game2Initialized = false;
+        let game3Initialized = false;
+        let game4Initialized = false;
+
 
         // Fungsi untuk pindah layar
         function showScreen(screenId) {
@@ -794,14 +844,12 @@
                 document.getElementById('section-map').classList.remove('hidden'); // Fallback ke Peta
             }
 
-            // Logika khusus saat memasuki layar tertentu
-            if (screenId === 'section-materi') {
-                isMateriActive = true;
-                if(controls) controls.autoRotate = true; // Lanjutkan putar
-                if(typeof animate === 'function') animate(); // Mulai lagi loop animasi
-            } else {
-                isMateriActive = false; // Hentikan loop animasi 3D
-                if(controls) controls.autoRotate = false; // Hentikan putar
+            // Logika khusus saat memasuki layar tertentu (LOGIKA 3D DIHAPUS)
+            
+            // Muat galeri materi 2D (jika belum)
+            if (screenId === 'section-materi' && !materiGalleryInitialized) {
+                loadMateriGallery();
+                materiGalleryInitialized = true;
             }
 
             // Muat game saat section-nya ditampilkan (jika belum pernah)
@@ -842,6 +890,7 @@
 
         // Fungsi untuk update tombol di Peta
         function updateMapUI() {
+            /*
             const level2Btn = document.getElementById('map-btn-level2');
             const level3Btn = document.getElementById('map-btn-level3');
             const level4Btn = document.getElementById('map-btn-level4');
@@ -890,6 +939,11 @@
                 finalBtn.disabled = true;
                 // Ikon final sudah berbeda dari awal, tidak perlu diubah kembali ke location-dot
             }
+            */
+            // SEMUA LOGIKA DI FUNGSI INI DIHAPUS
+            // Fungsionalitas kunci (tidak bisa diklik) sudah ditangani
+            // oleh logika 'if (levelXCompleted)' pada event listener setiap tombol.
+            // Dengan menghapus logika di sini, ikon akan selalu berwarna.
         }
 
         // Fungsi untuk update skor di Layar Final
@@ -931,118 +985,42 @@
         }
 
 
-        // --- PENGATURAN 3D (THREE.JS) ---
-        // (Logika 3D, Modal, Raycaster, dll. SAMA SEPERTI SEBELUMNYA)
-        let scene, camera, renderer, controls;
-        let instrumentGroup; 
-        let raycaster, mouse;
-        const clickableObjects = []; 
-        let isMateriActive = true; 
-        let animationFrameId;
+        // --- PENGATURAN 3D (THREE.JS) DIHAPUS ---
 
-        function init() {
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 15;
-            const canvas = document.getElementById('musicCanvas');
-            renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true; 
-            controls.enableZoom = true;
-            controls.autoRotate = true; 
-            controls.autoRotateSpeed = 0.5;
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-            scene.add(ambientLight);
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-            directionalLight.position.set(5, 10, 7.5);
-            scene.add(directionalLight);
-            raycaster = new THREE.Raycaster();
-            mouse = new THREE.Vector2();
-            createInstruments();
-            window.addEventListener('resize', onWindowResize);
-            window.addEventListener('click', onClick);
-            animate(); // Mulai animasi, tapi akan dikontrol oleh showScreen
-        }
-
-        function createInstruments() {
-            instrumentGroup = new THREE.Group();
-            const textureLoader = new THREE.TextureLoader();
-            const radius = 9; 
-            const itemSize = 3; 
-
-            galleryInfo.forEach((inst, i) => {
-                const angle = (i / galleryInfo.length) * Math.PI * 2; 
-                const material = new THREE.MeshStandardMaterial({
-                    transparent: true,
-                    side: THREE.DoubleSide,
-                    roughness: 0.7,
-                    metalness: 0.1
-                });
+        // --- FUNGSI BARU: MEMUAT GALERI MATERI 2D ---
+        function loadMateriGallery() {
+            const grid = document.getElementById('materi-grid');
+            grid.innerHTML = ''; // Kosongkan grid
+            
+            galleryInfo.forEach(inst => {
                 const globalData = alatMusikData[inst.name];
-                if (!globalData) return;
+                if (!globalData) {
+                    console.warn("Data tidak ditemukan untuk:", inst.name);
+                    return;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'materi-card';
+                card.innerHTML = `
+                    <img src="${globalData.img}" alt="${inst.name}" onerror="this.src='https://placehold.co/150x120/e2e8f0/94a3b8?text=Error'">
+                    <p>${inst.name}</p>
+                `;
                 
-                textureLoader.load(
-                    globalData.img, // Ini sekarang menggunakan path lokal
-                    (texture) => { material.map = texture; material.needsUpdate = true; },
-                    undefined, 
-                    (err) => {
-                        // Fallback jika path lokal gagal (mis. file tidak ada)
-                        console.error('Gagal memuat tekstur lokal:', globalData.img);
-                        textureLoader.load(
-                            `https://placehold.co/${itemSize*100}x${itemSize*100}/e2e8f0/94a3b8?text=${inst.name.split(' ')[0]}`,
-                            (placeholderTexture) => { material.map = placeholderTexture; material.needsUpdate = true; }
-                        );
-                    }
-                );
-                const geometry = new THREE.PlaneGeometry(itemSize, itemSize);
-                const mesh = new THREE.Mesh(geometry, material);
-                mesh.position.x = Math.cos(angle) * radius;
-                mesh.position.z = Math.sin(angle) * radius;
-                mesh.lookAt(0, 0, 0);
-                mesh.userData = { ...inst, ...globalData };
-                instrumentGroup.add(mesh);
-                clickableObjects.push(mesh);
+                // Siapkan data lengkap untuk modal
+                const modalData = { ...inst, ...globalData };
+                
+                // Tambahkan event listener untuk membuka modal
+                card.addEventListener('click', () => {
+                    showInfo(modalData); // Gunakan fungsi modal yang sudah ada
+                });
+                
+                grid.appendChild(card);
             });
-            scene.add(instrumentGroup);
         }
 
-        function animate() {
-            if (!isMateriActive) { // Dikontrol oleh showScreen
-                cancelAnimationFrame(animationFrameId);
-                return;
-            }
-            animationFrameId = requestAnimationFrame(animate);
-            controls.update(); 
-            renderer.render(scene, camera);
-        }
 
-        function onWindowResize() {
-            if (camera && renderer) {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            }
-        }
-
-        function onClick(event) {
-            if (!isMateriActive) return; 
-            if (event.target.closest('#infoModal') || event.target.closest('#materi-back-btn')) {
-                return; // Jangan lakukan raycast jika klik UI di atasnya
-            }
-            controls.autoRotate = false;
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(clickableObjects);
-            if (intersects.length > 0) {
-                showInfo(intersects[0].object.userData); 
-            }
-        }
-        
         // --- LOGIKA MODAL ---
-        // (Sama seperti sebelumnya)
+        // (Sama seperti sebelumnya, tapi 1 baris di hideInfo dihapus)
         const infoModal = document.getElementById('infoModal');
         const closeModalBtn = document.getElementById('closeModal');
         const playSoundBtn = document.getElementById('playSoundBtn');
@@ -1063,9 +1041,7 @@
 
         function hideInfo() {
             infoModal.classList.add('hidden');
-            if (isMateriActive) {
-                controls.autoRotate = true;
-            }
+            // Baris 'if (isMateriActive)' dihapus karena 'controls' tidak ada lagi
             audioPlayer.pause();
             audioPlayer.currentTime = 0;
             currentSoundUrl = null;
@@ -1089,7 +1065,6 @@
         const game1NextBtn = document.getElementById('game1-next');
         let game1Answer = null;
         let game1Locked = false;
-        let game1Initialized = false;
         let game1Skor = 0;
         const game1Target = 3; 
 
@@ -1176,7 +1151,6 @@
         const game2ItemBank = document.getElementById('game2-item-bank');
         const game2Dropzones = document.querySelectorAll('.dropzone');
         const game2ResetBtn = document.getElementById('game2-reset');
-        let game2Initialized = false;
         let currentDraggedElement = null; 
         let ghostElement = null; 
         let touchOffsetX = 0; 
@@ -1326,7 +1300,6 @@
 
         // --- LOGIKA GAME 3: MEMORY GAME ---
         // (Tidak ada perubahan di logika Game 3)
-        let game3Initialized = false;
         const game3Grid = document.getElementById('game3-grid');
         const game3Feedback = document.getElementById('game3-feedback');
         const game3ResetBtn = document.getElementById('game3-reset');
@@ -1443,8 +1416,7 @@
 
 
         // --- LOGIKA GAME 4: CATCHING GAME ---
-        // (Tidak ada perubahan di logika Game 4)
-        let game4Initialized = false;
+        // (Satu perbaikan bug typo di playTargetSound)
         let game4Active = false; 
         let game4AnimationId = null;
         
@@ -1501,7 +1473,8 @@
         function playTargetSound() {
             if (game4Target) {
                 if (!audioPlayer.paused) audioPlayer.pause();
-                audioPlayer.src = alatMusikData[gameTarge.name].soundUrl; // Path lokal
+                // PERBAIKAN BUG: 'gameTarge' diubah menjadi 'game4Target'
+                audioPlayer.src = alatMusikData[game4Target.name].soundUrl; // Path lokal
                 audioPlayer.play().catch(e => console.error(e));
             }
         }
@@ -1620,26 +1593,12 @@
 
         // --- MULAI APLIKASI ---
         
-        // Inisialisasi Vanta Waves (Background Laut 3D)
-        VANTA.WAVES({
-            el: "#vanta-bg",
-            mouseControls: true,
-            touchControls: true,
-            gyroControls: false,
-            minHeight: 200.00,
-            minWidth: 200.00,
-            scale: 1.00,
-            scaleMobile: 1.00,
-            color: 0x1e3a8a, 
-            shininess: 35.00,
-            waveHeight: 15.00,
-            waveSpeed: 0.70,
-            zoom: 0.80
-        });
+        // PANGGILAN VANTA.WAVES DIHAPUS
 
-        init(); // Inisialisasi 3D Materi (di background)
+        // Panggilan init() 3D dihapus
         showScreen('section-map'); // Tampilkan layar peta sebagai awal
 
     </script>
 </body>
 </html>
+
