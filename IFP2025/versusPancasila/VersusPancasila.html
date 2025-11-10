@@ -1,0 +1,2014 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Judul diubah -->
+    <title>Duel Cerdas: Pancasila</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(to right top, #6DD5FA, #FF758C);
+            display: flex;
+            flex-direction: column; /* Mengubah arah flex menjadi kolom */
+            justify-content: flex-start; /* Konten dimulai dari atas */
+            align-items: center;
+            min-height: 100vh; /* Memungkinkan konten memanjang dan di-scroll */
+            margin: 0;
+            color: #333;
+            text-align: center;
+            position: relative;
+            overflow-y: auto;
+            padding: 20px 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Latar Belakang Gelembung */
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            animation: bubble-float 15s infinite ease-in-out;
+            opacity: 0;
+            z-index: 0;
+        }
+        .bubble:nth-child(1) { width: 60px; height: 60px; left: 10%; animation-duration: 12s; animation-delay: 0s; }
+        .bubble:nth-child(2) { width: 80px; height: 80px; left: 30%; animation-duration: 15s; animation-delay: 2s; }
+        .bubble:nth-child(3) { width: 50px; height: 50px; left: 50%; animation-duration: 10s; animation-delay: 1s; }
+        .bubble:nth-child(4) { width: 70px; height: 70px; left: 70%; animation-duration: 13s; animation-delay: 3s; }
+        .bubble:nth-child(5) { width: 90px; height: 90px; left: 90%; animation-duration: 16s; animation-delay: 4s; }
+        .bubble:nth-child(6) { width: 65px; height: 65px; left: 20%; animation-duration: 11s; animation-delay: 0.5s; }
+        .bubble:nth-child(7) { width: 75px; height: 75px; left: 45%; animation-duration: 14s; animation-delay: 2.5s; }
+
+        @keyframes bubble-float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
+        .screen {
+            display: none;
+            width: 90%;
+            max-width: 3000px;
+            padding: 30px; 
+            background-color: #ffffff;
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+            position: relative;
+            z-index: 2;
+            animation: fade-in 0.8s ease-out; 
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        h1, h2 {
+            font-family: 'Fredoka One', cursive; 
+            color: #E74C3C; /* Warna merah cerah */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        /* Main Screen */
+        #main-screen {
+            background: linear-gradient(to bottom right, #FFD166, #FF9B71);
+            color: #fff;
+            padding: 50px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            border-radius: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 50vh; /* Mengisi sebagian besar layar awal */
+            width: 95%; /* Responsif */
+            max-width: 1200px; /* Batasi lebar */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #main-screen h1 {
+            font-size: 3.5em; 
+            color: #fff;
+            margin-bottom: 40px;
+        }
+
+        .button-container {
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 25px; 
+            margin-top: 40px;
+        }
+
+        .btn-3d {
+            background-color: #2ECC71; 
+            color: white;
+            padding: 18px 35px; /* Padding lebih besar */
+            border: none;
+            border-radius: 15px; /* Sudut lebih membulat */
+            cursor: pointer;
+            font-size: 22px; /* Ukuran font lebih besar */
+            font-weight: bold;
+            box-shadow: 0 9px #27AE60; /* Bayangan 3D */
+            transition: all 0.15s ease; /* Transisi untuk efek klik */
+            position: relative;
+            outline: none; /* Hilangkan outline fokus */
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .btn-3d:hover {
+            background-color: #27AE60; /* Sedikit lebih gelap saat hover */
+        }
+
+        .btn-3d:active {
+            box-shadow: 0 4px #27AE60; /* Bayangan masuk ke dalam */
+            transform: translateY(5px); /* Tombol bergerak ke bawah */
+        }
+
+        /* Warna khusus untuk tombol */
+        #btn-tujuan { background-color: #3498DB; box-shadow: 0 9px #2980B9; }
+        #btn-tujuan:hover { background-color: #2980B9; }
+        #btn-tujuan:active { box-shadow: 0 4px #2980B9; transform: translateY(5px); }
+
+        #btn-petunjuk { background-color: #E67E22; box-shadow: 0 9px #D35400; }
+        #btn-petunjuk:hover { background-color: #D35400; }
+        #btn-petunjuk:active { box-shadow: 0 4px #D35400; transform: translateY(5px); }
+
+        #btn-profil { background-color: #9B59B6; box-shadow: 0 9px #8E44AD; }
+        #btn-profil:hover { background-color: #8E44AD; }
+        #btn-profil:active { box-shadow: 0 4px #8E44AD; transform: translateY(5px); }
+
+        #btn-mulai { background-color: #F1C40F; color: #333; box-shadow: 0 9px #F39C12; }
+        #btn-mulai:hover { background-color: #F39C12; }
+        #btn-mulai:active { box-shadow: 0 4px #F39C12; transform: translateY(5px); }
+
+        /* --- Karakter di Halaman Utama --- */
+        .main-screen-char {
+            position: absolute;
+            bottom: -20px;
+            height: 250px;
+            z-index: 3;
+            transition: transform 0.3s ease;
+            pointer-events: none; /* Agar tidak bisa diklik */
+        }
+        .char-left {
+            left: 30px;
+        }
+        .char-right {
+            right: 30px;
+        }
+
+
+        /* --- Halaman Informasi (Info Modal) --- */
+        .info-screen {
+            display: none; /* Default hidden, shown by JS */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Overlay gelap transparan */
+            z-index: 100; /* Pastikan di atas semua konten lain */
+            justify-content: center;
+            align-items: center;
+            opacity: 0; /* Mulai dari opacity 0 untuk animasi fade-in */
+            transition: opacity 0.3s ease-out; /* Transisi untuk fade-in/out overlay */
+        }
+
+        .info-screen.show {
+            display: flex; /* Aktifkan display flex saat show */
+            opacity: 1; /* Fade in overlay */
+        }
+
+        .info-content {
+            background: linear-gradient(to bottom right, #e0f2f7, #bbdefb); /* Gradien latar belakang modal */
+            padding: 40px; /* Padding lebih besar */
+            border-radius: 25px; /* Sudut lebih membulat */
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3); /* Bayangan lebih dramatis */
+            width: 85%; /* Lebih responsif */
+            max-width: 650px; /* Max width sedikit lebih besar */
+            position: relative;
+            text-align: left; /* Teks rata kiri untuk kemudahan baca */
+            transform: scale(0.8); /* Mulai dari skala kecil untuk animasi zoom */
+            opacity: 0; /* Mulai dari opacity 0 untuk animasi zoom */
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out; /* Transisi untuk zoom dan fade */
+        }
+
+        .info-screen.show .info-content {
+            transform: scale(1); /* Zoom in ke ukuran normal */
+            opacity: 1; /* Fade in konten modal */
+        }
+
+        .info-content h2 {
+            font-family: 'Fredoka One', cursive; /* Font judul menarik */
+            color: #2C3E50; /* Warna biru gelap */
+            margin-bottom: 25px; /* Margin bawah lebih besar */
+            font-size: 2.2em; /* Ukuran judul lebih besar */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .info-content p, .info-content ul, .info-content ol {
+            text-align: justify; /* Rata kiri-kanan untuk paragraf */
+            line-height: 1.8; /* Jarak baris lebih longgar */
+            color: #444; /* Warna teks lebih gelap */
+            font-size: 1.1em; /* Ukuran font sedikit lebih besar */
+            margin-bottom: 15px; /* Jarak antar paragraf/list */
+        }
+        .info-content ul, .info-content ol {
+            margin-left: 25px; /* Indentasi list */
+        }
+        .info-content ul li, .info-content ol li {
+            margin-bottom: 8px; /* Jarak antar item list */
+        }
+
+        /* Style untuk item list yang bisa diklik */
+        .clickable-list-item {
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .clickable-list-item:hover {
+            background-color: rgba(255, 255, 255, 0.7); /* Sedikit highlight */
+        }
+         .clickable-list-item:active {
+            transform: scale(0.98); /* Efek klik */
+        }
+
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 35px; /* Ukuran lebih besar */
+            font-weight: bold;
+            color: #d35400; /* Warna oranye/merah yang mencolok */
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out, color 0.2s ease-in-out; /* Animasi saat hover */
+            border-radius: 50%; /* Bentuk bulat */
+            padding: 0 5px;
+            line-height: 1; /* Pusatkan 'x' */
+        }
+        .close-btn:hover {
+            color: #e74c3c; /* Warna berubah saat hover */
+            transform: rotate(90deg); /* Animasi putar */
+        }
+
+        /* Tombol "Dengarkan Penjelasan" di modal sila */
+        #play-ket-btn {
+            background-color: #1abc9c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 15px;
+            font-weight: bold;
+            box-shadow: 0 4px #16a085;
+            transition: all 0.15s ease;
+        }
+        #play-ket-btn:hover {
+            background-color: #16a085;
+        }
+        #play-ket-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px #16a085;
+        }
+
+
+        /* Home button styling */
+        .home-button {
+            background-color: #3498DB;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px #2980B9;
+        }
+        .home-button:hover {
+            background-color: #2980B9;
+        }
+        .home-button:active {
+            box-shadow: 0 2px #2980B9;
+            transform: translateY(2px);
+        }
+
+        /* --- Introduction Screen (Materi) --- */
+        #introduction-screen {
+            text-align: left;
+            max-width: 1600px;
+        }
+
+        #introduction-screen h1 {
+            text-align: center;
+        }
+
+        .materi-container {
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+
+        .materi-container h2 {
+            font-size: 1.5em;
+            color: #3498DB;
+            border-bottom: 2px solid #3498DB;
+            padding-bottom: 5px;
+            margin-top: 25px;
+            margin-bottom: 20px; 
+            text-align: center; 
+        }
+        
+        /* --- START: Style Grid Ikon Sila --- */
+        .sila-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Grid responsif */
+            gap: 20px;
+            padding: 10px;
+            justify-items: center;
+        }
+        
+        .sila-card {
+            background-color: #f0f8ff;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid #3498DB;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+            width: 100%;
+            max-width: 150px;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .sila-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        /* --- BARU: Style dasar untuk gambar sila --- */
+        .sila-img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        .sila-card .sila-img {
+            /* font-size: 3.5em; */ /* Tidak relevan lagi */
+            width: 70px;  /* BARU */
+            height: 70px; /* BARU */
+            /* color: #3498DB; */ /* Tidak relevan lagi */
+            margin-bottom: 10px;
+        }
+        
+        .sila-card span {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.1em;
+            color: #2980B9;
+        }
+        /* --- END: Style Grid Ikon Sila --- */
+
+
+        #introduction-screen #start-game-btn {
+            background-color: #007bff;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            box-shadow: 0 6px #0056b3;
+            margin-top: 30px;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        #introduction-screen #start-game-btn:hover {
+            background-color: #0056b3;
+        }
+        #introduction-screen #start-game-btn:active {
+            box-shadow: 0 3px #0056b3;
+            transform: translateY(3px);
+        }
+        #introduction-screen .button-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+
+        /* Game Screen */
+        .game-header {
+            margin-bottom: 20px;
+        }
+        .timer-container {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #d9534f;
+            margin-bottom: 15px;
+            background-color: #ffe0e0;
+            padding: 10px 20px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        .players-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            flex-wrap: wrap; /* Agar responsif di layar kecil */
+        }
+        .player-area {
+            flex: 1; /* Fleksibel agar mengisi ruang */
+            min-width: 300px; /* Lebar minimum */
+            max-width: 45%;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #eee;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .game-content {
+            min-height: 250px; /* Tinggi minimum agar tidak bergeser */
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .player-score {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 15px;
+            color: #28a745;
+        }
+
+		/* --- START: MODIFIKASI LEVEL 1 --- */
+		.mc-question {
+			font-size: 1.2em;
+			margin-bottom: 20px;
+		}
+        .mc-question .sila-img {
+            /* font-size: 5em; */ /* Tidak relevan lagi */
+            width: 100px; /* BARU */
+            height: 100px; /* BARU */
+            /* color: #3498DB; */ /* Tidak relevan lagi */
+        }
+		.mc-options {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* 5 kolom */
+            gap: 10px;
+            width: 100%;
+            max-width: 500px; /* Lebar maks kontainer tombol */
+            margin: 0 auto;
+        }
+        .mc-options button {
+			display: block;
+			width: 100%; /* Tombol mengisi sel grid */
+			margin: 0; /* Margin 0 karena gap sudah diatur di grid */
+			background-color: #007bff;
+            color: white;
+			padding: 12px 10px; /* Padding disesuaikan */
+			font-size: 1.1em; /* Font disesuaikan */
+            font-weight: bold;
+			border-radius: 8px;
+			box-shadow: 0 4px #0056b3;
+			transition: all 0.1s ease;
+		}
+		.mc-options button:hover {
+			background-color: #0056b3;
+		}
+		.mc-options button:active {
+			box-shadow: 0 2px #0056b3;
+			transform: translateY(2px);
+		}
+        /* --- AKHIR MODIFIKASI LEVEL 1 --- */
+
+
+        /* Level 2: Drag and Drop (Pancasila version) */
+        /* --- PERUBAHAN: Style untuk item (hanya gambar) --- */
+        .draggable-item {
+            cursor: grab;
+            display: inline-block; /* Agar rapi */
+            margin: 5px;
+            padding: 5px;
+            background-color: #f4f4f4;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: transform 0.1s;
+        }
+        .draggable-item:active {
+            cursor: grabbing;
+            transform: scale(1.1);
+        }
+        .draggable-item.dragging {
+            opacity: 0.5;
+        }
+        
+        .draggable-item .sila-img {
+            /* font-size: 2.5em; */ /* Tidak relevan lagi */
+            width: 40px;  /* BARU */
+            height: 40px; /* BARU */
+            /* margin-bottom: 5px; */ /* Dihapus karena tidak ada teks */
+            /* color: #3498DB; */ /* Tidak relevan lagi */
+            pointer-events: none; /* Penting agar event drag tidak terganggu */
+            display: block; /* Pastikan gambar tidak punya margin bawah aneh */
+        }
+
+        .items-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            min-height: 60px; /* Beri tinggi minimum */
+        }
+        
+        .draggable-item img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            pointer-events: none; /* Agar gambar tidak mengganggu event drag */
+        }
+        .drop-zones-container {
+            /* Mengganti flexbox 2 kolom menjadi grid 5 kolom */
+            display: grid; 
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 600px;
+            margin: 15px auto 0 auto;
+        }
+        .drop-zone {
+            flex: 1;
+            padding: 15px;
+            border: 3px dashed #aaa;
+            border-radius: 15px;
+            min-height: 100px; /* Dibuat lebih pendek dari Lvl 2 lama */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* Memusatkan icon yg di-drop */
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .drop-zone h3 {
+             /* Teks untuk drop zone (Sila 1, Sila 2, dst.) */
+            margin: 0;
+            color: #555;
+            pointer-events: none;
+            font-size: 1em; /* Disesuaikan agar muat */
+            font-family: 'Fredoka One', cursive;
+        }
+        .drop-zone.drag-over {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+        /* Mengganti style .dropped-icon dari img ke icon */
+        .drop-zone .dropped-icon {
+            width: auto;
+            height: auto;
+            /* font-size: 2.5em; */ /* Tidak relevan lagi */
+            /* color: #28a745; */ /* Tidak relevan lagi */
+        }
+        /* --- BARU: Style gambar di dalam drop-zone --- */
+        .drop-zone .dropped-icon .sila-img {
+            width: 50px;
+            height: 50px;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .shake {
+            animation: shake 0.3s ease-in-out;
+        }
+
+
+        /* Level 3: Memory Game */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* DIUBAH: 5 kolom untuk 10 kartu */
+            gap: 10px;
+            justify-content: center;
+            width: 100%;
+            max-width: 600px; /* DIUBAH: Lebar maks disesuaikan */
+        }
+        .memory-card {
+            width: 100%; /* DIUBAH: Lebar 100% dari sel grid */
+            aspect-ratio: 1 / 1; /* DIUBAH: Menjaga kartu tetap kotak */
+            height: auto; /* Dihapus agar aspect-ratio bekerja */
+            background-color: #3498db;
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+            box-shadow: 0 4px #2980B9;
+        }
+        .memory-card.flip {
+            transform: rotateY(180deg);
+            box-shadow: 0 0px #2980B9; /* Hilangkan bayangan saat terbalik */
+        }
+        .memory-card .front-face, .memory-card .back-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-size: 1.5em;
+            color: #fff;
+            font-weight: bold;
+        }
+        .memory-card .front-face {
+            background: #f1c40f;
+            transform: rotateY(180deg);
+            padding: 5px;
+            box-sizing: border-box;
+            /* Style baru untuk teks/ikon */
+            font-size: 0.9em; /* Font lebih kecil agar muat */
+            line-height: 1.2;
+            text-align: center;
+            color: #333; /* Teks gelap di bg kuning */
+        }
+        .memory-card .front-face .sila-img {
+            /* font-size: 2.5em; */ /* Tidak relevan lagi */
+            width: 60px; /* BARU */
+            height: 60px; /* BARU */
+            /* color: #fff; */ /* Tidak relevan lagi */
+        }
+        .memory-card .back-face {
+            background-color: #3498db;
+        }
+        .memory-card img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+        }
+
+        /* Level 4 Dihapus */
+
+        /* Modal (ini adalah modal level-winner-modal, bukan info-modal) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 101; /* Lebih tinggi dari info-screen */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            padding: 30px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+            animation: zoom-in 0.3s ease-out;
+        }
+        @keyframes zoom-in {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .modal-content h2 {
+            color: #2C3E50;
+            margin-bottom: 15px;
+        }
+        .modal-content button {
+            background-color: #28a745;
+            color: white;
+            box-shadow: 0 6px #218838;
+            margin-top: 25px;
+            padding: 12px 25px;
+            font-size: 1.1em;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+        }
+        .modal-content button:hover {
+            background-color: #218838;
+        }
+        .modal-content button:active {
+            box-shadow: 0 3px #218838;
+            transform: translateY(3px);
+        }
+
+        /* Final Screen */
+        #final-screen {
+            background: linear-gradient(to right, #D4FC79, #96E6A1);
+            padding: 50px;
+            color: #333;
+        }
+        #final-screen h1 {
+            color: #2C3E50;
+            font-size: 3em;
+        }
+        #final-scores {
+            font-size: 1.6em;
+            margin: 25px 0;
+            line-height: 1.8;
+            font-weight: bold;
+        }
+        #overall-winner {
+            font-size: 2.5em;
+            color: #28a745;
+            margin-top: 30px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        #final-screen button {
+            background-color: #FF6B6B;
+            color: white;
+            box-shadow: 0 6px #EE5253;
+            padding: 15px 35px;
+            font-size: 1.3em;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+        }
+        #final-screen button:hover {
+            background-color: #EE5253;
+        }
+        #final-screen button:active {
+            box-shadow: 0 3px #EE5253;
+            transform: translateY(3px);
+        }
+
+        /* Animasi Jatuh */
+        .falling-element {
+            position: fixed;
+            top: -10%;
+            z-index: 1;
+            user-select: none;
+            pointer-events: none;
+            animation: fall linear forwards;
+        }
+        /* BARU: Style gambar di dalam falling-element */
+        .falling-element .sila-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
+
+        /* --- Media Queries untuk Responsivitas --- */
+        @media (max-width: 1200px) {
+            .main-screen-char {
+                height: 200px;
+                bottom: -15px;
+            }
+            .char-left { left: 15px; }
+            .char-right { right: 15px; }
+        }
+
+        @media (max-width: 992px) {
+            #main-screen h1 {
+                font-size: 2.8em;
+            }
+            .main-screen-char {
+                height: 150px;
+                bottom: -10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            /* Sembunyikan karakter di layar kecil */
+            .main-screen-char {
+                display: none;
+            }
+            #main-screen h1 {
+                font-size: 2.5em;
+                margin-bottom: 20px;
+            }
+            /* Ubah layout tombol di halaman utama */
+            .button-container {
+                grid-template-columns: 1fr; /* Tumpuk tombol secara vertikal */
+                gap: 15px;
+                margin-top: 20px;
+                width: 80%;
+            }
+            #btn-mulai {
+                width: 80%;
+            }
+
+            .info-content {
+                padding: 30px;
+                width: 90%;
+                border-radius: 15px;
+            }
+            .info-content h2 {
+                font-size: 1.8em;
+            }
+            .info-content p, .info-content ul, .info-content ol {
+                font-size: 1em;
+                line-height: 1.5;
+            }
+            .close-btn {
+                font-size: 30px;
+            }
+            .players-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .player-area {
+                max-width: 90%;
+            }
+            /* Level 4 Dihapus
+            .level4-container {
+                height: 250px;
+            }
+            .level4-item {
+                width: 40px;
+                height: 40px;
+            }
+            */
+            /* Responsivitas untuk grid Sila */
+            .sila-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 kolom di tablet */
+                gap: 15px;
+            }
+            /* Responsivitas untuk Level 1 */
+            .mc-options {
+                grid-template-columns: repeat(3, 1fr); /* 3 kolom di tablet */
+            }
+            /* Responsivitas untuk Level 2 */
+            .drop-zones-container {
+                grid-template-columns: repeat(3, 1fr); /* 3 kolom di tablet */
+            }
+            /* Responsivitas untuk Level 3 */
+            .memory-grid {
+                grid-template-columns: repeat(3, 1fr); /* 3 kolom di tablet */
+            }
+        }
+
+        @media (max-width: 480px) {
+            #main-screen h1 {
+                font-size: 2em;
+            }
+            .info-content {
+                padding: 20px;
+            }
+            .info-content h2 {
+                font-size: 1.5em;
+            }
+            .info-content p, .info-content ul, .info-content ol {
+                font-size: 0.9em;
+            }
+            .close-btn {
+                font-size: 25px;
+                top: 10px;
+                right: 10px;
+            }
+            /* Responsivitas Sila Grid di HP */
+            .sila-grid {
+                grid-template-columns: 1fr; /* 1 kolom di HP */
+            }
+            /* Responsivitas Level 1 di HP */
+            .mc-options {
+                grid-template-columns: repeat(2, 1fr); /* 2 kolom di HP */
+            }
+            /* Responsivitas Level 2 di HP */
+            .drop-zones-container {
+                grid-template-columns: repeat(2, 1fr); /* 2 kolom di HP */
+            }
+             /* Responsivitas Level 3 di HP */
+            .memory-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 kolom di HP */
+            }
+        }
+		
+        /* --- Style untuk Efek 3D Profile --- */
+        .profile-pic-container {
+            perspective: 1000px; /* Penting untuk menciptakan ruang 3D */
+            border-radius: 50%;
+            width: 100px; /* Atur lebar container agar bulat sempurna */
+            height: 200px; /* Atur tinggi container agar bulat sempurna */
+            flex-shrink: 0;
+            margin-right: 20px;
+            overflow: hidden; /* Penting untuk memotong gambar di luar batas lingkaran */
+            display: flex; /* Untuk memusatkan gambar di dalamnya */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .profile-pic-container img {
+            transition: transform 0.2s ease-out; /* Animasi halus saat mouse bergerak */
+            width: 100%; /* Isi container */
+            height: 100%; /* Isi container */
+            object-fit: cover; /* Menjaga aspek rasio gambar asli dan mengisi container */
+            display: block;
+            border-radius: 50%; /* Membuat gambar di dalamnya bulat */
+        }
+
+        /* --- Efek Hover untuk Ikon Media Sosial --- */
+        .social-icons .fab { /* Gunakan kelas .social-icons untuk menargetkan ikon */
+            transition: transform 0.3s ease, color 0.3s ease; /* Transisi halus */
+        }
+
+        .social-icons .fab:hover {
+            color: #F1C40F; /* Warna berubah menjadi kuning saat disentuh mouse */
+            animation: icon-wobble 0.6s ease-in-out; /* Menerapkan animasi bergoyang */
+        }
+
+        /* Animasi untuk efek bergoyang */
+        @keyframes icon-wobble {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-15deg) scale(1.1); }
+            50% { transform: rotate(10deg) scale(1.1); }
+            75% { transform: rotate(-5deg) scale(1.1); }
+            100% { transform: rotate(0deg) scale(1); }
+        }
+
+        /* Style untuk gambar baru di sebelah kanan */
+        .modal-bg-image-profile { /* Ganti nama kelas agar lebih spesifik dan tidak bentrok */
+            position: absolute;
+            right: 0; /* Sesuaikan posisi sesuai keinginan */
+            top: 0;
+            height: 100%;
+            opacity: 0.2; /* Membuat gambar sangat transparan */
+            pointer-events: none; /* Penting! Agar gambar tidak bisa di-klik dan tidak menghalangi konten di depannya */
+            z-index: 1; /* Posisikan di belakang konten utama */
+            object-fit: cover; /* Pastikan gambar mengisi area tanpa terdistorsi */
+            width: auto; /* Biarkan lebar menyesuaikan aspek rasio */
+        }
+
+        /* Konten utama (teks & foto kiri) diposisikan di atas gambar latar */
+        .modal-main-content-profile {
+            position: relative;
+            z-index: 2; /* Pastikan konten ini ada di lapisan atas */
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 10px; /* Tambahkan padding agar tidak terlalu mepet */
+            box-sizing: border-box;
+        }
+
+        /* Responsive adjustments for profile modal */
+        @media (max-width: 768px) {
+            .modal-main-content-profile {
+                flex-direction: column; /* Ubah ke kolom di layar kecil */
+                text-align: center;
+            }
+            .profile-pic-container {
+                margin-right: 0;
+                margin-bottom: 20px; /* Jarak antara gambar dan teks */
+                width: 120px; /* Perkecil ukuran gambar di mobile */
+                height: 120px;
+            }
+            .modal-bg-image-profile {
+                width: 100%;
+                height: auto;
+                object-fit: contain; /* Ubah object-fit agar tidak terpotong */
+                top: 50%;
+                right: 0;
+                transform: translateY(-50%);
+            }
+            .info-content .profile-text h2, .info-content .profile-text p {
+                text-align: center !important; /* Paksa teks ke tengah di mobile */
+            }
+            .social-icons {
+                justify-content: center; /* Pusatkan ikon sosial */
+            }
+        }
+
+
+
+    </style>
+</head>
+<body>
+
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+
+    <div id="main-screen" class="screen active">
+        <!-- Judul diubah -->
+        <h1>Duel Cerdas: Pancasila</h1>
+        <h2>Ayo uji pengetahuanmu tentang Sila Pancasila!<h2>
+        <div class="button-container">
+            <button class="btn-3d" id="btn-tujuan">Tujuan</button>
+            <button class="btn-3d" id="btn-petunjuk">Petunjuk</button>
+            <button class="btn-3d" id="btn-profil">Profil</button>
+        </div>
+		<br>
+        <img src="https://lh3.googleusercontent.com/d/1vajg6eUMlnHJ4F4TPSLc1mfKdxI6sqkY" alt="Anak Laki-laki" style="max-width: 25%; height: auto; z-index: 1;" class="main-screen-char char-left">
+        <img src="https://lh3.googleusercontent.com/d/1kk2qKOdKdLe23W0hQkJ217iNkVHyBN2z" alt="Anak Perempuan" style="max-width: 25%; height: auto; z-index: 1;" class="main-screen-char char-right">		
+		<button class="btn-3d" id="btn-mulai">Mulai</button>
+    </div>
+
+    <div id="introduction-screen" class="screen">
+        <!-- Judul Materi diubah -->
+        <h1>Materi: 5 Sila Pancasila</h1>
+        <div class="materi-container">
+            
+            <h2>Klik Ikon Sila untuk Mendengarkan!</h2>
+            
+            <!-- KONTEN MATERI DIUBAH MENJADI IKON SILA -->
+            <div class="sila-grid">
+                <div class="sila-card" data-sila="1">
+                    <img src="bangbinasset/bangbinSila1.PNG" alt="Sila 1" class="sila-img">
+                    <span>Sila 1</span>
+                </div>
+                <div class="sila-card" data-sila="2">
+                    <img src="bangbinasset/bangbinSila2.PNG" alt="Sila 2" class="sila-img">
+                    <span>Sila 2</span>
+                </div>
+                <div class="sila-card" data-sila="3">
+                    <img src="bangbinasset/bangbinSila3.PNG" alt="Sila 3" class="sila-img">
+                    <span>Sila 3</span>
+                </div>
+                <div class="sila-card" data-sila="4">
+                    <img src="bangbinasset/bangbinSila4.PNG" alt="Sila 4" class="sila-img"> <!-- Menggunakan fa-dragon agar konsisten -->
+                    <span>Sila 4</span>
+                </div>
+                <div class="sila-card" data-sila="5">
+                    <img src="bangbinasset/bangbinSila5.PNG" alt="Sila 5" class="sila-img"> <!-- Menggunakan fa-balance-scale -->
+                    <span>Sila 5</span>
+                </div>
+            </div>
+            <!-- AKHIR KONTEN MATERI -->
+
+        </div>
+        <div class="button-wrapper">
+            <button class="home-button" id="home-from-intro">Home</button>
+            <button id="start-game-btn">Paham, Mulai Permainan!</button>
+        </div>
+    </div>
+
+    <div id="game-screen" class="screen">
+        <div class="game-header">
+            <h2 id="level-title">Level 1: Pilihan Ganda</h2>
+            <div class="timer-container">
+                Waktu: <span id="timer">60</span> detik
+            </div>
+        </div>
+
+        <div class="players-container">
+            <div id="player1-area" class="player-area">
+                <h3>Pemain 1</h3>
+                <div id="p1-game-content" class="game-content"></div>
+                <div class="player-score">Skor: <span id="p1-score">0</span></div>
+            </div>
+            
+            <div id="player2-area" class="player-area">
+                <h3>Pemain 2</h3>
+                <div id="p2-game-content" class="game-content"></div>
+                <div class="player-score">Skor: <span id="p2-score">0</span></div>
+            </div>
+        </div>
+        
+        <div id="level-winner-modal" class="modal">
+            <div class="modal-content">
+                <h2 id="level-winner-text"></h2>
+                <p>Bersiap untuk level berikutnya...</p>
+                <button id="next-level-btn">Lanjut</button>
+            </div>
+        </div>
+        <button class="home-button" id="home-from-game">Home</button>
+    </div>
+
+    <div id="final-screen" class="screen">
+        <h1>Permainan Selesai!</h1>
+        <h2>Hasil Akhir</h2>
+        <div id="final-scores">
+            <p>Pemain 1: <span id="final-p1-wins">0</span> Kemenangan</p>
+            <p>Pemain 2: <span id="final-p2-wins">0</span> Kemenangan</p>
+        </div>
+        <h3 id="overall-winner"></h3>
+        <button id="play-again-btn">Main Lagi</button>
+        <button class="home-button" id="home-from-final">Home</button>
+		<a href="https://sites.google.com/view/bangbinedu/home" target="_blank"><button class="home-button" ><i style="color: red; text-decoration: none;"><i class="fa fa-home"></i></button></a>
+    </div>
+
+    <div id="info-modal" class="info-screen">
+        <div class="info-content">
+            <span class="close-btn">&times;</span>
+            <h2 id="info-title"></h2>
+            <div id="info-body"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- DATA PERMAINAN PANCASILA ---
+            const silaData = {
+                '1': {
+                    title: 'Sila 1: Ketuhanan Yang Maha Esa',
+                    icon: '<img src="bangbinasset/bangbinSila1.PNG" alt="Sila 1" class="sila-img" style="width: 25px; height: 25px; vertical-align: middle;">',
+                    audio: 'bangbinasset/sila1.opus',
+                    ketAudio: 'bangbinasset/ketSila1.mp3',
+                    content: `
+                        <p>Mengakui adanya Tuhan dan menjalankan ibadah sesuai agama masing-masing.</p>
+                        <strong>Contoh di Rumah:</strong>
+                        <ul>
+                            <li>Berdoa bersama keluarga sebelum makan.</li>
+                            <li>Rajin beribadah bersama orang tua.</li>
+                            <li>Menghormati anggota keluarga yang berbeda keyakinan (jika ada).</li>
+                        </ul>
+                    `
+                },
+                '2': {
+                    title: 'Sila 2: Kemanusiaan yang Adil dan Beradab',
+                    icon: '<img src="bangbinasset/bangbinSila2.PNG" alt="Sila 2" class="sila-img" style="width: 25px; height: 25px; vertical-align: middle;">',
+                    audio: 'bangbinasset/sila2.opus',
+                    ketAudio: 'bangbinasset/ketSila2.mp3',
+                    content: `
+                        <p>Saling menghargai dan menolong sesama manusia tanpa membedakan.</p>
+                        <strong>Contoh di Rumah:</strong>
+                        <ul>
+                            <li>Membantu pekerjaan orang tua (misal: membersihkan kamar).</li>
+                            <li>Berbicara dengan sopan kepada Ayah, Ibu, Kakak, dan Adik.</li>
+                            <li>Menjenguk anggota keluarga yang sedang sakit.</li>
+                        </ul>
+                    `
+                },
+                '3': {
+                    title: 'Sila 3: Persatuan Indonesia',
+                    icon: '<img src="bangbinasset/bangbinSila3.PNG" alt="Sila 3" class="sila-img" style="width: 25px; height: 25px; vertical-align: middle;">',
+                    audio: 'bangbinasset/sila3.opus',
+                    ketAudio: 'bangbinasset/ketSila3.mp3',
+                    content: `
+                        <p>Menjaga persatuan dan kesatuan, cinta tanah air.</p>
+                        <strong>Contoh di Rumah:</strong>
+                        <ul>
+                            <li>Rukun dengan kakak atau adik, tidak bertengkar.</li>
+                            <li>Bekerja sama membersihkan rumah.</li>
+                            <li>Menggunakan produk buatan Indonesia di rumah.</li>
+                        </ul>
+                    `
+                },
+                '4': {
+                    title: 'Sila 4: Kerakyatan yang Dipimpin oleh Hikmat Kebijaksanaan dalam Permusyawaratan Perwakilan',
+                    icon: '<img src="bangbinasset/bangbinSila4.PNG" alt="Sila 4" class="sila-img" style="width: 25px; height: 25px; vertical-align: middle;">',
+                    audio: 'bangbinasset/sila4.opus',
+                    ketAudio: 'bangbinasset/ketSila4.mp3',
+                    content: `
+                        <p>Menyelesaikan masalah dengan musyawarah untuk mencapai mufakat (keputusan bersama).</p>
+                        <strong>Contoh di Rumah:</strong>
+                        <ul>
+                            <li>Berdiskusi untuk menentukan tempat liburan keluarga.</li>
+                            <li>Menerima keputusan bersama dengan lapang dada.</li>
+                            <li>Tidak memaksakan keinginan pribadi (misal: ingin nonton TV saat yang lain ingin belajar).</li>
+                        </ul>
+                    `
+                },
+                '5': {
+                    title: 'Sila 5: Keadilan Sosial bagi Seluruh Rakyat Indonesia',
+                    icon: '<img src="bangbinasset/bangbinSila5.PNG" alt="Sila 5" class="sila-img" style="width: 25px; height: 25px; vertical-align: middle;">',
+                    audio: 'bangbinasset/sila5.opus',
+                    ketAudio: 'bangbinasset/ketSila5.mp3',
+                    content: `
+                        <p>Bersikap adil terhadap sesama dan menghargai hak orang lain.</p>
+                        <strong>Contoh di Rumah:</strong>
+                        <ul>
+                            <li>Membagi makanan atau mainan secara adil dengan saudara.</li>
+                            <li>Orang tua memberikan uang saku yang adil sesuai kebutuhan.</li>
+                            <li>Rajin menabung dan tidak boros.</li>
+                        </ul>
+                    `
+                }
+            };
+            
+            // --- DATA LEVEL 1 (DAN 2) ---
+            // --- PERUBAHAN: Menambahkan 'audio' untuk Level 2 ---
+            const pancasilaItems = [
+                { name: 'Bintang', category: 'Sila 1', symbol: '<img src="bangbinasset/bangbinSila1.PNG" alt="Sila 1" class="sila-img">', audio: 'bangbinasset/Sila1.opus' },
+                { name: 'Rantai', category: 'Sila 2', symbol: '<img src="bangbinasset/bangbinSila2.PNG" alt="Sila 2" class="sila-img">', audio: 'bangbinasset/Sila2.opus' },
+                { name: 'Pohon Beringin', category: 'Sila 3', symbol: '<img src="bangbinasset/bangbinSila3.PNG" alt="Sila 3" class="sila-img">', audio: 'bangbinasset/Sila3.opus' },
+                { name: 'Kepala Banteng', category: 'Sila 4', symbol: '<img src="bangbinasset/bangbinSila4.PNG" alt="Sila 4" class="sila-img">', audio: 'bangbinasset/Sila4.opus' },
+                { name: 'Padi dan Kapas', category: 'Sila 5', symbol: '<img src="bangbinasset/bangbinSila5.PNG" alt="Sila 5" class="sila-img">', audio: 'bangbinasset/Sila5.opus' }
+            ];
+
+            // --- DATA LEVEL 3 (BARU) ---
+            const level3PancasilaPairs = [
+                { pairId: 'sila-1', type: 'symbol', content: '<img src="bangbinasset/bangbinSila1.PNG" alt="Sila 1" class="sila-img">', audio: null },
+                { pairId: 'sila-1', type: 'text', content: 'Sila 1', audio: 'bangbinasset/bangbinSila1.opus' },
+                { pairId: 'sila-2', type: 'symbol', content: '<img src="bangbinasset/bangbinSila2.PNG" alt="Sila 2" class="sila-img">', audio: null },
+                { pairId: 'sila-2', type: 'text', content: 'Sila 2', audio: 'bangbinasset/bangbinSila2.opus' },
+                { pairId: 'sila-3', type: 'symbol', content: '<img src="bangbinasset/bangbinSila3.PNG" alt="Sila 3" class="sila-img">', audio: null },
+                { pairId: 'sila-3', type: 'text', content: 'Sila 3', audio: 'bangbinasset/bangbinSila3.opus' },
+                { pairId: 'sila-4', type: 'symbol', content: '<img src="bangbinasset/bangbinSila4.PNG" alt="Sila 4" class="sila-img">', audio: null },
+                { pairId: 'sila-4', type: 'text', content: 'Sila 4', audio: 'bangbinasset/bangbinSila4.opus' },
+                { pairId: 'sila-5', type: 'symbol', content: '<img src="bangbinasset/bangbinSila5.PNG" alt="Sila 5" class="sila-img">', audio: null },
+                { pairId: 'sila-5', type: 'text', content: 'Sila 5', audio: 'bangbinasset/bangbinSila5.opus' }
+            ];
+
+
+            // --- DATA LEVEL 4 (DIHAPUS) ---
+            
+            // --- ELEMEN DOM ---
+            const screens = {
+                main: document.getElementById('main-screen'),
+                introduction: document.getElementById('introduction-screen'),
+                game: document.getElementById('game-screen'),
+                final: document.getElementById('final-screen')
+            };
+            
+            const startGameBtn = document.getElementById('start-game-btn');
+            const nextLevelBtn = document.getElementById('next-level-btn');
+            const playAgainBtn = document.getElementById('play-again-btn');
+            const levelTitle = document.getElementById('level-title');
+            const timerDisplay = document.getElementById('timer');
+            const p1Content = document.getElementById('p1-game-content');
+            const p2Content = document.getElementById('p2-game-content');
+            const p1ScoreDisplay = document.getElementById('p1-score');
+            const p2ScoreDisplay = document.getElementById('p2-score');
+            const levelWinnerModal = document.getElementById('level-winner-modal');
+            const levelWinnerText = document.getElementById('level-winner-text');
+
+            const btnTujuan = document.getElementById('btn-tujuan');
+            const btnPetunjuk = document.getElementById('btn-petunjuk');
+            const btnProfil = document.getElementById('btn-profil');
+            const btnMulai = document.getElementById('btn-mulai');
+
+            const infoModal = document.getElementById('info-modal');
+            const infoTitle = document.getElementById('info-title');
+            const infoBody = document.getElementById('info-body');
+            const closeInfoBtn = document.querySelector('.close-btn');
+
+            const homeFromIntroBtn = document.getElementById('home-from-intro');
+            const homeFromGameBtn = document.getElementById('home-from-game');
+            const homeFromFinalBtn = document.getElementById('home-from-final');
+
+            // --- AUDIO ELEMENTS ---
+            const sounds = {
+                levelChange: new Audio('bangbinasset/bangbincomplete.wav'),
+                correct: new Audio('bangbinasset/bangbincorrect.mp3'),
+                wrong: new Audio('bangbinasset/bangbinwrong.mp3'),
+                buttonClick: new Audio('bangbinasset/bangbinclick.mp3'),
+				victory: new Audio('https://actions.google.com/sounds/v1/crowds/battle_crowd_celebrate_stutter.ogg'),
+                buttonHover: new Audio('bangbinasset/tombolBangbin.wav'),
+                levelComplete: new Audio('bangbinasset/bangbincompletelevel.mp3') // <!-- TAMBAHAN SESUAI INSTRUKSI -->
+            };
+            
+            // Player audio global untuk Sila
+            const audioPlayer = new Audio();
+            audioPlayer.onerror = () => {
+                console.error(`Error: Gagal memuat file audio ${audioPlayer.src}`);
+                // Anda bisa menampilkan pesan error sederhana di UI jika perlu
+                // alert(`Gagal memuat audio: ${audioPlayer.src}. Pastikan file ada.`);
+            };
+
+
+            // --- STATE PERMAINAN ---
+            let currentLevel = 0;
+            let p1Score = 0;
+            let p2Score = 0;
+            let p1Wins = 0;
+            let p2Wins = 0;
+            let timer;
+            let timeLeft;
+            let levelInProgress = false;
+
+            // --- FUNGSI AUDIO & ANIMASI ---
+            function playSound(sound) {
+                sound.currentTime = 0;
+                sound.play().catch(error => console.log(`Error playing sound: ${error}`));
+            }
+            
+            // Fungsi baru untuk memutar audio Sila (dan audio lainnya)
+            function playSilaSound(src) {
+                audioPlayer.pause();
+                audioPlayer.src = src;
+                audioPlayer.currentTime = 0;
+                audioPlayer.play().catch(error => console.error(`Gagal memutar ${src}: ${error}`));
+            }
+
+            // --- TAMBAHAN BARU: Fungsi untuk menambah sound hover ---
+            // Menggunakan 'mouseenter' agar suara hanya berbunyi sekali
+            // saat kursor memasuki area elemen (tidak berulang-ulang)
+            function addHoverSound(element) {
+                if (element) { // Cek jika elemen ada
+                    element.addEventListener('mouseenter', () => {
+                        playSound(sounds.buttonHover);
+                    });
+                }
+            }
+
+
+            function createFallingElement(type) {
+                const element = document.createElement('div');
+                element.classList.add('falling-element');
+                // DIUBAH: Menggunakan ikon sila untuk animasi kemenangan
+                if (type === 'p1-win') {
+                    // P1 menang, jatuhkan ikon sila 1, 3, 5
+                    const icons = ['<img src="bangbinasset/bangbinSila1.PNG" alt="Sila 1" class="sila-img">', '<img src="bangbinasset/bangbinSila3.PNG" alt="Sila 3" class="sila-img">', '<img src="bangbinasset/bangbinSila5.PNG" alt="Sila 5" class="sila-img">'];
+                    element.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+                } else if (type === 'p2-win') {
+                    // P2 menang, jatuhkan ikon sila 2, 4
+                    const icons = ['<img src="bangbinasset/bangbinSila2.PNG" alt="Sila 2" class="sila-img">', '<img src="bangbinasset/bangbinSila4.PNG" alt="Sila 4" class="sila-img">'];
+                    element.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+                }
+                
+                // BARU: Mengubah logika sizing dari fontSize ke width/height
+                const size = Math.random() * 2 + 1.5; // size in rem
+                element.style.width = `${size}rem`;
+                element.style.height = `${size}rem`;
+                
+                element.style.color = 'white';
+                element.style.left = `${Math.random() * 90 + 5}vw`;
+                element.style.animationDuration = `${Math.random() * 3 + 4}s`; // Durasi jatuh
+                document.body.appendChild(element);
+
+                setTimeout(() => {
+                    element.remove();
+                }, 7000); // Hapus elemen setelah animasi selesai
+            }
+
+            function startVictoryAnimation(winnerType) {
+                const animationInterval = setInterval(() => {
+                    for (let i = 0; i < 3; i++) {
+                        createFallingElement(winnerType);
+                    }
+                }, 200);
+
+                setTimeout(() => clearInterval(animationInterval), 5000);
+            }
+
+            // --- FUNGSI UTAMA ---
+            function init() {
+                // Event listener untuk tombol-tombol navigasi
+                btnTujuan.addEventListener('click', () => showInfo('tujuan'));
+                btnPetunjuk.addEventListener('click', () => showInfo('petunjuk'));
+                btnProfil.addEventListener('click', () => showInfo('profil'));
+                btnMulai.addEventListener('click', () => {
+                    playSound(sounds.buttonClick);
+                    switchScreen('introduction');
+                });
+
+                startGameBtn.addEventListener('click', () => {
+                    playSound(sounds.buttonClick);
+                    startGame();
+                });
+                nextLevelBtn.addEventListener('click', () => {
+                    playSound(sounds.buttonClick);
+                    startNextLevel();
+                });
+                playAgainBtn.addEventListener('click', () => {
+                    playSound(sounds.buttonClick);
+                    location.reload(); 
+                });
+                closeInfoBtn.addEventListener('click', () => {
+                    playSound(sounds.buttonClick);
+                    audioPlayer.pause(); 
+                    infoModal.classList.remove('show');
+                    infoModal.addEventListener('transitionend', function handler() {
+                        infoModal.style.display = 'none';
+                        infoModal.removeEventListener('transitionend', handler);
+                    });
+                });
+
+                homeFromIntroBtn.addEventListener('click', () => {
+                    playSound(sounds.buttonClick);
+                    switchScreen('main');
+                });
+                homeFromGameBtn.addEventListener('click', () => {
+                    playSound(sounds.buttonClick);
+                    clearInterval(timer);
+                    resetGame();
+                    switchScreen('main');
+                });
+                homeFromFinalBtn.addEventListener('click', () => {
+                    playSound(sounds.buttonClick);
+                    resetGame();
+                    switchScreen('main');
+                });
+                
+                // Event listener baru untuk Sila Card
+                document.querySelectorAll('.sila-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        const silaNum = card.dataset.sila;
+                        showSilaModal(silaNum);
+                    });
+                });
+
+                // --- TAMBAHAN: Event Listener Hover untuk Elemen Statis ---
+                // Tombol di Halaman Utama
+                addHoverSound(btnTujuan);
+                addHoverSound(btnPetunjuk);
+                addHoverSound(btnProfil);
+                addHoverSound(btnMulai);
+                // Tombol di Halaman Intro
+                addHoverSound(startGameBtn);
+                addHoverSound(homeFromIntroBtn);
+                // Tombol di Halaman Game
+                addHoverSound(homeFromGameBtn);
+                addHoverSound(nextLevelBtn); // Tombol di modal pemenang level
+                // Tombol di Halaman Akhir
+                addHoverSound(playAgainBtn);
+                addHoverSound(homeFromFinalBtn);
+                // Tombol Close Modal Info
+                addHoverSound(closeInfoBtn);
+                
+                // Elemen interaktif statis lainnya
+                document.querySelectorAll('.sila-card').forEach(addHoverSound);
+                // --- AKHIR TAMBAHAN ---
+            }
+
+            function switchScreen(screenName) {
+                for (const key in screens) {
+                    screens[key].classList.remove('active');
+                }
+                screens[screenName].classList.add('active');
+            }
+            
+            // Fungsi baru untuk modal Sila
+            function showSilaModal(silaNumber) {
+                const data = silaData[silaNumber];
+                if (!data) return;
+                
+                // 1. Putar audio nama Sila
+                playSilaSound(data.audio);
+
+                // 2. Siapkan konten modal
+                infoTitle.innerHTML = data.title;
+                // Tambahkan tombol untuk memutar audio keterangan
+                infoBody.innerHTML = data.content + `<button id="play-ket-btn">Dengarkan Penjelasan ${data.icon}</button>`;
+                
+                // 3. Tampilkan modal (menggunakan modal info yang sudah ada)
+                infoModal.style.display = 'flex';
+                infoModal.offsetHeight; // Trigger reflow
+                infoModal.classList.add('show');
+                
+                // 4. Tambahkan event listener ke tombol baru di modal
+                const playKetBtn = document.getElementById('play-ket-btn');
+                if (playKetBtn) {
+                    playKetBtn.onclick = () => {
+                        playSilaSound(data.ketAudio);
+                    };
+                    addHoverSound(playKetBtn); // <-- TAMBAHAN
+                }
+            }
+
+
+            function showInfo(type) {
+                playSound(sounds.buttonClick);
+                let title = '';
+                let content = '';
+                
+                // Reset style to default before applying new ones
+                const infoContent = infoModal.querySelector('.info-content');
+                infoContent.style.background = '';
+                infoContent.style.maxWidth = '';
+                infoContent.style.padding = '';
+                infoModal.querySelector('.close-btn').style.color = '';
+                infoModal.querySelector('.close-btn').style.textShadow = '';
+
+                if (type === 'tujuan') {
+                    // Teks Tujuan diubah dan ditambahkan atribut data-audio
+                    title = 'Tujuan Pembelajaran';
+                    content = `
+                        <p>Game ini dirancang untuk membantu pemain:</p>
+                        <ul>
+                            <li class="clickable-list-item" data-audio="bangbinasset/bangbinTujuan1.mp3">Mengenal 5 Lambang Sila Pancasila.</li>
+                            <li class="clickable-list-item" data-audio="bangbinasset/bangbinTujuan2.mp3">Menemutunjukkan lambang sila dengan nama silanya.</li>
+                        </ul>
+                    `;
+                } else if (type === 'petunjuk') {
+                    // Teks Petunjuk diubah, Level 4 dihapus, dan ditambahkan atribut data-audio
+                    title = 'Petunjuk Permainan';
+                    content = `
+                        <p>Game ini terdiri dari 3 level:</p>
+                        <ol>
+                            <li class="clickable-list-item" data-audio="bangbinasset/bangbinPetunjuk1.mp3"><strong>Level 1: Lambang Sila</strong> - Pilih nomor sila yang benar (Sila 1-5) untuk lambang yang muncul.</li>
+                            <li class="clickable-list-item" data-audio="bangbinasset/bangbinPetunjuk2.mp3"><strong>Level 2: Cocokkan Lambang Sila</strong> - Seret (drag) setiap lambang sila ke kotak urutan yang benar (Sila 1-5).</li>
+                            <li class="clickable-list-item" data-audio="bangbinasset/bangbinPetunjuk3.mp3"><strong>Level 3: Ingat Lambang Sila</strong> - Temukan pasangan Lambang Sila dan Nama Silanya.</li>
+                        </ol>
+                        <p>Setiap level punya batas waktu. Kumpulkan poin sebanyak mungkin untuk jadi pemenang!</p>
+                    `;
+                } else if (type === 'profil') {
+                    content = `
+                        <div class="modal-main-content-profile">
+                            <div class="profile-pic-container">
+                                <img src="https://lh3.googleusercontent.com/d/1tFGMHXxFlkz5Ij0nHbxddt4aF-MfnTio" alt="Foto Profil">
+                            </div>
+                            <div class="profile-text" style="color: white; text-align: left; flex-grow: 1;">
+								<h2 style="margin: 0; font-size: 1.5em; color: black; text-shadow: none;">PENGEMBANG</h2>
+                                <h2 style="margin: 0; font-size: 1.5em; color: white; text-shadow: none;">BINTANG ADHI PERMANA</h2>
+                                <p style="margin: 5px 0; font-size: 0.9em;">SDN Lubang Buaya 01, Jakarta Timur</p>
+                                <p style="margin: 10px 0 5px 0; font-weight: bold; font-size: 0.9em;">Kontak:</p>
+                                <div class="social-icons" style="font-size: 1.8em; display: flex; gap: 15px;">
+                                    <a href="https://www.facebook.com/bintang.a.permana.1/" target="_blank" style="color: white; text-decoration: none;"><i class="fab fa-facebook"></i></a>
+                                    <a href="https://www.youtube.com/@Bangbin_1" target="_blank" style="color: white; text-decoration: none;"><i class="fab fa-youtube"></i></a>
+                                    <a href="https://wa.me/6281310051985" target="_blank" style="color: white; text-decoration: none;"><i class="fab fa-whatsapp"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <img src="https://lh3.googleusercontent.com/d/1ivUN8B8xdd4R8Kef_-wEqNx56_eeUv4w" alt="Background" class="modal-bg-image-profile">
+                    `;
+                    // Kustomisasi background modal hanya untuk profil
+                    infoContent.style.background = 'linear-gradient(135deg, #4e54c8, #8f94fb)';
+                    infoContent.style.maxWidth = '700px';
+                    infoContent.style.padding = '25px';
+                    infoModal.querySelector('.close-btn').style.color = 'white';
+                }
+
+                infoTitle.innerHTML = title;
+                infoBody.innerHTML = content;
+                infoModal.style.display = 'flex';
+                infoModal.offsetHeight; // Trigger reflow
+                infoModal.classList.add('show');
+
+                // TAMBAHAN: Event listener untuk item list yang bisa diklik
+                if (type === 'tujuan' || type === 'petunjuk') {
+                    const listItems = infoBody.querySelectorAll('.clickable-list-item');
+                    listItems.forEach(item => {
+                        item.addEventListener('click', () => {
+                            const audioSrc = item.dataset.audio;
+                            if (audioSrc) {
+                                playSilaSound(audioSrc); // Menggunakan kembali fungsi playSilaSound
+                            }
+                        });
+                        addHoverSound(item); // <-- TAMBAHAN
+                    });
+                }
+
+                if (type === 'profil') {
+                    const profilePicContainer = infoModal.querySelector('.profile-pic-container');
+                    if (profilePicContainer) {
+                        const profilePic = profilePicContainer.querySelector('img');
+                        const maxRotate = 15;
+                        profilePicContainer.addEventListener('mousemove', (e) => {
+                            const rect = profilePicContainer.getBoundingClientRect();
+                            const mouseX = e.clientX - rect.left;
+                            const mouseY = e.clientY - rect.top;
+                            const rotateY = ((mouseX / rect.width) - 0.5) * 2 * maxRotate;
+                            const rotateX = (((mouseY / rect.height) - 0.5) * 2 * maxRotate) * -1;
+                            profilePic.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.1)`;
+                        });
+                        profilePicContainer.addEventListener('mouseleave', () => {
+                            profilePic.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+                        });
+                    }
+                }
+            }
+            
+            function startGame() {
+                currentLevel = 1;
+                p1Wins = 0;
+                p2Wins = 0;
+                switchScreen('game');
+                loadLevel();
+            }
+            
+            function startNextLevel() {
+                playSound(sounds.levelChange);
+                levelWinnerModal.style.display = 'none';
+                currentLevel++;
+                if (currentLevel > 3) { // DIUBAH: Batas level menjadi 3
+                    showFinalScreen();
+                } else {
+                    loadLevel();
+                }
+            }
+
+            function loadLevel() {
+                levelInProgress = true;
+                p1Score = 0;
+                p2Score = 0;
+                updateScores();
+                p1Content.innerHTML = '';
+                p2Content.innerHTML = '';
+
+                let levelTime;
+
+                if (currentLevel === 1) {
+                    levelTitle.textContent = 'Level 1: Lambang Sila';
+                    levelTime = 20;
+                    setupLevel1();
+                } else if (currentLevel === 2) {
+                    // --- PERUBAHAN: Nama level disesuaikan dengan petunjuk ---
+                    levelTitle.textContent = 'Level 2: Cocokkan Lambang Sila';
+                    levelTime = 45;
+                    setupLevel2();
+                } else if (currentLevel === 3) {
+                    // DIUBAH
+                    levelTitle.textContent = 'Level 3: Memory Game Sila';
+                    levelTime = 40;
+                    setupLevel3();
+                } 
+                // DIHAPUS: Blok 'else if (currentLevel === 4)'
+                
+                startTimer(levelTime);
+            }
+            
+            function startTimer(duration) {
+                timeLeft = duration;
+                timerDisplay.textContent = timeLeft;
+                clearInterval(timer);
+                timer = setInterval(() => {
+                    timeLeft--;
+                    timerDisplay.textContent = timeLeft;
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        endLevel();
+                    }
+                }, 1000);
+            }
+
+            function endLevel() {
+                if (!levelInProgress) return;
+                levelInProgress = false;
+                clearInterval(timer);
+                
+                let currentLevelWinner = '';
+                if (p1Score > p2Score) {
+                    p1Wins++;
+                    currentLevelWinner = 'Pemain 1 Menang Level Ini!';
+                } else if (p2Score > p1Score) {
+                    p2Wins++;
+                    currentLevelWinner = 'Pemain 2 Menang Level Ini!';
+                } else {
+                    currentLevelWinner = 'Level Ini Berakhir Seri!';
+                }
+                
+                playSound(sounds.levelComplete); // <!-- TAMBAHAN SESUAI INSTRUKSI -->
+                levelWinnerText.textContent = currentLevelWinner;
+                levelWinnerModal.style.display = 'flex';
+            }
+            
+            function updateScores() {
+                p1ScoreDisplay.textContent = p1Score;
+                p2ScoreDisplay.textContent = p2Score;
+            }
+
+            function resetGame() {
+                clearInterval(timer);
+                currentLevel = 0;
+                p1Score = 0;
+                p2Score = 0;
+                p1Wins = 0;
+                p2Wins = 0;
+                levelInProgress = false;
+                p1Content.innerHTML = '';
+                p2Content.innerHTML = '';
+                updateScores();
+            }
+
+            // --- LOGIKA LEVEL 1: PANCASILA ---
+            function setupLevel1() {
+                let availableItemsP1 = [...pancasilaItems]; 
+                let availableItemsP2 = [...pancasilaItems];
+
+                function getRandomUniqueItem(playerItems) {
+                    if (playerItems.length === 0) {
+                        playerItems.push(...pancasilaItems);
+                        playerItems.sort(() => Math.random() - 0.5); 
+                    }
+                    const randomIndex = Math.floor(Math.random() * playerItems.length);
+                    const item = playerItems[randomIndex];
+                    playerItems.splice(randomIndex, 1);
+                    return item;
+                }
+
+                function generateQuestion(player) {
+                    const correctItem = (player === 1) ? getRandomUniqueItem(availableItemsP1) : getRandomUniqueItem(availableItemsP2);
+                    
+                    // 5 tombol pilihan
+                    const options = ['Sila 1', 'Sila 2', 'Sila 3', 'Sila 4', 'Sila 5'].sort(() => Math.random() - 0.5);
+
+                    const content = `
+                        <div class="mc-question">
+                            ${correctItem.symbol}
+                            <p>Termasuk Sila ke berapakah lambang ini?</p>
+                        </div>
+                        <div class="mc-options">
+                            ${options.map(opt => `<button data-correct="${opt === correctItem.category}">${opt}</button>`).join('')}
+                        </div>`;
+                    return { content };
+                }
+
+                function displayQuestion(playerArea, player) {
+                    if (!levelInProgress) return;
+
+                    const { content } = generateQuestion(player);
+                    playerArea.innerHTML = content;
+                    playerArea.querySelectorAll('.mc-options button').forEach(button => {
+                        button.addEventListener('click', () => {
+                            playSound(sounds.buttonClick);
+                            if (!levelInProgress) return;
+
+                            if (button.dataset.correct === 'true') {
+                                playSound(sounds.correct);
+                                if (player === 1) p1Score++; else p2Score++;
+                                updateScores();
+                                if(levelInProgress) displayQuestion(playerArea, player); // Soal berikutnya
+                            } else {
+                                playSound(sounds.wrong);
+                                button.style.backgroundColor = '#E74C3C';
+                                button.style.boxShadow = '0 4px #c0392b';
+                                setTimeout(() => {
+                                    if(levelInProgress) displayQuestion(playerArea, player); // Soal berikutnya
+                                }, 500);
+                            }
+                        });
+                        addHoverSound(button); // <-- TAMBAHAN
+                    });
+                }
+                
+                displayQuestion(p1Content, 1);
+                displayQuestion(p2Content, 2);
+            }
+            
+            // --- LOGIKA LEVEL 2: DRAG AND DROP (VERSI PANCASILA) ---
+            function setupLevel2() {
+                function setupPlayerDragDrop(playerContent, playerNum) {
+                    // Gunakan pancasilaItems, BUKAN 'items'
+                    const shuffledItems = [...pancasilaItems].sort(() => Math.random() - 0.5);
+                    let droppedCount = 0;
+                    const totalItems = pancasilaItems.length; // 5
+
+                    // 1. Create the HTML structure
+                    // Buat 5 drop zone untuk Sila 1-5
+                    // --- PERUBAHAN: Mengembalikan <h3>${sila}</h3> ---
+                    const dropZoneHTML = ['Sila 1', 'Sila 2', 'Sila 3', 'Sila 4', 'Sila 5']
+                        .map(sila => `<div class="drop-zone" data-category="${sila}"><h3>${sila}</h3></div>`)
+                        .join('');
+
+                    playerContent.innerHTML = `
+                        <div class="level2-container">
+                            <p style="font-weight: bold;">Seret lambang ke kotak sila yang benar!</p>
+                            <div id="p${playerNum}-items-container" class="items-container">
+                                <!-- Draggable items akan dimasukkan oleh JS -->
+                            </div>
+                            <div class="drop-zones-container">
+                                ${dropZoneHTML}
+                            </div>
+                        </div>`;
+
+                    const itemsContainer = document.getElementById(`p${playerNum}-items-container`);
+                    const dropZones = playerContent.querySelectorAll('.drop-zone');
+
+                    // 2. Populate draggable items
+                    shuffledItems.forEach((item, index) => {
+                        const div = document.createElement('div');
+                        div.id = `p${playerNum}-item-${index}`;
+                        div.classList.add('draggable-item');
+                        div.draggable = true;
+                        div.dataset.category = item.category;
+                        div.dataset.audio = item.audio; // --- PERUBAHAN: Tambahkan data audio ---
+                        // --- PERUBAHAN: Hapus <span>${item.name}</span> ---
+                        div.innerHTML = `${item.symbol}`;
+                        itemsContainer.appendChild(div);
+                    });
+                    
+                    const draggables = playerContent.querySelectorAll('.draggable-item');
+                    let draggedItem = null;
+
+                    // 3. Add event listeners (Logika ini sama persis)
+                    draggables.forEach(item => {
+                        // Mouse events
+                        item.addEventListener('dragstart', (e) => {
+                            draggedItem = item;
+                            playSilaSound(item.dataset.audio); // --- PERUBAHAN: Putar sound ---
+                            setTimeout(() => item.classList.add('dragging'), 0);
+                            e.dataTransfer.setData('text/plain', item.id);
+                        });
+
+                        item.addEventListener('dragend', () => {
+                            draggedItem.classList.remove('dragging');
+                            draggedItem = null;
+                        });
+
+                        // Touch events
+                        item.addEventListener('touchstart', (e) => {
+                            draggedItem = item;
+                            playSilaSound(draggedItem.dataset.audio); // --- PERUBAHAN: Putar sound ---
+                            draggedItem.classList.add('dragging');
+                        }, { passive: true });
+                    });
+
+                    dropZones.forEach(zone => {
+                        // Mouse events
+                        zone.addEventListener('dragover', e => {
+                            e.preventDefault();
+                            zone.classList.add('drag-over');
+                        });
+
+                        zone.addEventListener('dragleave', () => {
+                            zone.classList.remove('drag-over');
+                        });
+
+                        zone.addEventListener('drop', e => {
+                            e.preventDefault();
+                            zone.classList.remove('drag-over');
+                            const id = e.dataTransfer.getData('text/plain');
+                            const droppedElement = document.getElementById(id);
+                            handleDrop(droppedElement, zone);
+                        });
+                    });
+
+                    // Unified touch move and end for the whole player area
+                    playerContent.addEventListener('touchmove', e => {
+                        if (!draggedItem) return;
+                        e.preventDefault(); // Important to prevent scrolling
+                        
+                        const touch = e.targetTouches[0];
+                        const elementUnderTouch = document.elementFromPoint(touch.clientX, touch.clientY);
+                        const dropZone = elementUnderTouch ? elementUnderTouch.closest('.drop-zone') : null;
+                        
+                        // Visually update drop zones
+                        dropZones.forEach(dz => dz.classList.remove('drag-over'));
+                        if (dropZone) {
+                            dropZone.classList.add('drag-over');
+                        }
+                    }, { passive: false });
+
+                    playerContent.addEventListener('touchend', e => {
+                        if (!draggedItem) return;
+
+                        const touch = e.changedTouches[0];
+                        const elementUnderTouch = document.elementFromPoint(touch.clientX, touch.clientY);
+                        const dropZone = elementUnderTouch ? elementUnderTouch.closest('.drop-zone') : null;
+
+                        if (dropZone) {
+                            handleDrop(draggedItem, dropZone);
+                        }
+                        
+                        // Cleanup
+                        draggedItem.classList.remove('dragging');
+                        dropZones.forEach(dz => dz.classList.remove('drag-over'));
+                        draggedItem = null;
+                    });
+                    
+                    function handleDrop(item, zone) {
+                        if (!levelInProgress || !item) return;
+
+                        if (item.dataset.category === zone.dataset.category) {
+                            // Correct drop
+                            playSound(sounds.correct);
+                            if (playerNum === 1) p1Score++; else p2Score++;
+                            updateScores();
+
+                            // Visual feedback: Pindahkan ikon ke dalam drop zone
+                            const icon = document.createElement('div');
+                            // Ambil <img> tag dari draggable item
+                            icon.innerHTML = item.querySelector('img').outerHTML; 
+                            icon.classList.add('dropped-icon');
+                            zone.appendChild(icon); // Tambahkan ke drop zone
+                            item.remove(); // Hapus dari container atas
+                            
+                            droppedCount++;
+                            if (droppedCount === totalItems) { // Cek jika 5 item sudah di-drop
+                                // Defer endLevel slightly to allow final score update to render
+                                setTimeout(endLevel, 100);
+                            }
+                        } else {
+                            // Incorrect drop
+                            playSound(sounds.wrong);
+                            item.classList.add('shake');
+                            setTimeout(() => item.classList.remove('shake'), 300);
+                        }
+                    }
+                }
+                
+                setupPlayerDragDrop(p1Content, 1);
+                setupPlayerDragDrop(p2Content, 2);
+            }
+            
+            // --- LOGIKA LEVEL 3: MEMORY GAME (VERSI PANCASILA) ---
+            function setupLevel3() {
+                function createGrid(container, playerNum) {
+                    // Gunakan data baru
+                    const shuffledCards = [...level3PancasilaPairs].sort(() => Math.random() - 0.5);
+                    container.innerHTML = `<div class="memory-grid" id="p${playerNum}-grid"></div>`;
+                    const grid = document.getElementById(`p${playerNum}-grid`);
+                    
+                    shuffledCards.forEach(data => {
+                        const card = document.createElement('div');
+                        card.classList.add('memory-card');
+                        card.dataset.pairId = data.pairId;
+                        // Tambahkan data-audio
+                        card.dataset.audio = data.audio || 'null';
+                        
+                        card.innerHTML = `
+                            <div class="back-face">?</div>
+                            <div class="front-face">${data.content}</div>`;
+                        grid.appendChild(card);
+                        addHoverSound(card); // <-- TAMBAHAN
+                    });
+                }
+                
+                function setupPlayerMemory(playerContent, playerNum) {
+                    createGrid(playerContent, playerNum);
+                    let flippedCards = [];
+                    let matchedPairs = 0;
+                    let canFlip = true;
+                    // Total pasangan adalah 5
+                    const totalPairs = level3PancasilaPairs.length / 2;
+
+                    playerContent.querySelectorAll('.memory-card').forEach(card => {
+                        card.addEventListener('click', () => {
+                            playSound(sounds.buttonClick);
+                            if (!canFlip || card.classList.contains('flip') || !levelInProgress) return;
+                            
+                            card.classList.add('flip');
+                            
+                            // Putar audio jika kartu ini punya audio (kartu teks)
+                            if (card.dataset.audio !== 'null') {
+                                playSilaSound(card.dataset.audio);
+                            }
+                            
+                            flippedCards.push(card);
+
+                            if (flippedCards.length === 2) {
+                                canFlip = false;
+                                const [card1, card2] = flippedCards;
+                                if(card1.dataset.pairId === card2.dataset.pairId) {
+                                    playSound(sounds.correct);
+                                    if(playerNum === 1) p1Score++; else p2Score++;
+                                    updateScores();
+                                    matchedPairs++;
+                                    if (matchedPairs === totalPairs) {
+                                        // Hentikan audio jika level selesai
+                                        audioPlayer.pause(); 
+                                        endLevel();
+                                    }
+                                    canFlip = true;
+                                } else {
+                                    playSound(sounds.wrong);
+                                    setTimeout(() => {
+                                        card1.classList.remove('flip');
+                                        card2.classList.remove('flip');
+                                        canFlip = true;
+                                    }, 1000);
+                                }
+                                flippedCards = [];
+                            }
+                        });
+                    });
+                }
+
+                setupPlayerMemory(p1Content, 1);
+                setupPlayerMemory(p2Content, 2);
+            }
+
+            // --- LOGIKA LEVEL 4 (DIHAPUS) ---
+
+
+            // --- LAYAR AKHIR ---
+            function showFinalScreen() {
+				playSound(sounds.victory);
+                switchScreen('final');
+                document.getElementById('final-p1-wins').textContent = p1Wins;
+                document.getElementById('final-p2-wins').textContent = p2Wins;
+
+                const winnerEl = document.getElementById('overall-winner');
+                if (p1Wins > p2Wins) {
+                    winnerEl.textContent = 'Pemenang Keseluruhan adalah Pemain 1!';
+                    startVictoryAnimation('p1-win'); // Animasi baru
+                } else if (p2Wins > p1Wins) {
+                    winnerEl.textContent = 'Pemenang Keseluruhan adalah Pemain 2!';
+                    startVictoryAnimation('p2-win'); // Animasi baru
+                } else {
+                    winnerEl.textContent = 'Permainan Berakhir Seri!';
+                }
+            }
+
+            // Jalankan inisialisasi
+            init();
+        });
+    </script>
+</body>
+</html>
