@@ -1,1645 +1,221 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="dark"> <!-- Mengatur mode gelap sebagai default -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pusat Alat Musik Interaktif</title>
-    <!-- Memuat Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Memuat Three.js (library 3D) --><script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- Memuat OrbitControls (untuk menggerakkan kamera) --><script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-
-    <!-- MEMUAT FONT AWESOME (UNTUK IKON PETA) --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- MEMUAT GOOGLE FONT (BARU) --><link rel="preconnect" href="https://fonts.googleapis.com">
+    <title>Galeri Game 3D</title>
+    <!-- Memuat Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Memuat Font Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
-
-    <!-- MEMUAT VANTA.JS WAVES (UNTUK BACKGROUND LAUT 3D) --><script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.waves.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        // Konfigurasi Tailwind untuk font Inter dan mode gelap
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
 
     <style>
-        /* Mengatur font default */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #1e3a8a; /* Fallback jika vanta gagal */
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden; 
-        }
-
-        /* Container untuk background 3D Vanta */
-        #vanta-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-        }
-
-        /* Konten Section */
-        main {
-            flex-grow: 1;
-            position: relative;
-            z-index: 10; /* Di atas background vanta */
-        }
-
-        /* .section-content: Kontainer untuk setiap layar (Start, Map, Materi, Game, Final) */
-        .section-content {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 1;
-            transition: opacity 0.3s;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch; 
-        }
-        .section-content.hidden {
-            opacity: 0;
-            pointer-events: none;
-            visibility: hidden;
-            position: absolute;
-        }
-
-        /* Kontainer untuk layar Start, Map, Final */
-        .screen-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 2rem;
-            min-height: 100%; 
-        }
-
-        /* Tombol 3D (Seperti di preferensi pengguna) */
-        .btn-3d {
-            background-color: #ffffff;
-            color: #3b82f6;
-            font-weight: 700;
-            padding: 0.75rem 2rem;
-            border-radius: 0.75rem;
-            border-bottom: 5px solid #e2e8f0;
-            transition: all 0.1s ease-in-out;
-            transform: translateY(0);
-        }
-        .btn-3d:hover {
-            transform: translateY(-2px);
-            border-bottom-width: 7px;
-            filter: brightness(1.05);
-        }
-        .btn-3d:active {
-            transform: translateY(1px);
-            border-bottom-width: 4px;
-            filter: brightness(0.95);
-        }
-        .btn-3d.green {
-            background-color: #22c55e;
-            color: white;
-            border-bottom-color: #16a34a;
-        }
-        .btn-3d.yellow {
-            background-color: #eab308;
-            color: white;
-            border-bottom-color: #ca8a04;
-        }
-        .btn-3d.red {
-            background-color: #ef4444;
-            color: white;
-            border-bottom-color: #dc2626;
-        }
-
-        /* --- STYLE BARU UNTUK PETA IKON --- */
-
-        /* Kontainer untuk ikon-ikon peta */
-        .map-btn-container {
-            position: relative;
-            width: 95%; 
-            height: 90vh; /* Tinggi untuk menampung ikon-ikon */
-        }
-
-        /* Style dasar untuk setiap tombol/ikon */
-        .map-btn {
-            position: absolute;
-            width: 100px; /* Ukuran area tombol */
-            height: 100px;
-            background: none;
-            border: none;
-            padding: 0;
-            cursor: pointer;
-            transition: transform 0.2s ease, filter 0.2s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            font-family: 'Inter', sans-serif;
-        }
-        
-        /* Animasi Bouncing untuk ikon */
-        .map-btn .map-icon {
-            font-size: 4rem; /* Ukuran ikon */
-            color: #4CAF50; /* Warna hijau default */
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
-            animation: bounce 2s infinite ease-in-out; /* Animasi bouncing */
-            transition: filter 0.3s ease, color 0.3s ease;
-            position: relative; /* Untuk z-index yang benar */
-            z-index: 1;
-        }
-
-        /* Variasi warna ikon */
-        .map-btn#map-btn-materi .map-icon { color: #2196F3; } /* Biru untuk Materi */
-        .map-btn#map-btn-final .map-icon { color: #FFC107; } /* Kuning untuk Selesai */
-
-        .map-btn:hover:not(.locked) .map-icon {
-            transform: translateY(-5px); /* Sedikit naik saat hover */
-            filter: drop-shadow(0 6px 8px rgba(0,0,0,0.4));
-            animation-play-state: paused; /* Jeda animasi saat hover */
-        }
-        .map-btn:active:not(.locked) .map-icon {
-            transform: translateY(0px); /* Kembali ke posisi semula saat diklik */
-            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
-            animation-play-state: paused;
-        }
-
-        /* Teks di bawah ikon */
-        .map-btn .map-btn-text {
-            margin-top: 0.5rem;
-            color: white; 
-            font-weight: 700;
-            font-size: 1.1rem; 
-            pointer-events: none; /* Agar klik tembus ke tombol */
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Bayangan teks agar lebih terbaca */
-            transition: color 0.3s ease;
-            position: relative;
-            z-index: 2;
-        }
-
-        /* Style untuk ikon yang terkunci */
-        .map-btn.locked {
-            cursor: not-allowed;
-        }
-        .map-btn.locked .map-icon {
-            filter: grayscale(100%) opacity(0.5); /* Tidak berwarna dan pudar */
-            animation: none; /* Hentikan animasi */
-            transform: translateY(0); /* Pastikan tidak bergerak */
-        }
-        .map-btn.locked .map-btn-text {
-            color: #a0aec0; /* Teks lebih pudar */
-        }
-        .map-btn.locked:hover .map-icon {
-            transform: translateY(0); /* Pastikan tidak bergerak saat hover */
-        }
-        
-        /* Keyframes untuk animasi bounce */
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        /* --- GAMBAR ALAS PETA --- */
-        .map-background-image {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
-            max-width: 1800px; /* Batas maksimum agar tidak terlalu besar */
-            height: auto;
-            z-index: 0; /* Di belakang ikon (z-index: 5) dan judul (z-index: 10) */
-            pointer-events: none; /* Agar tidak bisa diklik */
-        }
-
-        /* --- STYLE JUDUL UTAMA --- */
-        #main-title {
-            font-family: 'Luckiest Guy', cursive;
-            color: white;
-            text-shadow: 
-                -2px -2px 0 #14532d,  
-                 2px -2px 0 #14532d,
-                -2px  2px 0 #14532d,
-                 2px  2px 0 #14532d,
-                 4px  4px 2px rgba(0,0,0,0.3); 
-            
-            position: absolute;
-            top: 15%;
-			left: 50%;
-            transform: translate(-50%, -50%);
-            width: 150%; 
-            text-align: center;
-            z-index: 10;
-            pointer-events: none; 
-            margin: 0; 
-        }
-
-        /* --- Posisi Ikon Peta --- */
-        #map-btn-materi {
-            bottom: 20%;
-            left: 25%;
-            transform: translateX(-50%);
-        }
-        #map-btn-level1 {
-            bottom: 40%;
-            left: 32%;
-        }
-        #map-btn-level2 {
-            top: 25%;
-            left: 35%;
-            transform: translateX(-50%);		
-        }
-        #map-btn-level3 {
-            top: 40%;
-            left: 45%;
-		
-        }
-        #map-btn-level4 {
-            bottom: 37%;
-            right: 20%;
-        }
-        #map-btn-final { 
-            bottom: 25%;
-            right: 45%;
-        }
-        
-        /* Penyesuaian Responsif untuk Peta */
-        @media (max-width: 768px) {
-            .map-btn-container {
-                height: 600px; 
-            }
-            .map-btn {
-                width: 80px; 
-                height: 80px;
-            }
-            .map-btn .map-icon {
-                font-size: 3rem;
-            }
-            .map-btn .map-btn-text {
-                font-size: 0.9rem;
-            }
-            #map-btn-level1 { bottom: 80px; right: 20px; }
-            #map-btn-level2 { top: 80px; right: 20px; }
-            #map-btn-level3 { top: 20px; }
-            #map-btn-level4 { top: 80px; left: 20px; }
-            #map-btn-final { bottom: 80px; left: 20px; }
-            #map-btn-materi { bottom: 20px; }
-        }
-        
-        @media (max-width: 480px) {
-            .map-btn-container {
-                height: 700px; 
-                margin-top: 1rem;
-            }
-            .map-btn {
-                width: 70px;
-                height: 70px;
-            }
-            .map-btn .map-icon {
-                font-size: 2.5rem;
-            }
-             .map-btn .map-btn-text {
-                font-size: 0.8rem;
-            }
-            #map-btn-level1 { bottom: 100px; right: 10px; }
-            #map-btn-level2 { top: 100px; right: 10px; }
-            #map-btn-level3 { top: 30px; }
-            #map-btn-level4 { top: 100px; left: 10px; }
-            #map-btn-final { bottom: 100px; left: 10px; }
-            #map-btn-materi { bottom: 40px; }
-        }
-
-        /* --- AKHIR STYLE PETA IKON --- */
-
-
-        /* Memastikan canvas 3D menutupi seluruh layar di belakang konten */
-        #musicCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-        }
-
-        /* Konten UI harus berada di atas canvas */
-        .content-wrapper {
-            position: relative;
-            z-index: 10;
-        }
-        
-        /* Styling untuk modal agar terlihat baik */
-        #infoModal {
-            animation: fadeIn 0.3s ease-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translate(-50%, -45%); }
-            to { opacity: 1; transform: translate(-50%, -50%); }
-        }
-
-        /* --- STYLE UNTUK GAME --- */
-        /* Game 1: Tebak Suara */
-        .game1-choice-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-        }
-        @media (min-width: 640px) {
-            .game1-choice-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-        .game1-choice-btn {
-            border: 4px solid transparent;
-            transition: all 0.3s;
-        }
-        .game1-choice-btn:hover {
-            border-color: #3b82f6;
-            transform: scale(1.05);
-        }
-        /* Feedback untuk Game 1 */
-        .feedback-correct {
-            animation: pulse-green 0.5s;
-        }
-        @keyframes pulse-green {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); }
-            50% { box-shadow: 0 0 20px 10px rgba(22, 163, 74, 0); }
-        }
-        .feedback-wrong {
-            animation: shake-red 0.5s;
-        }
-        @keyframes shake-red {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        /* Game 2: Drag & Drop */
-        .dropzone {
-            border: 2px dashed rgba(255, 255, 255, 0.5);
-            min-height: 150px;
-            transition: background-color 0.3s;
-        }
-        .dropzone-over {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-style: solid;
-        }
-        .draggable-item {
-            cursor: grab;
-            transition: transform 0.2s, opacity 0.2s;
-            touch-action: none; 
-        }
-        
-        .dragging {
-            opacity: 0.4;
-            transform: scale(1.1);
-        }
-
-        .ghost {
-            position: absolute;
-            pointer-events: none; 
-            z-index: 1000;
-            transition: none; 
-            opacity: 0.8;
-            transform: scale(1.1); 
-            background-color: rgba(255, 255, 255, 0.3);
-            border-radius: 0.5rem;
-        }
-
-        .dropzone .draggable-item {
-            cursor: default;
-        }
-
-        /* --- STYLE GAME 3: MEMORY GAME --- */
-        #game3-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr); /* 4 kolom */
-            gap: 1rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        .card {
-            aspect-ratio: 1 / 1;
+        /* CSS Kustom untuk efek 3D */
+        .perspective-container {
+            /* Wadah ini menerapkan perspektif ke elemen anak */
             perspective: 1000px;
-            cursor: pointer;
         }
-        .card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.6s;
+
+        .card-3d {
+            /* Tampilan awal kartu, sedikit miring */
+            transform: rotateX(10deg) rotateY(-8deg);
             transform-style: preserve-3d;
-        }
-        .card.flipped .card-inner {
-            transform: rotateY(180deg);
-        }
-        .card-front, .card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            border-radius: 0.75rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .card-front {
-            background-color: rgba(255, 255, 255, 0.2);
-            border: 2px solid white;
-        }
-        .card-front i {
-            font-size: 3rem;
-            color: white;
-            opacity: 0.8;
-        }
-        .card-back {
-            background-color: white;
-            transform: rotateY(180deg);
-            padding: 0.5rem;
-        }
-        .card-back img {
-            width: 90%;
-            height: 90%;
-            object-fit: contain;
-        }
-        .card.matched {
-            opacity: 0.3;
-            cursor: default;
-        }
-        .card.matched .card-inner {
-            transform: rotateY(180deg); /* Tetap terbuka */
-        }
-        #game3-popup {
-            transition: opacity 0.3s, transform 0.3s;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            /* Bayangan untuk memberikan kedalaman */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
         }
 
-        /* --- STYLE GAME 4: CATCHING GAME --- */
-        #game4-canvas {
-            display: block;
-            width: 100%;
-            max-width: 600px;
-            height: 450px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 0.5rem;
-            margin: 0 auto;
-            cursor: none; 
+        .perspective-container:hover .card-3d {
+            /* Saat di-hover, kartu akan menghadap lurus dan sedikit membesar */
+            transform: rotateX(0deg) rotateY(0deg) scale(1.05);
+            /* Bayangan yang lebih besar untuk efek "mengangkat" */
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
         }
-
+        
+        /* Transisi untuk modal */
+        #comingSoonModal.opacity-0,
+        #comingSoonModal .opacity-0 {
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        #comingSoonModal .scale-95 {
+             transition: transform 0.3s ease-in-out;
+        }
     </style>
 </head>
-<body class="bg-gray-900 text-white overflow-hidden">
-    
-    <!-- BACKGROUND 3D LAUT BERGELOMBANG --><div id="vanta-bg"></div>
+<body class="font-sans bg-gray-900 text-white min-h-screen flex items-center justify-center p-8">
 
-    <!-- KONTEN UTAMA (CONTAINER SECTION) --><main class="w-full relative">
-        <section id="section-map" class="section-content" style="position: relative;">
-            <div class="screen-container" style="position: relative; z-index: 2;">
-                
-                <div class="map-btn-container">
-                    <!-- GAMBAR ALAS PETA BARU -->
-                    <!-- Catatan: Path gambar alas peta ini masih menggunakan URL eksternal. 
-                         Jika ini juga perlu diubah ke 'bangbinImg', ganti src di bawah. -->
-                    <img src="https://lh3.googleusercontent.com/d/1PM0BCRh4kZJkTXa52losFAU_C_-do-0B" alt="Alas Peta" class="map-background-image">
+    <div class="container mx-auto">
+        <!-- Judul Halaman -->
+        <header class="text-center mb-16">
+            <h1 class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
+                Galeri Game
+            </h1>
+            <p class="text-xl text-gray-400 mt-2">Pilih game untuk dimainkan</p>
+        </header>
+
+        <!-- Wadah Kartu Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
+
+            <!-- === KARTU 1: Musik Hebat === -->
+            <div class="perspective-container">
+                <div class="card-3d w-full rounded-2xl overflow-hidden bg-gradient-to-br from-gray-700 to-gray-800 border border-gray-600">
+                    <!-- Gambar Placeholder -->
+                    <img src="https://placehold.co/600x400/1F2937/E5E7EB?text=Musik+Hebat" alt="Game Musik Hebat" class="w-full h-48 object-cover">
                     
-                    <h1 id="main-title" class="text-4xl md:text-5xl font-bold">Instrumen Musik Interaktif</h1>
-
-                    <!-- Tombol Materi (dengan ikon) --><button id="map-btn-materi" class="map-btn">
-                        <i class="fa-solid fa-location-dot map-icon"></i>
-                        <span class="map-btn-text">Mulai</span>
-                    </button>
-                    <!-- Tombol Level 1 (dengan ikon) --><button id="map-btn-level1" class="map-btn">
-                        <i class="fa-solid fa-location-dot map-icon"></i>
-                        <span class="map-btn-text">Level 1</span>
-                    </button>
-                    <!-- Tombol Level 2 (Terkunci dengan ikon) --><button id="map-btn-level2" class="map-btn locked" disabled>
-                        <i class="fa-solid fa-location-dot map-icon"></i>
-                        <span class="map-btn-text">Level 2</span>
-                    </button>
-                    <!-- Tombol Level 3 (Terkunci dengan ikon) --><button id="map-btn-level3" class="map-btn locked" disabled>
-                        <i class="fa-solid fa-location-dot map-icon"></i>
-                        <span class="map-btn-text">Level 3</span>
-                    </button>
-                    <!-- Tombol Level 4 (Terkunci dengan ikon) --><button id="map-btn-level4" class="map-btn locked" disabled>
-                        <i class="fa-solid fa-location-dot map-icon"></i>
-                        <span class="map-btn-text">Level 4</span>
-                    </button>
-                    <!-- Tombol Final (Terkunci dengan ikon) --><button id="map-btn-final" class="map-btn locked" disabled>
-                        <i class="fa-solid fa-location-dot map-icon"></i>
-                        <span class="map-btn-text">Selesai</span>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-
-        <!-- ===== SECTION 1: MATERI 3D ===== --><section id="section-materi" class="section-content hidden">
-            <!-- Canvas untuk render 3D --><canvas id="musicCanvas"></canvas>
-            <!-- Konten Teks di Atas 3D --><div class="content-wrapper p-8 text-center">
-                <h1 class="text-4xl md:text-5xl font-bold mb-2 text-shadow-lg">Galeri Alat Musik 3D</h1>
-                <p class="text-lg md:text-xl text-gray-200 mb-4">Klik pada alat musik untuk melihat informasi.</p>
-                <!-- TOMBOL KEMBALI BARU --><button id="materi-back-btn" class="btn-3d text-sm">
-                    <i class="fa-solid fa-map mr-2"></i> Kembali ke Peta
-                </button>
-            </div>
-            <!-- Modal Informasi (Awalnya tersembunyi) --><div id="infoModal" class="hidden fixed top-1/2 left-1/2 -translate-x-1-2 -translate-y-1-2 w-11/12 max-w-lg bg-white text-gray-900 rounded-2xl shadow-2xl p-6 md:p-8 z-50">
-                <button id="closeModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-3xl leading-none">&times;</button>
-                <div class="flex flex-col md:flex-row items-center gap-6">
-                    <img id="modalImage" src="" alt="Alat Musik" class="w-28 h-28 md:w-32 md:h-32 object-contain flex-shrink-0" onerror="this.src='https://placehold.co/128x128/e2e8f0/94a3b8?text=Error'">
-                    <div class="text-center md:text-left">
-                        <h2 id="modalTitle" class="text-3xl font-bold mb-3 text-blue-700"></h2>
-                        <p class="mb-1"><strong class="font-semibold text-gray-800">Jenis:</strong> <span id="modalJenis"></span></p>
-                        <p class="mb-1"><strong class="font-semibold text-gray-800">Cara Memainkan:</strong> <span id="modalCara"></span></p>
-                        <p class="mb-3"><strong class="font-semibold text-gray-800">Asal:</strong> <span id="modalAsal"></span></p>
-                        <!-- DESKRIPSI BARU --><p id="modalDeskripsi" class="text-sm text-gray-600 border-t pt-2"></p>
-                        
-                        <button id="playSoundBtn" class="mt-4 w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
-                            Dengarkan Suara
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== SECTION 2: GAME 1 (LEVEL 1) ===== --><section id="section-game-1" class="section-content hidden p-4 md:p-8 text-white">
-            <!-- ... Konten Game 1 (tidak berubah) ... --><div class="max-w-4xl mx-auto text-center" style="position: relative; z-index: 2;">
-                <h1 class="text-3xl md:text-4xl font-bold mb-4">Level 1: Tebak Suara</h1>
-                <p class="text-lg text-gray-200 mb-6">Dengarkan suara, lalu pilih gambar alat musik yang tepat. (Menang: 3 Benar)</p>
-                
-                <div class="bg-white/10 p-6 rounded-2xl shadow-lg">
-                    <!-- Tombol untuk memutar suara --><button id="game1-play-sound" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg transition-colors duration-200 flex items-center justify-center gap-3 text-xl mx-auto mb-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
-                        Mainkan Suara
-                    </button>
-
-                    <!-- Grid Pilihan Jawaban --><div id="game1-choice-grid" class="game1-choice-grid mb-4">
-                        <!-- Pilihan akan diisi oleh JavaScript --></div>
-
-                    <!-- Feedback --><div id="game1-feedback" class="h-12 text-xl font-semibold"></div>
-
-                    <!-- Tombol Next --><button id="game1-next" class="hidden bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-10 rounded-lg text-lg transition-all">
-                        Lanjut!
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== SECTION 3: GAME 2 (LEVEL 2) ===== --><section id="section-game-2" class="section-content hidden p-4 md:p-8 text-white">
-            <!-- ... Konten Game 2 (tidak berubah) ... --><div class="max-w-7xl mx-auto" style="position: relative; z-index: 2;">
-                <h1 class="text-3xl md:text-4xl font-bold mb-4 text-center">Level 2: Kelompokkan Alat Musik</h1>
-                <p class="text-lg text-gray-200 mb-6 text-center">Drag and drop (atau seret) 8 alat musik ke kategori yang benar.</p>
-
-                <!-- Area Dropzone --><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-                    <div class="dropzone rounded-lg p-4" data-category="Dipukul">
-                        <h3 class="font-bold text-xl mb-3 text-center border-b pb-2">Dipukul</h3>
-                        <div class="flex flex-wrap gap-2 justify-center drop-area min-h-[50px]"></div>
-                    </div>
-                    <div class="dropzone rounded-lg p-4" data-category="Ditiup">
-                        <h3 class="font-bold text-xl mb-3 text-center border-b pb-2">Ditiup</h3>
-                        <div class="flex flex-wrap gap-2 justify-center drop-area min-h-[50px]"></div>
-                    </div>
-                    <div class="dropzone rounded-lg p-4" data-category="Dipetik">
-                        <h3 class="font-bold text-xl mb-3 text-center border-b pb-2">Dipetik</h3>
-                        <div class="flex flex-wrap gap-2 justify-center drop-area min-h-[50px]"></div>
-                    </div>
-                    <div class="dropzone rounded-lg p-4" data-category="Digesek">
-                        <h3 class="font-bold text-xl mb-3 text-center border-b pb-2">Digesek</h3>
-                        <div class="flex flex-wrap gap-2 justify-center drop-area min-h-[50px]"></div>
-                    </div>
-                    <div class="dropzone rounded-lg p-4" data-category="Lainnya">
-                        <h3 class="font-bold text-xl mb-3 text-center border-b pb-2">Lainnya</h3>
-                        <div class="flex flex-wrap gap-2 justify-center drop-area min-h-[50px]"></div>
-                    </div>
-                </div>
-
-                <!-- Area Draggable --><h2 class="text-2xl font-bold text-center mb-4">Alat Musik</h2>
-                <div id="game2-item-bank" class="bg-white/10 p-4 rounded-2xl shadow-lg min-h-[100px] flex flex-wrap justify-center items-center gap-3">
-                    <!-- Item akan diisi oleh JavaScript --></div>
-                
-                <div class="text-center mt-6">
-                    <button id="game2-reset" class="btn-3d yellow text-lg">
-                        <i class="fa-solid fa-arrows-rotate mr-2"></i> Reset Game
-                    </button>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- ===== SECTION BARU: GAME 3 (LEVEL 3) ===== --><section id="section-game-3" class="section-content hidden p-4 md:p-8 text-white">
-            <!-- ... Konten Game 3 (tidak berubah) ... --><div class="max-w-3xl mx-auto text-center" style="position: relative; z-index: 2;">
-                <h1 class="text-3xl md:text-4xl font-bold mb-4">Level 3: Memory Game</h1>
-                <p class="text-lg text-gray-200 mb-6">Cari 6 pasang alat musik yang sama!</p>
-                
-                <div class="bg-white/10 p-6 rounded-2xl shadow-lg">
-                    <!-- Status Game 3 --><div id="game3-feedback" class="h-12 text-2xl font-semibold mb-4 text-green-400">
-                        Pasangan Ditemukan: 0 / 6
-                    </div>
-                    
-                    <!-- Grid Kartu --><div id="game3-grid" class="mb-6">
-                        <!-- Kartu akan diisi oleh JavaScript --></div>
-                    
-                    <!-- Tombol Reset/Kembali --><button id="game3-reset" class="btn-3d yellow text-lg">
-                        <i class="fa-solid fa-arrows-rotate mr-2"></i> Reset Game
-                    </button>
-                </div>
-            </div>
-            <!-- Modal Kemenangan Game 3 --><div id="game3-popup" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center opacity-0 -translate-y-4">
-                <div class="bg-white text-gray-900 p-8 rounded-2xl shadow-lg text-center max-w-sm">
-                    <i class="fa-solid fa-brain text-6xl text-blue-500 mb-4"></i>
-                    <h2 class="text-3xl font-bold mb-4">Level 3 Selesai!</h2>
-                    <p class="text-lg mb-6">Ingatanmu tajam! Kamu dapat 200 Poin.</p>
-                    <button id="game3-back-btn" class="btn-3d green text-lg">
-                        <i class="fa-solid fa-map mr-2"></i> Kembali ke Peta
-                    </button>
-                </div>
-            </div>
-        </section>
-        
-        <!-- ===== SECTION BARU: GAME 4 (LEVEL 4) ===== --><section id="section-game-4" class="section-content hidden p-4 md:p-8 text-white">
-            <!-- ... Konten Game 4 (tidak berubah) ... --><div class="max-w-3xl mx-auto text-center" style="position: relative; z-index: 2;">
-                <h1 class="text-3xl md:text-4xl font-bold mb-4">Level 4: Tangkap Suara</h1>
-                <p class="text-lg text-gray-200 mb-6">Dengarkan suara target, lalu tangkap 5 alat musik yang sesuai!</p>
-                
-                <div class="bg-white/10 p-6 rounded-2xl shadow-lg">
-                    <!-- Status Game 4 --><div class="flex flex-col sm:flex-row justify-around items-center mb-4 gap-4">
-                        <button id="game4-play-target" class="btn-3d text-lg">
-                            <i class="fa-solid fa-volume-high mr-2"></i> Target: <span id="game4-target-name">...</span>
-                        </button>
-                        <div id="game4-feedback" class="text-2xl font-semibold text-green-400">
-                            Tertangkap: 0 / 5
+                    <!-- Konten Kartu -->
+                    <div class="p-6">
+                        <h2 class="text-2xl font-bold mb-2 text-white">Game 1: Musik Hebat</h2>
+                        <p class="text-gray-400 mb-6">Jelajahi dunia ritme dan melodi dalam game musik yang seru ini.</p>
+                        <!-- Tombol Aksi -->
+                        <div class="flex space-x-4">
+                            <a href="Musik-Hebat/index.html" class="flex-1 text-center bg-blue-600 text-white px-5 py-3 rounded-lg font-semibold transition duration-300 hover:bg-blue-700 hover:scale-105 transform">
+                                Mainkan Game
+                            </a>
+                            <button class="open-modal-btn flex-1 text-center bg-gray-600 text-white px-5 py-3 rounded-lg font-semibold transition duration-300 hover:bg-gray-700 hover:scale-105 transform">
+                                Story Game
+                            </button>
                         </div>
                     </div>
-                    
-                    <!-- Canvas Game --><canvas id="game4-canvas" width="600" height="450">Browser Anda tidak mendukung canvas.</canvas>
-                    
-                    <!-- Tombol Reset/Kembali (muncul setelah menang) --><button id="game4-back-btn" class="hidden btn-3d green text-lg mt-6">
-                        <i class="fa-solid fa-map mr-2"></i> Kembali ke Peta
-                    </button>
                 </div>
             </div>
-        </section>
-        
-        <!-- ===== SECTION BARU: FINAL SCREEN ===== --><section id="section-final" class="section-content hidden">
-            <!-- ... Konten Layar Final (tidak berubah) ... --><div class="screen-container" style="position: relative; z-index: 2;">
-                <div class="bg-white/10 p-8 md:p-12 rounded-2xl shadow-lg max-w-lg">
-                    <i class="fa-solid fa-trophy text-7xl text-amber-400 mb-6"></i>
-                    <h1 class="text-4xl md:text-5xl font-bold mb-4">Selamat!</h1>
-                    <p class="text-lg md:text-xl text-gray-200 mb-6">
-                        Kamu telah menyelesaikan semua level petualangan alat musik!
-                    </p>
-                    <h2 id="finalScoreDisplay" class="text-3xl font-bold text-white mb-8">Nilai Akhir Kamu: 0</h2>
+
+            <!-- === KARTU 2: Asiknya Beternak === -->
+            <div class="perspective-container">
+                <div class="card-3d w-full rounded-2xl overflow-hidden bg-gradient-to-br from-gray-700 to-gray-800 border border-gray-600">
+                    <!-- Gambar Placeholder -->
+                    <img src="https://placehold.co/600x400/1F2937/E5E7EB?text=Asiknya+Beternak" alt="Game Asiknya Beternak" class="w-full h-48 object-cover">
                     
-                    <div class="flex flex-wrap justify-center gap-4 mb-8">
-                        <button class="btn-3d opacity-50 cursor-not-allowed" disabled>Leaderboard</button>
-                        <button class="btn-3d opacity-50 cursor-not-allowed" disabled>Bagikan</button>
+                    <!-- Konten Kartu -->
+                    <div class="p-6">
+                        <h2 class="text-2xl font-bold mb-2 text-white">Game 2: Asiknya Beternak</h2>
+                        <p class="text-gray-400 mb-6">Bangun peternakan impianmu dan rawat hewan-hewan lucu.</p>
+                        <!-- Tombol Aksi -->
+                        <div class="flex space-x-4">
+                            <a href="Asiknya-Beternak/index.html" class="flex-1 text-center bg-green-600 text-white px-5 py-3 rounded-lg font-semibold transition duration-300 hover:bg-green-700 hover:scale-105 transform">
+                                Mainkan Game
+                            </a>
+                            <button class="open-modal-btn flex-1 text-center bg-gray-600 text-white px-5 py-3 rounded-lg font-semibold transition duration-300 hover:bg-gray-700 hover:scale-105 transform">
+                                Story Game
+                            </button>
+                        </div>
                     </div>
-
-                    <button id="resetBtn" class="btn-3d green text-xl px-8 py-3">
-                        <i class="fa-solid fa-rotate-left mr-2"></i> Kembali ke Awal
-                    </button>
                 </div>
             </div>
-        </section>
+
+            <!-- === KARTU 3: Versus Pancasila === -->
+            <div class="perspective-container">
+                <div class="card-3d w-full rounded-2xl overflow-hidden bg-gradient-to-br from-gray-700 to-gray-800 border border-gray-600">
+                    <!-- Gambar Placeholder -->
+                    <img src="https://placehold.co/600x400/1F2937/E5E7EB?text=Versus+Pancasila" alt="Game Versus Pancasila" class="w-full h-48 object-cover">
+                    
+                    <!-- Konten Kartu -->
+                    <div class="p-6">
+                        <h2 class="text-2xl font-bold mb-2 text-white">Game 3: Versus Pancasila</h2>
+                        <p class="text-gray-400 mb-6">Uji wawasan kebangsaanmu dalam game edukasi yang menantang.</p>
+                        <!-- Tombol Aksi -->
+                        <div class="flex space-x-4">
+                            <a href="versusPancasila/index.html" class="flex-1 text-center bg-red-600 text-white px-5 py-3 rounded-lg font-semibold transition duration-300 hover:bg-red-700 hover:scale-105 transform">
+                                Mainkan Game
+                            </a>
+                            <button class="open-modal-btn flex-1 text-center bg-gray-600 text-white px-5 py-3 rounded-lg font-semibold transition duration-300 hover:bg-gray-700 hover:scale-105 transform">
+                                Story Game
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- Akhir dari Grid Kartu -->
+    </div> <!-- Akhir dari Container Utama -->
 
 
-    </main>
+    <!-- === MODAL "COMING SOON" === -->
+    <div id="comingSoonModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 transition-opacity duration-300 hidden opacity-0">
+        <!-- Kotak Modal -->
+        <div id="modalBox" class="bg-gray-800 rounded-lg shadow-xl p-8 max-w-sm w-full mx-4 transform transition-all duration-300 scale-95 opacity-0 border border-gray-700 text-center">
+            <!-- Tambahkan GIF di sini -->
+            <img src="Asiknya-Beternak/image/bangbin.gif" alt="Segera Hadir" class="w-[100px] h-[200px] object-cover mx-auto mb-6 rounded-full border-4 border-gray-700 shadow-lg" onerror="this.src='https://placehold.co/100x200/1F2937/E5E7EB?text=GIF+Error'; this.onerror=null;">
+            
+            <h2 class="text-2xl font-bold text-white mb-4">Segera Hadir!</h2>
+            <p class="text-gray-300 mb-6">
+                Fitur "Story Game" untuk game ini sedang dalam pengembangan. Nantikan pembaruan selanjutnya!
+            </p>
+            <!-- Tombol Tutup Modal -->
+            <button id="closeModalBtn" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold transition duration-200 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                Tutup
+            </button>
+        </div>
+    </div>
 
-    <!-- Elemen Audio Player (Tersembunyi) --><audio id="audioPlayer" preload="auto"></audio>
 
     <script>
-        // --- DATA ASET GLOBAL ---
-        // (Sama seperti sebelumnya)
-        // ===== PERUBAHAN DI SINI =====
-        // Semua 'img' dan 'soundUrl' diubah ke path lokal sesuai permintaan.
-        const alatMusikData = {
-			"Gendang":       { img: "bangbinImg/Kendang.png", soundUrl: "music/Gendang.mp3" },
-			"Suling":        { img: "bangbinImg/Suling.png", soundUrl: "music/Suling.mp3" },
-			"Sasando":       { img: "bangbinImg/Sasando.png", soundUrl: "music/Sasando.mp3" },
-			"Piano":         { img: "bangbinImg/Piano.png", soundUrl: "music/Piano.mp3" },
-			"Arbab":         { img: "bangbinImg/Arbab.png", soundUrl: "music/Arbab.mp3" },
-            "Gamelan":       { img: "bangbinImg/Gamelan.png", soundUrl: "music/Gamelan.mp3" },
-            "Genggong":      { img: "bangbinImg/Genggong.png", soundUrl: "music/Genggong.mp3" },
-            "Serune Kalee":  { img: "bangbinImg/SeruneKalee.png", soundUrl: "music/SeruneKalee.mp3" },
-            "Kuriding":      { img: "bangbinImg/Kuriding.png", soundUrl: "music/Kuriding.mp3" },
-            "Kolintang":     { img: "bangbinImg/Kolintang.png", soundUrl: "music/Kolintang.mp3" },
-            "Tamborin":      { img: "bangbinImg/Tamborin.png", soundUrl: "music/Tamborin.mp3" },
-            "Angklung":      { img: "bangbinImg/Angklung.png", soundUrl: "music/Angklung.mp3" },
-            "Antoneng":      { img: "bangbinImg/Antoneng.png", soundUrl: "music/Antoneng.mp3" },
-            "Keledi":        { img: "bangbinImg/Keledi.png", soundUrl: "music/Keledi.mp3" },
-            "Kuranting":     { img: "bangbinImg/Kuranting.png", soundUrl: "music/Kuranting.mp3" }
-        };
-        // ===== AKHIR PERUBAHAN =====
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('comingSoonModal');
+            const modalBox = document.getElementById('modalBox');
+            const openModalButtons = document.querySelectorAll('.open-modal-btn');
+            const closeModalBtn = document.getElementById('closeModalBtn');
 
-
-        // --- DATA SPESIFIK GALERI 3D ---
-        // (Sama seperti sebelumnya)
-        const galleryInfo = [
-            { name: "Gendang", jenis: "Membranofon", cara: "Dipukul dengan telapak tangan di kedua sisinya.", asal: "Indonesia (Jawa, Sunda, Bali)", category: "Dipukul", deskripsi: "Instrumen inti dalam gamelan, berfungsi sebagai pengatur tempo dan ritme." },
-            { name: "Suling", jenis: "Aerofon", cara: "Ditiup pada lubang tiup, jari-jari menutup lubang untuk mengubah nada.", asal: "Indonesia (Sunda, Jawa, Bali)", category: "Ditiup", deskripsi: "Sering digunakan dalam musik Kecapi Suling (Sunda) atau sebagai melodi dalam gamelan." },
-            { name: "Sasando", jenis: "Kordofon (Zither tabung)", cara: "Dipetik senar-senarnya dengan kedua tangan.", asal: "Indonesia (Pulau Rote, NTT)", category: "Dipetik", deskripsi: "Menggunakan resonator unik dari daun lontar kering yang melengkung." },
-            { name: "Piano", jenis: "Kordofon (Keyboard)", cara: "Tuts ditekan, menggerakkan palu (hammer) yang memukul senar.", asal: "Italia (Bartolomeo Cristofori)", category: "Dipukul", deskripsi: "Memiliki 88 tuts dan mampu menghasilkan rentang dinamis suara yang sangat luas." },
-            { name: "Arbab", jenis: "Kordofon (Spike fiddle)", cara: "Digesek dengan busur (bow), dimainkan dalam posisi tegak.", asal: "Indonesia (Aceh)", category: "Digesek", deskripsi: "Sering digunakan untuk mengiringi cerita atau nyanyian tradisional Aceh." },
-            { name: "Gamelan", jenis: "Ansambel (Idiofon, dll.)", cara: "Dimainkan bersama oleh banyak orang (dipukul, ditiup, digesek).", asal: "Indonesia (Jawa, Bali)", category: "Dipukul", deskripsi: "Ansambel musik kaya tekstur berdasarkan tangga nada pelog dan slendro." },
-            { name: "Genggong", jenis: "Idiofon (Harpa mulut)", cara: "Bingkai ditempelkan ke bibir, bilah digetarkan sambil mengubah rongga mulut.", asal: "Indonesia (Bali, Jawa, Lombok)", category: "Lainnya", deskripsi: "Menghasilkan suara dengungan unik, sering dimainkan untuk hiburan." },
-            { name: "Serune Kalee", jenis: "Aerofon (Obo)", cara: "Ditiup menggunakan lidah getar ganda (double reed).", asal: "Indonesia (Aceh)", category: "Ditiup", deskripsi: "Memiliki suara melengking, sering dimainkan dalam upacara adat dan pertunjukan." },
-            { name: "Kuriding", jenis: "Idiofon (Harpa mulut)", cara: "Diletakkan di mulut dan bilah getarnya dipetik atau ditarik.", asal: "Indonesia (Kalimantan Selatan)", category: "Dipetik", deskripsi: "Terbuat dari bambu atau pelepah enau, digunakan untuk musik hiburan atau ritual." },
-            { name: "Kolintang", jenis: "Idiofon (Xilofon)", cara: "Bilah-bilah kayu bernada dipukul dengan pemukul khusus.", asal: "Indonesia (Minahasa, Sulawesi Utara)", category: "Dipukul", deskripsi: "Dimainkan secara ansambel, mirip gamelan, oleh beberapa pemain." },
-            { name: "Tamborin", jenis: "Idiofon & Membranofon", cara: "Digoyang (gemerincing) atau dipukul dengan tangan.", asal: "Timur Tengah Kuno", category: "Lainnya", deskripsi: "Alat musik ritmis yang sangat populer di berbagai genre musik." },
-            { name: "Angklung", jenis: "Idiofon", cara: "Digoyangkan sehingga tabung bambu membentur bingkai.", asal: "Indonesia (Sunda, Jawa Barat)", category: "Lainnya", deskripsi: "Satu angklung = satu nada. Membutuhkan kerjasama tim untuk memainkan melodi." },
-            { name: "Antoneng", jenis: "Kordofon (Zither tabung)", cara: "Senar dari bilah kulit bambu (dicungkil dari badan) dipetik.", asal: "Indonesia (Dayak, Kalimantan)", category: "Dipetik", deskripsi: "Zither tabung sederhana yang sering dimainkan untuk hiburan pribadi." },
-            { name: "Keledi", jenis: "Aerofon (Organ mulut)", cara: "Ditiup/dihisap melalui labu kering, jari menutup lubang pipa bambu.", asal: "Indonesia (Dayak, Kalimantan Barat)", category: "Ditiup", deskripsi: "Menghasilkan suara mirip organ dari beberapa pipa bambu dalam labu kering." },
-            { name: "Kuranting", jenis: "Kordofon (Lute)", cara: "Dipetik senarnya, memiliki badan kayu dan leher panjang.", asal: "Indonesia (Dayak Iban, Kalimantan)", category: "Dipetik", deskripsi: "Lute berdawai dua atau tiga untuk mengiringi tarian atau nyanyian adat." }
-        ];
-        
-        // --- LOGIKA GLOBAL ---
-        const audioPlayer = document.getElementById('audioPlayer');
-        const sections = document.querySelectorAll('.section-content');
-
-
-        // --- LOGIKA MESIN GAME / NAVIGASI BARU ---
-        
-        // Variabel Status Permainan
-        let skor = 0;
-        let level1Completed = false;
-        let level2Completed = false;
-        let level3Completed = false;
-        let level4Completed = false;
-
-        // Fungsi untuk pindah layar
-        function showScreen(screenId) {
-            // Hentikan audio & tutup modal saat pindah layar
-            audioPlayer.pause();
-            audioPlayer.currentTime = 0;
-            if(typeof hideInfo === 'function') hideInfo(); 
-            // Hentikan loop game 4 jika sedang berjalan
-            game4Active = false;
-            if (game4AnimationId) {
-                cancelAnimationFrame(game4AnimationId);
-                game4AnimationId = null;
-            }
-
-            // Sembunyikan semua layar
-            sections.forEach(section => {
-                section.classList.add('hidden');
-            });
-
-            // Tampilkan layar yang dituju
-            const targetSection = document.getElementById(screenId);
-            if (targetSection) {
-                targetSection.classList.remove('hidden');
-            } else {
-                console.error("Section not found:", screenId);
-                document.getElementById('section-map').classList.remove('hidden'); // Fallback ke Peta
-            }
-
-            // Logika khusus saat memasuki layar tertentu
-            if (screenId === 'section-materi') {
-                isMateriActive = true;
-                if(controls) controls.autoRotate = true; // Lanjutkan putar
-                if(typeof animate === 'function') animate(); // Mulai lagi loop animasi
-            } else {
-                isMateriActive = false; // Hentikan loop animasi 3D
-                if(controls) controls.autoRotate = false; // Hentikan putar
-            }
-
-            // Muat game saat section-nya ditampilkan (jika belum pernah)
-            if (screenId === 'section-game-1' && !game1Initialized) {
-                loadGame1();
-                game1Initialized = true; // Tandai sudah dimuat
-            }
-            if (screenId === 'section-game-2' && !game2Initialized) {
-                loadGame2();
-                game2Initialized = true; // Tandai sudah dimuat
-            }
-            if (screenId === 'section-game-3' && !game3Initialized) {
-                initGame3(); // initGame3 akan memanggil loadGame3
-                game3Initialized = true; 
-            }
-            if (screenId === 'section-game-4' && !game4Initialized) {
-                initGame4(); // initGame4 akan memanggil loadGame4Images dan resetGame4
-                game4Initialized = true;
-            }
-            
-            // Mulai loop game 4 jika masuk section-nya
-            if (screenId === 'section-game-4') {
-                game4Active = true;
-                if (!level4Completed) resetGame4(); // Reset/mulai ulang game 4
-                game4Loop();
-            }
-            
-            // Update UI Peta
-            if (screenId === 'section-map') {
-                updateMapUI();
-            }
-            
-            // Update UI Layar Final
-            if (screenId === 'section-final') {
-                updateFinalScreen();
-            }
-        }
-
-        // Fungsi untuk update tombol di Peta
-        function updateMapUI() {
-            const level2Btn = document.getElementById('map-btn-level2');
-            const level3Btn = document.getElementById('map-btn-level3');
-            const level4Btn = document.getElementById('map-btn-level4');
-            const finalBtn = document.getElementById('map-btn-final');
-
-            // Level 2
-            if (level1Completed) {
-                level2Btn.classList.remove('locked'); 
-                level2Btn.disabled = false;
-                level2Btn.querySelector('.map-icon').className = 'fa-solid fa-location-dot map-icon'; // Ganti ikon kembali
-            } else {
-                level2Btn.classList.add('locked'); 
-                level2Btn.disabled = true;
-                level2Btn.querySelector('.map-icon').className = 'fa-solid fa-lock map-icon'; // Ikon gembok
-            }
-            
-            // Level 3
-            if (level2Completed) {
-                level3Btn.classList.remove('locked'); 
-                level3Btn.disabled = false;
-                level3Btn.querySelector('.map-icon').className = 'fa-solid fa-location-dot map-icon';
-            } else {
-                level3Btn.classList.add('locked'); 
-                level3Btn.disabled = true;
-                level3Btn.querySelector('.map-icon').className = 'fa-solid fa-lock map-icon';
-            }
-            
-            // Level 4
-            if (level3Completed) {
-                level4Btn.classList.remove('locked'); 
-                level4Btn.disabled = false;
-                level4Btn.querySelector('.map-icon').className = 'fa-solid fa-location-dot map-icon';
-            } else {
-                level4Btn.classList.add('locked'); 
-                level4Btn.disabled = true;
-                level4Btn.querySelector('.map-icon').className = 'fa-solid fa-lock map-icon';
-            }
-
-            // Final
-            if (level4Completed) {
-                finalBtn.classList.remove('locked'); 
-                finalBtn.disabled = false;
-                // Ikon final sudah berbeda dari awal, tidak perlu diubah kembali ke location-dot
-            } else {
-                finalBtn.classList.add('locked'); 
-                finalBtn.disabled = true;
-                // Ikon final sudah berbeda dari awal, tidak perlu diubah kembali ke location-dot
-            }
-        }
-
-        // Fungsi untuk update skor di Layar Final
-        function updateFinalScreen() {
-            document.getElementById('finalScoreDisplay').textContent = `Nilai Akhir Kamu: ${skor}`;
-        }
-
-        // Fungsi untuk reset game
-        function resetGame() {
-            skor = 0;
-            level1Completed = false;
-            level2Completed = false;
-            level3Completed = false;
-            level4Completed = false;
-            
-            // Reset game 1
-            game1Skor = 0;
-            game1NextBtn.textContent = 'Lanjut!';
-            game1Feedback.textContent = '';
-            game1Locked = false;
-            if (game1Initialized) loadGame1(); 
-
-            // Reset game 2
-            game2ResetBtn.textContent = 'Reset Game';
-            if (game2Initialized) loadGame2(); 
-            
-            // Reset game 3
-            game3Matches = 0;
-            game3Locked = false;
-            if (game3Initialized) loadGame3();
-            document.getElementById('game3-popup').classList.add('hidden', 'opacity-0', '-translate-y-4');
-
-            // Reset game 4
-            game4Score = 0;
-            if (game4Initialized) resetGame4();
-            document.getElementById('game4-back-btn').classList.add('hidden');
-            
-            showScreen('section-map'); // Kembali ke Peta
-        }
-
-
-        // --- PENGATURAN 3D (THREE.JS) ---
-        // (Logika 3D, Modal, Raycaster, dll. SAMA SEPERTI SEBELUMNYA)
-        let scene, camera, renderer, controls;
-        let instrumentGroup; 
-        let raycaster, mouse;
-        const clickableObjects = []; 
-        let isMateriActive = true; 
-        let animationFrameId;
-
-        function init() {
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 15;
-            const canvas = document.getElementById('musicCanvas');
-            renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true; 
-            controls.enableZoom = true;
-            controls.autoRotate = true; 
-            controls.autoRotateSpeed = 0.5;
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-            scene.add(ambientLight);
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-            directionalLight.position.set(5, 10, 7.5);
-            scene.add(directionalLight);
-            raycaster = new THREE.Raycaster();
-            mouse = new THREE.Vector2();
-            createInstruments();
-            window.addEventListener('resize', onWindowResize);
-            window.addEventListener('click', onClick);
-            animate(); // Mulai animasi, tapi akan dikontrol oleh showScreen
-        }
-
-        function createInstruments() {
-            instrumentGroup = new THREE.Group();
-            const textureLoader = new THREE.TextureLoader();
-            const radius = 9; 
-            const itemSize = 3; 
-
-            galleryInfo.forEach((inst, i) => {
-                const angle = (i / galleryInfo.length) * Math.PI * 2; 
-                const material = new THREE.MeshStandardMaterial({
-                    transparent: true,
-                    side: THREE.DoubleSide,
-                    roughness: 0.7,
-                    metalness: 0.1
+            // Fungsi untuk membuka modal
+            const openModal = () => {
+                modal.classList.remove('hidden');
+                // Memicu reflow agar transisi CSS berjalan
+                requestAnimationFrame(() => {
+                    modal.classList.remove('opacity-0');
+                    modalBox.classList.remove('opacity-0', 'scale-95');
                 });
-                const globalData = alatMusikData[inst.name];
-                if (!globalData) return;
-                
-                textureLoader.load(
-                    globalData.img, // Ini sekarang menggunakan path lokal
-                    (texture) => { material.map = texture; material.needsUpdate = true; },
-                    undefined, 
-                    (err) => {
-                        // Fallback jika path lokal gagal (mis. file tidak ada)
-                        console.error('Gagal memuat tekstur lokal:', globalData.img);
-                        textureLoader.load(
-                            `https://placehold.co/${itemSize*100}x${itemSize*100}/e2e8f0/94a3b8?text=${inst.name.split(' ')[0]}`,
-                            (placeholderTexture) => { material.map = placeholderTexture; material.needsUpdate = true; }
-                        );
-                    }
-                );
-                const geometry = new THREE.PlaneGeometry(itemSize, itemSize);
-                const mesh = new THREE.Mesh(geometry, material);
-                mesh.position.x = Math.cos(angle) * radius;
-                mesh.position.z = Math.sin(angle) * radius;
-                mesh.lookAt(0, 0, 0);
-                mesh.userData = { ...inst, ...globalData };
-                instrumentGroup.add(mesh);
-                clickableObjects.push(mesh);
-            });
-            scene.add(instrumentGroup);
-        }
+            };
 
-        function animate() {
-            if (!isMateriActive) { // Dikontrol oleh showScreen
-                cancelAnimationFrame(animationFrameId);
-                return;
-            }
-            animationFrameId = requestAnimationFrame(animate);
-            controls.update(); 
-            renderer.render(scene, camera);
-        }
-
-        function onWindowResize() {
-            if (camera && renderer) {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            }
-        }
-
-        function onClick(event) {
-            if (!isMateriActive) return; 
-            if (event.target.closest('#infoModal') || event.target.closest('#materi-back-btn')) {
-                return; // Jangan lakukan raycast jika klik UI di atasnya
-            }
-            controls.autoRotate = false;
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(clickableObjects);
-            if (intersects.length > 0) {
-                showInfo(intersects[0].object.userData); 
-            }
-        }
-        
-        // --- LOGIKA MODAL ---
-        // (Sama seperti sebelumnya)
-        const infoModal = document.getElementById('infoModal');
-        const closeModalBtn = document.getElementById('closeModal');
-        const playSoundBtn = document.getElementById('playSoundBtn');
-        let currentSoundUrl = null; 
-
-        function showInfo(data) {
-            document.getElementById('modalTitle').textContent = data.name;
-            document.getElementById('modalImage').src = data.img; // Path lokal
-            document.getElementById('modalImage').alt = data.name;
-            document.getElementById('modalJenis').textContent = data.jenis;
-            document.getElementById('modalCara').textContent = data.cara;
-            document.getElementById('modalAsal').textContent = data.asal;
-            document.getElementById('modalDeskripsi').textContent = data.deskripsi;
-            currentSoundUrl = data.soundUrl; // Path lokal
-            playSoundBtn.classList.toggle('hidden', !data.soundUrl);
-            infoModal.classList.remove('hidden');
-        }
-
-        function hideInfo() {
-            infoModal.classList.add('hidden');
-            if (isMateriActive) {
-                controls.autoRotate = true;
-            }
-            audioPlayer.pause();
-            audioPlayer.currentTime = 0;
-            currentSoundUrl = null;
-        }
-
-        closeModalBtn.addEventListener('click', hideInfo);
-        playSoundBtn.addEventListener('click', () => {
-            if (currentSoundUrl) {
-                if (!audioPlayer.paused) audioPlayer.pause();
-                audioPlayer.src = currentSoundUrl; // Memutar path lokal
-                audioPlayer.play().catch(error => console.error("Gagal memutar suara lokal:", error));
-            }
-        });
-
-
-        // --- LOGIKA GAME 1: TEBAK SUARA (DIMODIFIKASI) ---
-        // (Tidak ada perubahan di logika Game 1)
-        const game1PlayBtn = document.getElementById('game1-play-sound');
-        const game1ChoiceGrid = document.getElementById('game1-choice-grid');
-        const game1Feedback = document.getElementById('game1-feedback');
-        const game1NextBtn = document.getElementById('game1-next');
-        let game1Answer = null;
-        let game1Locked = false;
-        let game1Initialized = false;
-        let game1Skor = 0;
-        const game1Target = 3; 
-
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
-
-        function loadGame1() {
-            game1Locked = false;
-            if (!level1Completed) {
-                 game1Feedback.textContent = `Skor: ${game1Skor}/${game1Target}`;
-            }
-            game1NextBtn.classList.add('hidden');
-            game1PlayBtn.disabled = false;
-            const shuffledInstruments = [...galleryInfo];
-            shuffleArray(shuffledInstruments);
-            const choices = shuffledInstruments.slice(0, 4);
-            game1Answer = choices[0];
-            shuffleArray(choices);
-            game1ChoiceGrid.innerHTML = ''; 
-            choices.forEach(instrument => {
-                const globalData = alatMusikData[instrument.name];
-                const button = document.createElement('button');
-                button.className = 'game1-choice-btn bg-white/10 rounded-lg p-4 focus:outline-none';
-                button.dataset.name = instrument.name;
-                button.innerHTML = `
-                    <img src="${globalData.img}" alt="${instrument.name}" class="w-24 h-24 mx-auto object-contain pointer-events-none">
-                    <p class="mt-2 font-semibold text-lg pointer-events-none">${instrument.name}</p>
-                `;
-                button.addEventListener('click', () => checkGame1Answer(button));
-                game1ChoiceGrid.appendChild(button);
-            });
-        }
-
-        game1PlayBtn.addEventListener('click', () => {
-            if (game1Answer) {
-                const soundUrl = alatMusikData[game1Answer.name].soundUrl; // Path lokal
-                if (!audioPlayer.paused) audioPlayer.pause();
-                audioPlayer.src = soundUrl;
-                audioPlayer.play().catch(e => console.error("Error memutar suara game:", e));
-            }
-        });
-
-        function checkGame1Answer(button) {
-            if (game1Locked || level1Completed) return;
-            game1Locked = true;
-            game1PlayBtn.disabled = true;
-
-            if (button.dataset.name === game1Answer.name) {
-                game1Skor++;
-                game1Feedback.textContent = `BENAR! ✅ (Skor: ${game1Skor}/${game1Target})`;
-                game1Feedback.className = 'h-12 text-xl font-semibold text-green-400';
-                button.classList.add('feedback-correct', 'border-green-500');
-                if (game1Skor >= game1Target) {
-                    level1Completed = true;
-                    skor += 100;
-                    game1Feedback.textContent = `Level 1 Selesai! Kamu dapat 100 Poin!`;
-                    game1NextBtn.textContent = 'Kembali ke Peta';
-                }
-            } else {
-                game1Feedback.textContent = `SALAH! ❌ (Skor: ${game1Skor}/${game1Target})`;
-                game1Feedback.className = 'h-12 text-xl font-semibold text-red-400';
-                button.classList.add('feedback-wrong', 'border-red-500');
-                game1ChoiceGrid.querySelectorAll('button').forEach(btn => {
-                    if(btn.dataset.name === game1Answer.name) btn.classList.add('border-green-500');
-                });
-            }
-            game1NextBtn.classList.remove('hidden');
-        }
-
-        game1NextBtn.addEventListener('click', () => {
-            if (level1Completed) {
-                showScreen('section-map');
-            } else {
-                loadGame1(); 
-            }
-        });
-
-        // --- LOGIKA GAME 2: DRAG & DROP (DIMODIFIKASI) ---
-        // (Tidak ada perubahan di logika Game 2)
-        const game2ItemBank = document.getElementById('game2-item-bank');
-        const game2Dropzones = document.querySelectorAll('.dropzone');
-        const game2ResetBtn = document.getElementById('game2-reset');
-        let game2Initialized = false;
-        let currentDraggedElement = null; 
-        let ghostElement = null; 
-        let touchOffsetX = 0; 
-        let touchOffsetY = 0; 
-        let game2ItemsToPlace = 8; 
-
-        function loadGame2() {
-            game2ItemsToPlace = 8; 
-            game2ItemBank.innerHTML = '';
-            game2Dropzones.forEach(zone => {
-                zone.querySelector('.drop-area').innerHTML = '';
-            });
-            const shuffledInstruments = [...galleryInfo];
-            shuffleArray(shuffledInstruments);
-            const gameItems = shuffledInstruments.slice(0, 8);
-            gameItems.forEach(instrument => {
-                const globalData = alatMusikData[instrument.name];
-                const item = document.createElement('img');
-                item.src = globalData.img; // Path lokal
-                item.alt = instrument.name;
-                item.title = instrument.name;
-                item.className = 'draggable-item w-16 h-16 object-contain bg-white/20 p-1 rounded-lg';
-                item.draggable = true;
-                item.dataset.name = instrument.name;
-                item.dataset.category = instrument.category;
-                item.addEventListener('dragstart', onDragStart);
-                item.addEventListener('dragend', onDragEnd);
-                item.addEventListener('touchstart', onTouchStart, { passive: false }); 
-                game2ItemBank.appendChild(item);
-            });
-            if (!game2Initialized) {
-                document.body.addEventListener('touchmove', onTouchMove, { passive: false });
-                document.body.addEventListener('touchend', onTouchEnd);
-            }
-        }
-        function onDragStart(event) {
-            currentDraggedElement = event.target;
-            event.dataTransfer.setData('text/plain', event.target.dataset.name);
-            event.dataTransfer.dropEffect = 'move';
-            setTimeout(() => event.target.classList.add('dragging'), 0);
-        }
-        function onDragEnd(event) {
-            if (event.target) event.target.classList.remove('dragging');
-            currentDraggedElement = null;
-        }
-        function onTouchStart(event) {
-            if (event.target.classList.contains('draggable-item')) {
-                currentDraggedElement = event.target;
-                currentDraggedElement.classList.add('dragging');
-                ghostElement = currentDraggedElement.cloneNode(true);
-                ghostElement.classList.add('ghost');
-                document.body.appendChild(ghostElement);
-                const touch = event.touches[0];
-                const rect = currentDraggedElement.getBoundingClientRect();
-                touchOffsetX = touch.clientX - rect.left;
-                touchOffsetY = touch.clientY - rect.top;
-                ghostElement.style.left = `${touch.clientX - touchOffsetX}px`;
-                ghostElement.style.top = `${touch.clientY - touchOffsetY}px`;
-            }
-        }
-        function onTouchMove(event) {
-            if (currentDraggedElement && ghostElement) {
-                event.preventDefault(); 
-                const touch = event.touches[0];
-                const x = touch.clientX, y = touch.clientY;
-                ghostElement.style.left = `${x - touchOffsetX}px`;
-                ghostElement.style.top = `${y - touchOffsetY}px`;
-                ghostElement.style.display = 'none';
-                const elementBelow = document.elementFromPoint(x, y);
-                ghostElement.style.display = ''; 
-                game2Dropzones.forEach(zone => {
-                    zone.classList.toggle('dropzone-over', zone === elementBelow || zone.contains(elementBelow));
-                });
-            }
-        }
-        function onTouchEnd(event) {
-            if (currentDraggedElement && ghostElement) {
-                document.body.removeChild(ghostElement);
-                ghostElement = null;
-                const touch = event.changedTouches[0];
-                const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-                let dropzone = null;
-                if (elementBelow) {
-                    dropzone = elementBelow.classList.contains('dropzone') ? elementBelow : elementBelow.closest('.dropzone');
-                }
-                if (dropzone) {
-                    handleDrop(currentDraggedElement, dropzone);
-                }
-                currentDraggedElement.classList.remove('dragging');
-                currentDraggedElement = null;
-                game2Dropzones.forEach(zone => zone.classList.remove('dropzone-over'));
-            }
-        }
-        game2Dropzones.forEach(zone => {
-            zone.addEventListener('dragover', (event) => {
-                event.preventDefault(); 
-                zone.classList.add('dropzone-over');
-                event.dataTransfer.dropEffect = 'move';
-            });
-            zone.addEventListener('dragleave', () => {
-                zone.classList.remove('dropzone-over');
-            });
-            zone.addEventListener('drop', (event) => {
-                event.preventDefault();
-                zone.classList.remove('dropzone-over');
-                if (currentDraggedElement) {
-                    handleDrop(currentDraggedElement, zone);
-                } else {
-                    const instrumentName = event.dataTransfer.getData('text/plain');
-                    const draggedItem = document.querySelector(`.draggable-item[data-name="${instrumentName}"]`);
-                    if(draggedItem) handleDrop(draggedItem, zone);
-                }
-            });
-        });
-        function handleDrop(item, dropzone) {
-            const instrumentCategory = item.dataset.category;
-            const zoneCategory = dropzone.dataset.category;
-            if (instrumentCategory === zoneCategory) {
-                dropzone.querySelector('.drop-area').appendChild(item);
-                item.draggable = false; 
-                item.classList.remove('dragging');
-                item.removeEventListener('touchstart', onTouchStart);
-                game2ItemsToPlace--; 
-                const soundUrl = alatMusikData[item.dataset.name].soundUrl; // Path lokal
-                if (!audioPlayer.paused) audioPlayer.pause();
-                audioPlayer.src = soundUrl;
-                audioPlayer.play().catch(e => console.error(e));
-                if (game2ItemsToPlace <= 0 && !level2Completed) {
-                    level2Completed = true;
-                    skor += 150;
-                    game2ItemBank.innerHTML = '<h2 class="text-2xl text-green-400 font-bold p-4">Level 2 Selesai! Kamu dapat 150 poin!</h2>';
-                    game2ResetBtn.textContent = 'Kembali ke Peta';
-                }
-            } else {
-                item.classList.add('feedback-wrong');
-                setTimeout(() => item.classList.remove('feedback-wrong'), 500);
-            }
-        }
-        game2ResetBtn.addEventListener('click', () => {
-            if (level2Completed) {
-                showScreen('section-map');
-            } else {
-                loadGame2(); 
-            }
-        });
-
-
-        // --- LOGIKA GAME 3: MEMORY GAME ---
-        // (Tidak ada perubahan di logika Game 3)
-        let game3Initialized = false;
-        const game3Grid = document.getElementById('game3-grid');
-        const game3Feedback = document.getElementById('game3-feedback');
-        const game3ResetBtn = document.getElementById('game3-reset');
-        const game3Popup = document.getElementById('game3-popup');
-        const game3BackBtn = document.getElementById('game3-back-btn');
-        
-        let game3Matches = 0;
-        const game3TotalMatches = 6;
-        let game3Locked = false;
-        let game3FirstCard = null;
-        let game3SecondCard = null;
-
-        function initGame3() {
-            loadGame3();
-            game3ResetBtn.addEventListener('click', loadGame3);
-            game3BackBtn.addEventListener('click', () => {
-                showScreen('section-map');
-                game3Popup.classList.add('hidden', 'opacity-0', '-translate-y-4');
-            });
-        }
-
-        function loadGame3() {
-            game3Matches = 0;
-            game3Locked = false;
-            game3FirstCard = null;
-            game3SecondCard = null;
-            game3Feedback.textContent = `Pasangan Ditemukan: 0 / ${game3TotalMatches}`;
-            game3Popup.classList.add('hidden', 'opacity-0', '-translate-y-4');
-            game3ResetBtn.textContent = 'Reset Game';
-            
-            const shuffledInstruments = [...galleryInfo];
-            shuffleArray(shuffledInstruments);
-            const gameCardsInfo = shuffledInstruments.slice(0, game3TotalMatches);
-            const cardPairs = [...gameCardsInfo, ...gameCardsInfo]; 
-            shuffleArray(cardPairs); 
-            
-            game3Grid.innerHTML = ''; 
-            cardPairs.forEach(instrument => {
-                const globalData = alatMusikData[instrument.name];
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.dataset.name = instrument.name;
-                card.innerHTML = `
-                    <div class="card-inner">
-                        <div class="card-front">
-                            <i class="fa-solid fa-music"></i>
-                        </div>
-                        <div class="card-back">
-                            <img src="${globalData.img}" alt="${instrument.name}">
-                        </div>
-                    </div>
-                `;
-                card.addEventListener('click', () => onCardClick(card));
-                game3Grid.appendChild(card);
-            });
-        }
-
-        function onCardClick(card) {
-            if (game3Locked || card.classList.contains('flipped') || card.classList.contains('matched') || level3Completed) return;
-            
-            card.classList.add('flipped');
-            
-            if (!game3FirstCard) {
-                game3FirstCard = card;
-                return;
-            }
-            
-            game3SecondCard = card;
-            game3Locked = true;
-            
-            checkGame3Match();
-        }
-
-        function checkGame3Match() {
-            const isMatch = game3FirstCard.dataset.name === game3SecondCard.dataset.name;
-            
-            if (isMatch) {
-                game3Matches++;
-                game3Feedback.textContent = `Pasangan Ditemukan: ${game3Matches} / ${game3TotalMatches}`;
-                
-                const soundUrl = alatMusikData[game3FirstCard.dataset.name].soundUrl; // Path lokal
-                if (!audioPlayer.paused) audioPlayer.pause();
-                audioPlayer.src = soundUrl;
-                audioPlayer.play().catch(e => console.error(e));
-
-                game3FirstCard.classList.add('matched');
-                game3SecondCard.classList.add('matched');
-                
-                if (game3Matches === game3TotalMatches) {
-                    level3Completed = true;
-                    skor += 200;
-                    game3ResetBtn.textContent = 'Main Lagi';
-                    setTimeout(() => {
-                        game3Popup.classList.remove('hidden', 'opacity-0', '-translate-y-4');
-                    }, 500);
-                }
-                
-                resetGame3Turn();
-
-            } else {
+            // Fungsi untuk menutup modal
+            const closeModal = () => {
+                modal.classList.add('opacity-0');
+                modalBox.classList.add('opacity-0', 'scale-95');
+                // Tunggu transisi selesai sebelum menyembunyikan
                 setTimeout(() => {
-                    game3FirstCard.classList.remove('flipped');
-                    game3SecondCard.classList.remove('flipped');
-                    resetGame3Turn();
-                }, 1000);
-            }
-        }
+                    modal.classList.add('hidden');
+                }, 300); // 300ms sesuai durasi transisi
+            };
 
-        function resetGame3Turn() {
-            game3FirstCard = null;
-            game3SecondCard = null;
-            game3Locked = false;
-        }
-
-
-        // --- LOGIKA GAME 4: CATCHING GAME ---
-        // (Tidak ada perubahan di logika Game 4)
-        let game4Initialized = false;
-        let game4Active = false; 
-        let game4AnimationId = null;
-        
-        const game4Canvas = document.getElementById('game4-canvas');
-        const game4Ctx = game4Canvas.getContext('2d');
-        const game4TargetNameEl = document.getElementById('game4-target-name');
-        const game4FeedbackEl = document.getElementById('game4-feedback');
-        const game4PlayTargetBtn = document.getElementById('game4-play-target');
-        const game4BackBtn = document.getElementById('game4-back-btn');
-        
-        let game4Images = {}; 
-        let game4Target = null;
-        let game4Score = 0;
-        const game4TargetScore = 5;
-        let game4Catcher = { x: game4Canvas.width / 2 - 40, y: game4Canvas.height - 30, width: 80, height: 20 };
-        let game4FallingItems = [];
-        let game4SpawnTimer = 0;
-
-        function initGame4() {
-            loadGame4Images();
-            resetGame4();
-            
-            game4Canvas.addEventListener('mousemove', moveCatcher);
-            game4Canvas.addEventListener('touchmove', moveCatcher, { passive: false });
-            
-            game4PlayTargetBtn.addEventListener('click', playTargetSound);
-            game4BackBtn.addEventListener('click', () => showScreen('section-map'));
-        }
-        
-        function loadGame4Images() {
-            galleryInfo.forEach(inst => {
-                const img = new Image();
-                img.src = alatMusikData[inst.name].img; // Path lokal
-                game4Images[inst.name] = img;
+            // Tambahkan event listener ke semua tombol "Story Game"
+            openModalButtons.forEach(button => {
+                button.addEventListener('click', openModal);
             });
-        }
-        
-        function resetGame4() {
-            game4Score = 0;
-            game4FallingItems = [];
-            game4Catcher.x = game4Canvas.width / 2 - 40;
-            game4BackBtn.classList.add('hidden');
-            game4FeedbackEl.textContent = `Tertangkap: 0 / ${game4TargetScore}`;
-            setNewGame4Target();
-        }
-        
-        function setNewGame4Target() {
-            const randomIndex = Math.floor(Math.random() * galleryInfo.length);
-            game4Target = galleryInfo[randomIndex];
-            game4TargetNameEl.textContent = game4Target.name;
-            playTargetSound();
-        }
-        
-        function playTargetSound() {
-            if (game4Target) {
-                if (!audioPlayer.paused) audioPlayer.pause();
-                audioPlayer.src = alatMusikData[gameTarge.name].soundUrl; // Path lokal
-                audioPlayer.play().catch(e => console.error(e));
-            }
-        }
-        
-        function moveCatcher(event) {
-            event.preventDefault();
-            let x;
-            if (event.touches) {
-                x = event.touches[0].clientX;
-            } else {
-                x = event.clientX;
-            }
-            const rect = game4Canvas.getBoundingClientRect();
-            let newX = x - rect.left - game4Catcher.width / 2;
-            if (newX < 0) newX = 0;
-            if (newX > game4Canvas.width - game4Catcher.width) newX = game4Canvas.width - game4Catcher.width;
-            game4Catcher.x = newX;
-        }
 
-        function game4Loop() {
-            if (!game4Active) return; 
-            
-            updateGame4();
-            drawGame4();
-            
-            if (!level4Completed) {
-                game4AnimationId = requestAnimationFrame(game4Loop);
-            }
-        }
-        
-        function updateGame4() {
-            game4FallingItems.forEach((item, index) => {
-                item.y += item.speed;
-                
-                if (item.y + item.height > game4Catcher.y &&
-                    item.x < game4Catcher.x + game4Catcher.width &&
-                    item.x + item.width > game4Catcher.x) 
-                {
-                    if (item.name === game4Target.name) {
-                        game4Score++;
-                        game4FeedbackEl.textContent = `Tertangkap: ${game4Score} / ${game4TargetScore}`;
-                        playTargetSound(); 
-                        
-                        if (game4Score >= game4TargetScore) {
-                            level4Completed = true;
-                            skor += 250;
-                            game4Active = false; 
-                            game4FeedbackEl.textContent = `Level 4 Selesai!`;
-                            game4BackBtn.classList.remove('hidden');
-                        }
-                    } else {
-                        // Salah
-                    }
-                    game4FallingItems.splice(index, 1); 
-                }
-                
-                if (item.y > game4Canvas.height) {
-                    game4FallingItems.splice(index, 1);
+            // Event listener untuk tombol tutup di dalam modal
+            closeModalBtn.addEventListener('click', closeModal);
+
+            // Event listener untuk menutup modal saat mengklik area overlay (di luar kotak modal)
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) {
+                    closeModal();
                 }
             });
-            
-            game4SpawnTimer++;
-            if (game4SpawnTimer > 100) { // Muncul setiap ~1.7 detik
-                game4SpawnTimer = 0;
-                const randomIndex = Math.floor(Math.random() * galleryInfo.length);
-                const randomInst = galleryInfo[randomIndex];
-                game4FallingItems.push({
-                    name: randomInst.name,
-                    x: Math.random() * (game4Canvas.width - 40),
-                    y: -40,
-                    width: 40,
-                    height: 40,
-                    speed: Math.random() * 2 + 1 
-                });
-            }
-        }
-        
-        function drawGame4() {
-            game4Ctx.clearRect(0, 0, game4Canvas.width, game4Canvas.height);
-            
-            game4Ctx.fillStyle = 'white';
-            game4Ctx.fillRect(game4Catcher.x, game4Catcher.y, game4Catcher.width, game4Catcher.height);
-            
-            game4FallingItems.forEach(item => {
-                const img = game4Images[item.name];
-                if (img && img.complete) {
-                    game4Ctx.drawImage(img, item.x, item.y, item.width, item.height);
-                } else {
-                    game4Ctx.fillStyle = 'gray';
-                    game4Ctx.fillRect(item.x, item.y, item.width, item.height);
+
+            // Event listener untuk menutup modal dengan tombol 'Escape'
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+                    closeModal();
                 }
             });
-        }
-
-
-        // --- EVENT LISTENER NAVIGASI UTAMA ---
-        
-        document.getElementById('map-btn-materi').addEventListener('click', () => showScreen('section-materi'));
-        document.getElementById('map-btn-level1').addEventListener('click', () => showScreen('section-game-1'));
-        document.getElementById('map-btn-level2').addEventListener('click', () => {
-            if (level1Completed) showScreen('section-game-2');
         });
-        document.getElementById('map-btn-level3').addEventListener('click', () => {
-            if (level2Completed) showScreen('section-game-3');
-        });
-        document.getElementById('map-btn-level4').addEventListener('click', () => {
-            if (level3Completed) showScreen('section-game-4');
-        });
-        document.getElementById('map-btn-final').addEventListener('click', () => {
-            if (level4Completed) showScreen('section-final');
-        });
-        
-        document.getElementById('resetBtn').addEventListener('click', resetGame);
-        document.getElementById('materi-back-btn').addEventListener('click', () => showScreen('section-map'));
-
-
-        // --- MULAI APLIKASI ---
-        
-        // Inisialisasi Vanta Waves (Background Laut 3D)
-        VANTA.WAVES({
-            el: "#vanta-bg",
-            mouseControls: true,
-            touchControls: true,
-            gyroControls: false,
-            minHeight: 200.00,
-            minWidth: 200.00,
-            scale: 1.00,
-            scaleMobile: 1.00,
-            color: 0x1e3a8a, 
-            shininess: 35.00,
-            waveHeight: 15.00,
-            waveSpeed: 0.70,
-            zoom: 0.80
-        });
-
-        init(); // Inisialisasi 3D Materi (di background)
-        showScreen('section-map'); // Tampilkan layar peta sebagai awal
-
     </script>
+
 </body>
 </html>
