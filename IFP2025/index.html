@@ -12,6 +12,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     
+    <!-- BARU: Memuat Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
     <script>
         // Konfigurasi Tailwind untuk font Inter dan mode gelap
         tailwind.config = {
@@ -69,7 +72,21 @@
             <h1 class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
                 BANGBIN MPI-II 2025
             </h1>
-            <p class="text-xl text-gray-400 mt-2">Pilih game untuk dimainkan</p>
+            <!-- DIUBAH: Subjudul diganti dan ditambahkan ikon -->
+            <div class="text-gray-400 mt-4 space-y-2">
+                <p class="text-lg">Bintang Adhi Permana</p>
+                <!-- BARU: Wadah untuk ikon berdampingan -->
+                <div class="flex items-center justify-center gap-5 pt-1">
+                    <!-- Tautan WhatsApp -->
+                    <a href="https://wa.me/6281310051985" target="_blank" rel="noopener noreferrer" class="transition-transform hover:scale-110" aria-label="WhatsApp">
+                        <i class="fab fa-whatsapp text-green-400 text-2xl"></i>
+                    </a>
+                    <!-- Tautan Website -->
+                    <a href="https://bangbin.web.app" target="_blank" rel="noopener noreferrer" class="transition-transform hover:scale-110" aria-label="Website">
+                        <i class="fas fa-star text-yellow-400 text-2xl"></i>
+                    </a>
+                </div>
+            </div>
         </header>
 
         <!-- Wadah Kartu Grid -->
