@@ -4,27 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pusat Alat Musik Interaktif</title>
-    
-    <!-- MENGGANTI TAILWIND DENGAN BOOTSTRAP 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    
-    <!-- Font Awesome untuk ikon -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- Font 'Luckiest Guy' -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
-    <!-- Font 'Fredoka One' untuk meniru style VersusPancasila -->
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+    <link href="style/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="style/fontawesome/css/all.min.css" rel="stylesheet">
+	<link href="style/bangbinFonts.css" rel="stylesheet">
+    <link rel="icon" href="bangbinImg/favicon.ico" type="image/x-icon">
 
     <style>
-        /* Mengatur font default & background */
-        /* Catatan: Kelas 'bg-gray-900', 'text-white', 'overflow-hidden' pada body akan diganti di HTML */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #1e3a8a; /* bg-blue-900 */
-            background-image: linear-gradient(to bottom, #3b82f6, #1e3a8a); /* from-blue-500 to-blue-900 */
+            font-family: 'Fredoka', sans-serif;
+            background-color: #1e3a8a; 
+            background-image: linear-gradient(to bottom, #3b82f6, #1e3a8a); 
             height: 100vh;
             display: flex;
             flex-direction: column;
@@ -65,18 +54,18 @@
             min-height: 100%; 
         }
 
-        /* Kelas BTN 3D Kustom (Dipertahankan) */
+        
         .btn-3d {
             background-color: #ffffff;
             color: #3b82f6;
             font-weight: 700;
             padding: 0.75rem 2rem;
             border-radius: 0.75rem;
-            border: none; /* Override Bootstrap default border */
+            border: none; 
             border-bottom: 5px solid #e2e8f0;
             transition: all 0.1s ease-in-out;
             transform: translateY(0);
-            box-shadow: none; /* Hapus shadow Bootstrap */
+            box-shadow: none; 
         }
         .btn-3d:hover {
             transform: translateY(-2px);
@@ -104,9 +93,9 @@
             border-bottom-color: #dc2626;
         }
 
-        /* --- STYLE PETA IKON & JUDUL UTAMA (Dipertahankan) --- */
+        
 
-        /* Kontainer untuk ikon-ikon peta */
+        
         .map-btn-container {
             position: relative;
             width: 95%; 
@@ -121,7 +110,7 @@
             border: none;
             padding: 0;
             cursor: pointer;
-            transition: transform 0.2s ease, filter 0.2s ease;
+            transition: transform 0.2s ease, filter 0.2s ease, opacity 0.3s ease; 
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -131,63 +120,79 @@
         }
         
         .map-btn .map-icon {
-            font-size: 4rem; /* Ukuran ikon */
-            color: #4CAF50; /* Warna hijau default */
+            font-size: 4rem; 
+            color: #f00639; 
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
-            animation: bounce 2s infinite ease-in-out; /* Animasi bouncing */
+            animation: bounce 2s infinite ease-in-out; 
             transition: filter 0.3s ease, color 0.3s ease;
-            position: relative; /* Untuk z-index yang benar */
+            position: relative; 
             z-index: 1;
         }
 
-        /* Variasi warna ikon */
-        .map-btn#map-btn-materi .map-icon { color: #2196F3; } /* Biru untuk Materi */
-        .map-btn#map-btn-final .map-icon { color: #FFC107; } /* Kuning untuk Selesai */
+        
+        .map-btn#map-btn-materi .map-icon { color: #2196F3; } 
+        .map-btn#map-btn-final .map-icon { color: #FFC107; } 
 
         .map-btn:hover:not(.locked) .map-icon {
-            transform: translateY(-5px); /* Sedikit naik saat hover */
+            transform: translateY(-5px); 
             filter: drop-shadow(0 6px 8px rgba(0,0,0,0.4));
-            animation-play-state: paused; /* Jeda animasi saat hover */
+            animation-play-state: paused; 
         }
         .map-btn:active:not(.locked) .map-icon {
-            transform: translateY(0px); /* Kembali ke posisi semula saat diklik */
+            transform: translateY(0px); 
             filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
             animation-play-state: paused;
         }
 
-        /* Teks di bawah ikon */
+        
         .map-btn .map-btn-text {
             margin-top: 0.5rem;
             color: white; 
             font-weight: 700;
             font-size: 1.1rem; 
-            pointer-events: none; /* Agar klik tembus ke tombol */
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Bayangan teks agar lebih terbaca */
+            pointer-events: none; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5); 
             transition: color 0.3s ease;
             position: relative;
             z-index: 2;
         }
+
         
-        /* Keyframes untuk animasi bounce */
+        .map-btn.locked {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .map-btn.locked .map-icon {
+            color: #888 !important; 
+            animation: none; 
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+        }
+        .map-btn.locked:hover .map-icon {
+            transform: none;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+        }
+        
+        
+        
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
         }
 
-        /* --- GAMBAR ALAS PETA --- */
+        
         .map-background-image {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             width: 100%;
-            max-width: 1800px; /* Batas maksimum agar tidak terlalu besar */
+            max-width: 1800px; 
             height: auto;
             z-index: 0; 
             pointer-events: none; 
         }
 
-        /* --- STYLE JUDUL UTAMA --- */
+        
         #main-title {
             font-family: 'Luckiest Guy', cursive;
             color: white;
@@ -209,7 +214,7 @@
             margin: 0; 
         }
 
-        /* --- Posisi Ikon Peta (Dipertahankan) --- */
+        
         #map-btn-materi { bottom: 20%; left: 25%; transform: translateX(-50%); }
         #map-btn-level1 { bottom: 40%; left: 32%; }
         #map-btn-level2 { top: 25%; left: 35%; transform: translateX(-50%); }		
@@ -217,7 +222,7 @@
         #map-btn-level4 { bottom: 37%; right: 20%; }
         #map-btn-final { bottom: 25%; right: 45%; }
         
-        /* --- STYLE BARU: TOMBOL NAVIGASI SAMPING (Sidebar Menu) --- */
+        
         .sidebar-menu {
             position: absolute;
             top: 25%;
@@ -228,10 +233,10 @@
             z-index: 20;
         }
         .sidebar-menu button {
-            background-color: #eab308; /* yellow */
-            color: #1e3a8a; /* dark blue */
+            background-color: #eab308; 
+            color: #1e3a8a; 
             font-weight: 700;
-            border: 3px solid #ca8a04; /* darker yellow */
+            border: 3px solid #ca8a04; 
             border-radius: 0.5rem;
             padding: 0.5rem 1rem;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
@@ -239,7 +244,7 @@
             width: 100%;
         }
         .sidebar-menu button:hover {
-            background-color: #f59e0b; /* slightly lighter yellow */
+            background-color: #f59e0b; 
             transform: scale(1.05);
         }
         .sidebar-menu button:active {
@@ -265,13 +270,13 @@
         }
 
 
-        /* Penyesuaian Responsif untuk Peta (Dipertahankan) */
+        
         @media (max-width: 768px) {
             .map-btn-container { height: 600px; }
             .map-btn { width: 80px; height: 80px; }
             .map-btn .map-icon { font-size: 3rem; }
             .map-btn .map-btn-text { font-size: 0.9rem; }
-            /* Memindahkan ikon di mode mobile agar tidak tabrakan dengan sidebar */
+            
             #map-btn-level1 { bottom: 80px; right: 20px; }
             #map-btn-level2 { top: 80px; right: 20px; }
             #map-btn-level3 { top: 20px; }
@@ -293,7 +298,7 @@
             #map-btn-materi { bottom: 40px; }
         }
 
-        /* --- STYLE BARU UNTUK GALERI MATERI 2D (Dipertahankan) --- */
+        
         .materi-card {
             background-color: rgba(255, 255, 255, 0.1);
             border: 2px solid rgba(255, 255, 255, 0.3);
@@ -321,14 +326,14 @@
             font-size: 1.1rem;
         }
         
-        /* Modal Info (DIPERBAIKI CSS) */
+        
         #infoModal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5); /* Overlay */
+            background-color: rgba(0,0,0,0.5); 
             z-index: 1000;
             display: flex;
             justify-content: center;
@@ -336,7 +341,7 @@
             animation: fadeIn 0.3s ease-out;
         }
         #infoModal.hidden {
-            display: none !important; /* Pastikan benar-benar hilang */
+            display: none !important; 
         }
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -344,7 +349,7 @@
         }
 
 
-        /* --- STYLE GAME 1: TEBAK SUARA (Dipertahankan) --- */
+        
         .game1-choice-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -363,7 +368,7 @@
             border-color: #3b82f6;
             transform: scale(1.05);
         }
-        /* Feedback untuk Game 1 */
+        
         .feedback-correct {
             animation: pulse-green 0.5s;
         }
@@ -380,7 +385,7 @@
             75% { transform: translateX(10px); }
         }
 
-        /* --- STYLE GAME 2: Drag & Drop (Dipertahankan) --- */
+        
         .dropzone {
             border: 2px dashed rgba(255, 255, 255, 0.5);
             min-height: 150px;
@@ -416,7 +421,7 @@
             cursor: default;
         }
         
-        /* --- STYLE GAME 3: MEMORY GAME (Dipertahankan) --- */
+        
         #game3-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr); 
@@ -456,7 +461,7 @@
         }
         .card-front i {
             font-size: 3rem;
-            color: #1e3a8a; /* <--- DIUBAH DARI 'white' menjadi biru tua */
+            color: #1e3a8a; 
             opacity: 0.8;
         }
         .card-back {
@@ -480,7 +485,7 @@
             transition: opacity 0.3s, transform 0.3s;
         }
 
-        /* --- STYLE GAME 4: CATCHING GAME (Dipertahankan) --- */
+        
         #game4-canvas {
             display: block;
             width: 100%;
@@ -492,14 +497,14 @@
             cursor: none; 
         }
         
-        /* --- STYLE TOMBOL HOME BARU --- */
+        
         .home-btn {
             position: absolute;
             top: 1rem;
             right: 1rem;
             z-index: 100;
-            font-size: 1.5rem; /* Ukuran ikon */
-            padding: 0.5rem 0.8rem; /* Padding agar mudah diklik */
+            font-size: 1.5rem; 
+            padding: 0.5rem 0.8rem; 
             line-height: 1;
         }
         @media (min-width: 768px) {
@@ -510,22 +515,21 @@
             }
         }
 
-        /* ============================================== */
-        /* START: STYLE KHUSUS MODAL PROFIL (Sesuai VersusPancasila) */
-        /* ============================================== */
+        
+        
         
         .modal-profile-content {
-            background: linear-gradient(135deg, #4e54c8, #8f94fb) !important; /* Biru Ungu */
+            background: linear-gradient(135deg, #4e54c8, #8f94fb) !important; 
             color: white !important;
             padding: 25px !important;
             border-radius: 15px !important;
             box-shadow: 0 15px 40px rgba(0,0,0,0.3) !important;
             position: relative;
             text-align: left;
-            overflow: hidden; /* Kontainer */
+            overflow: hidden; 
         }
         
-        /* Overlay agar teks di atas gambar latar belakang lebih jelas */
+        
         .modal-profile-content::before {
             content: '';
             position: absolute;
@@ -533,17 +537,17 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.1); /* Sedikit gelap */
+            background: rgba(0,0,0,0.1); 
             z-index: 1;
         }
 
         .modal-main-content-profile {
             position: relative;
-            z-index: 2; /* Pastikan konten ini ada di lapisan atas */
+            z-index: 2; 
             display: flex;
             align-items: center;
             width: 100%;
-            padding: 10px; /* Tambahkan padding agar tidak terlalu mepet */
+            padding: 10px; 
             box-sizing: border-box;
         }
 
@@ -558,7 +562,7 @@
             display: flex; 
             justify-content: center;
             align-items: center;
-            border: 4px solid white; /* Border putih */
+            border: 4px solid white; 
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
         }
 
@@ -593,7 +597,7 @@
         }
 
         .social-icons .fab:hover {
-            color: #F1C40F; /* Warna berubah menjadi kuning saat disentuh mouse */
+            color: #F1C40F; 
             animation: icon-wobble 0.6s ease-in-out; 
         }
 
@@ -615,10 +619,10 @@
             z-index: 0; 
             object-fit: cover; 
             width: auto; 
-            transform: translateX(20%); /* Pindahkan sedikit ke kanan */
+            transform: translateX(20%); 
         }
 
-        /* Responsive adjustments for profile modal */
+        
         @media (max-width: 768px) {
             .modal-main-content-profile {
                 flex-direction: column; 
@@ -648,91 +652,91 @@
                 transform: translate(-50%, -50%);
             }
         }
-        /* ============================================== */
-        /* END: STYLE KHUSUS MODAL PROFIL */
-        /* ============================================== */
+        
+        
+        
 
     </style>
 </head>
 <body class="bg-gray-900 text-white overflow-hidden">
     
-    <!-- KONTEN UTAMA (CONTAINER SECTION) -->
+    
     <main class="w-100 position-relative">
         <section id="section-map" class="section-content" style="position: relative;">
             <div class="screen-container position-relative" style="z-index: 2;">
                 
                 <div class="map-btn-container">
-                    <!-- GAMBAR ALAS PETA -->
-                    <img src="https://lh3.googleusercontent.com/d/1PM0BCRh4kZJkTXa52losFAU_C_-do-0B" alt="Alas Peta" class="map-background-image">
+                    
+                    <img src="bangbinImg/BangbinBg.png" alt="Alas Peta" class="map-background-image">
                     
                     <h1 id="main-title" class="fs-1 fs-md-0 fw-bold">Instrumen Musik Interaktif</h1>
 
-                    <!-- Tombol Materi (dengan ikon) -->
+                    
                     <button id="map-btn-materi" class="map-btn">
                         <i class="fa-solid fa-location-dot map-icon"></i>
                         <span class="map-btn-text">Mulai</span>
                     </button>
-                    <!-- Tombol Level 1 (dengan ikon) -->
+                    
                     <button id="map-btn-level1" class="map-btn">
                         <i class="fa-solid fa-location-dot map-icon"></i>
                         <span class="map-btn-text">Level 1</span>
                     </button>
                     
-                    <!-- Tombol Level 2 -->
+                    
                     <button id="map-btn-level2" class="map-btn">
                         <i class="fa-solid fa-location-dot map-icon"></i>
                         <span class="map-btn-text">Level 2</span>
                     </button>
-                    <!-- Tombol Level 3 -->
+                    
                     <button id="map-btn-level3" class="map-btn">
                         <i class="fa-solid fa-location-dot map-icon"></i>
                         <span class="map-btn-text">Level 3</span>
                     </button>
-                    <!-- Tombol Level 4 -->
+                    
                     <button id="map-btn-level4" class="map-btn">
                         <i class="fa-solid fa-location-dot map-icon"></i>
                         <span class="map-btn-text">Level 4</span>
                     </button>
-                    <!-- Tombol Final -->
+                    
                     <button id="map-btn-final" class="map-btn">
                         <i class="fa-solid fa-location-dot map-icon"></i>
                         <span class="map-btn-text">Selesai</span>
                     </button>
                 </div>
                 
-                <!-- START: SIDEBAR MENU BARU -->
+                
                 <div class="sidebar-menu">
-                    <!-- Target Button -->
+                    
                     <button type="button" data-bs-toggle="modal" data-bs-target="#infoModalPurpose">
                         <i class="fa-solid fa-bullseye me-2"></i> Tujuan
                     </button>
                     
-                    <!-- Instruction Button -->
+                    
                     <button type="button" data-bs-toggle="modal" data-bs-target="#infoModalInstructions">
                         <i class="fa-solid fa-hand-pointer me-2"></i> Petunjuk
                     </button>
                     
-                    <!-- Library Button -->
+                    
                     <button type="button" data-bs-toggle="modal" data-bs-target="#infoModalLibrary">
                         <i class="fa-solid fa-book-open-reader me-2"></i> Pustaka
                     </button>
                     
-                    <!-- Profile Button -->
+                    
                     <button type="button" data-bs-toggle="modal" data-bs-target="#infoModalProfile">
                         <i class="fa-solid fa-circle-user me-2"></i> Profil
                     </button>
                 </div>
-                <!-- END: SIDEBAR MENU BARU -->
+                
 
             </div>
         </section>
 
 
-        <!-- ===== SECTION 1: MATERI 2D (KONVERSI) ===== -->
+        
         <section id="section-materi" class="section-content hidden">
-            <!-- Wrapper untuk semua konten (termasuk grid) agar bisa scroll -->
+            
             <div class="w-100 h-100 overflow-auto p-4 p-md-5">
-                <!-- Konten Teks di Atas -->
+                
                 <div class="content-wrapper text-center mb-4 mb-md-5">
                     <h1 class="fs-1 fs-md-0 fw-bold mb-2 text-shadow-lg text-white">Galeri Alat Musik</h1>
                     <p class="fs-5 fs-md-4 text-white mb-4">Klik pada alat musik untuk melihat informasi.</p>
@@ -741,19 +745,19 @@
                     </button>
                 </div>
                 
-                <!-- GRID GALERI 2D -->
+                
                 <div id="materi-grid" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-4 g-3 g-md-4 mx-auto pb-5" style="max-width: 1200px;">
-                    <!-- Akan diisi oleh JavaScript -->
+                    
                 </div>
             </div>
 
-            <!-- Modal Informasi GALERI (DIJAGA DENGAN ID LAMA) -->
+            
             <div id="infoModal" class="hidden">
                 <div class="modal-dialog modal-dialog-centered w-100 m-3" style="max-width: 500px; transform: none;">
                     <div class="modal-content text-dark rounded-4 shadow-lg p-3 p-md-4" style="background-color: white;">
                         <button id="closeModal" class="btn-close position-absolute top-0 end-0 m-3" style="font-size: 1.5rem; opacity: 0.8;"></button>
                         <div class="d-flex flex-column flex-md-row align-items-center gap-4">
-                            <!-- Data atribut ditambahkan untuk fallback yang lebih baik -->
+                            
                             <img id="modalImage" src="" alt="Alat Musik" data-name="Nama Alat" class="w-25 h-25 w-md-30 h-md-30 object-fit-contain flex-shrink-0 rounded-3" 
                                 onerror="this.src='https://placehold.co/128x128/e2e8f0/94a3b8?text=' + encodeURIComponent(this.dataset.name).substring(0, 10); this.style.fontSize='10px'; this.style.fontWeight='bold'; this.style.objectFit='contain';">
                             <div class="text-center text-md-start w-100">
@@ -774,9 +778,9 @@
             </div>
         </section>
 
-        <!-- ===== SECTION 2: GAME 1 (LEVEL 1) (KONVERSI) ===== -->
+        
         <section id="section-game-1" class="section-content hidden p-4 p-md-5 text-white">
-            <!-- Tombol Home Baru -->
+            
             <button class="btn-3d yellow home-btn" data-target-screen="section-map">
                 <i class="fa-solid fa-house"></i>
             </button>
@@ -787,21 +791,21 @@
                     <p class="fs-5 text-white mb-4">Dengarkan suara, lalu pilih gambar alat musik yang tepat. (Menang: 3 Benar)</p>
                     
                     <div class="bg-light bg-opacity-10 p-4 p-md-5 rounded-4 shadow-lg">
-                        <!-- Tombol untuk memutar suara -->
+                        
                         <button id="game1-play-sound" class="btn btn-primary fw-bold py-3 px-5 rounded-3 d-flex align-items-center justify-content-center gap-3 fs-5 mx-auto mb-4">
                             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
                             Mainkan Suara
                         </button>
 
-                        <!-- Grid Pilihan Jawaban -->
+                        
                         <div id="game1-choice-grid" class="game1-choice-grid mb-3">
-                            <!-- Pilihan akan diisi oleh JavaScript -->
+                            
                         </div>
 
-                        <!-- Feedback -->
+                        
                         <div id="game1-feedback" class="h-auto fs-5 fw-semibold mb-3"></div>
 
-                        <!-- Tombol Next -->
+                        
                         <button id="game1-next" class="btn btn-success fw-bold py-3 px-5 rounded-3 fs-5 d-none">
                             Lanjut!
                         </button>
@@ -810,9 +814,9 @@
             </div>
         </section>
 
-        <!-- ===== SECTION 3: GAME 2 (LEVEL 2) (KONVERSI) ===== -->
+        
         <section id="section-game-2" class="section-content hidden p-4 p-md-5 text-white">
-            <!-- Tombol Home Baru -->
+            
             <button class="btn-3d yellow home-btn" data-target-screen="section-map">
                 <i class="fa-solid fa-house"></i>
             </button>
@@ -823,7 +827,7 @@
                     <p class="fs-5 text-white mb-4">Drag and drop (atau seret) 8 alat musik ke kategori yang benar.</p>
                 </div>
 
-                <!-- Area Dropzone -->
+                
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-5 g-3 mb-4">
                     <div class="col">
                         <div class="dropzone rounded-3 p-3" data-category="Dipukul">
@@ -857,10 +861,10 @@
                     </div>
                 </div>
 
-                <!-- Area Draggable -->
+                
                 <h2 class="fs-3 fw-bold text-center mb-3 text-white">Alat Musik</h2>
                 <div id="game2-item-bank" class="bg-light bg-opacity-10 p-4 rounded-4 shadow-lg min-vh-15 d-flex flex-wrap justify-content-center align-items-center gap-3">
-                    <!-- Item akan diisi oleh JavaScript -->
+                    
                 </div>
                 
                 <div class="text-center mt-4">
@@ -872,9 +876,9 @@
             </div>
         </section>
 
-        <!-- ===== SECTION BARU: GAME 3 (LEVEL 3) (KONVERSI) ===== -->
+        
         <section id="section-game-3" class="section-content hidden p-4 p-md-5 text-white">
-            <!-- Tombol Home Baru -->
+            
             <button class="btn-3d yellow home-btn" data-target-screen="section-map">
                 <i class="fa-solid fa-house"></i>
             </button>
@@ -885,17 +889,17 @@
                     <p class="fs-5 text-white mb-4">Cari 6 pasang alat musik yang sama!</p>
                     
                     <div class="bg-light bg-opacity-10 p-4 p-md-5 rounded-4 shadow-lg">
-                        <!-- Status Game 3 -->
+                        
                         <div id="game3-feedback" class="h-auto fs-4 fw-semibold mb-4 text-white">
                             Pasangan Ditemukan: 0 / 6
                         </div>
                         
-                        <!-- Grid Kartu -->
+                        
                         <div id="game3-grid" class="mb-4">
-                            <!-- Kartu akan diisi oleh JavaScript -->
+                            
                         </div>
                         
-                        <!-- Tombol Reset/Kembali -->
+                        
                         <button id="game3-reset" class="btn-3d yellow fs-5">
                             <i class="fa-solid fa-arrows-rotate me-2"></i> Reset Game
                         </button>
@@ -903,13 +907,13 @@
                 </div>
             </div>
             
-            <!-- ===== MODAL LEVEL 3 TELAH DIHAPUS ===== -->
+            
 
         </section>
         
-        <!-- ===== SECTION BARU: GAME 4 (LEVEL 4) (KONVERSI) ===== -->
+        
         <section id="section-game-4" class="section-content hidden p-4 p-md-5 text-white">
-            <!-- Tombol Home Baru -->
+            
             <button class="btn-3d yellow home-btn" data-target-screen="section-map">
                 <i class="fa-solid fa-house"></i>
             </button>
@@ -920,7 +924,7 @@
                     <p class="fs-5 text-white mb-4">Dengarkan suara target, lalu tangkap 5 alat musik yang sesuai!</p>
                     
                     <div class="bg-light bg-opacity-10 p-4 p-md-5 rounded-4 shadow-lg">
-                        <!-- Status Game 4 -->
+                        
                         <div class="d-flex flex-column flex-sm-row justify-content-around align-items-center mb-4 gap-3">
                             <button id="game4-play-target" class="btn-3d fs-5">
                                 <i class="fa-solid fa-volume-high me-2"></i> Target: <span id="game4-target-name">...</span>
@@ -930,10 +934,10 @@
                             </div>
                         </div>
                         
-                        <!-- Canvas Game -->
+                        
                         <canvas id="game4-canvas" width="600" height="450" class="shadow-lg">Browser Anda tidak mendukung canvas.</canvas>
                         
-                        <!-- Tombol Reset/Kembali (muncul setelah menang) -->
+                        
                         <button id="game4-back-btn" class="d-none btn-3d green fs-5 mt-4">
                             <i class="fa-solid fa-map me-2"></i> Kembali ke Peta
                         </button>
@@ -942,7 +946,7 @@
             </div>
         </section>
         
-        <!-- ===== SECTION BARU: FINAL SCREEN (KONVERSI) ===== -->
+        
         <section id="section-final" class="section-content hidden">
             <div class="screen-container position-relative" style="z-index: 2;">
                 <div class="bg-light bg-opacity-10 p-5 p-md-5 rounded-4 shadow-lg" style="max-width: 500px;">
@@ -967,12 +971,8 @@
 
 
     </main>
-    
-    <!-- ============================================== -->
-    <!-- START: MODAL BARU UNTUK NAVIGASI SAMPING -->
-    <!-- ============================================== -->
 
-    <!-- Modal Tujuan -->
+    
     <div class="modal fade" id="infoModalPurpose" tabindex="-1" aria-labelledby="infoModalPurposeLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-white text-dark rounded-4 shadow-lg">
@@ -996,7 +996,7 @@
       </div>
     </div>
     
-    <!-- Modal Petunjuk -->
+    
     <div class="modal fade" id="infoModalInstructions" tabindex="-1" aria-labelledby="infoModalInstructionsLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-white text-dark rounded-4 shadow-lg">
@@ -1022,7 +1022,7 @@
       </div>
     </div>
 
-    <!-- Modal Pustaka (Informasi Aset) -->
+    
     <div class="modal fade" id="infoModalLibrary" tabindex="-1" aria-labelledby="infoModalLibraryLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-white text-dark rounded-4 shadow-lg">
@@ -1033,10 +1033,15 @@
           <div class="modal-body pt-2">
             <p>Aplikasi ini dibuat untuk tujuan edukasi. Sumber daya aset yang digunakan meliputi:</p>
             <ul>
-                <li><strong>Gambar Alat Musik:</strong> Menggunakan aset gambar lokal (`bangbinImg/`).</li>
-                <li><strong>File Suara:</strong> Menggunakan aset audio lokal (`music/`).</li>
-                <li>**Sound Effects:** Efek suara tombol menggunakan file `music/tombolBangbin.wav`.</li> <!-- BARU -->
-                <li><strong>Desain:</strong> Menggunakan kerangka kerja Bootstrap 5 dan ikon dari Font Awesome.</li>
+								<li>Font Awesome. (2025). *Ikon Vektor*. Diakses dari https://fontawesome.com</li>
+								<li>Bootstrap. (2025). *CSS Framework*. Diakses dari https://getbootstrap.com</li>
+								<li>Google Fonts. (2025). *Fredoka Font Family*. Diakses dari https://fonts.google.com</li>
+                                <li>
+                                    Google Gemini. (2025). *Aset Gambar Digital*. Generate dari https://gemini.ai
+                                </li>
+                                <li>
+                                    Pixabay. (2025). *Efek Suara dan Musik Latar*. Diakses dari https://pixabay.com/sound-effects/
+                                </li>
             </ul>
           </div>
           <div class="modal-footer border-0 pt-0">
@@ -1046,1120 +1051,53 @@
       </div>
     </div>
     
-    <!-- Modal Profil (Telah di-update dengan template VersusPancasila) -->
+    
     <div class="modal fade" id="infoModalProfile" tabindex="-1" aria-labelledby="infoModalProfileLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" style="max-width: 700px;">
         <div class="modal-content modal-profile-content rounded-4 shadow-lg">
           
-          <!-- Tombol Tutup (Style disesuaikan agar kontras dengan latar belakang gelap) -->
+          
           <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close" 
                   style="font-size: 1.5rem; opacity: 1; filter: invert(100%); z-index: 3;"></button>
 
-          <!-- Konten Utama (di atas gambar latar) -->
+          
           <div class="modal-main-content-profile">
-              <!-- Profil Picture Container (dengan efek 3D) -->
+              
               <div class="profile-pic-container" id="profile-pic-container">
-                  <!-- Gambar disesuaikan dengan direktori yang ada -->
+                  
                   <img id="profile-pic" 
-                       src="https://lh3.googleusercontent.com/d/1tFGMHXxFlkz5Ij0nHbxddt4aF-MfnTio" 
+                       src="bangbinImg/Bangbin.jpg" 
                        alt="Foto Profil" 
                        onerror="this.src='https://placehold.co/120x120/4e54c8/ffffff?text=PROFILE'; this.style.fontSize='10px';">
               </div>
               
-              <!-- Teks Profil -->
               <div class="profile-text" style="flex-grow: 1;">
-                  <h2 class="text-white mb-1" style="color: white !important; font-family: 'Fredoka One', cursive;">PENGEMBANG APLIKASI</h2>
-                  <h2 class="text-white mb-2" style="color: white !important; font-family: 'Fredoka One', cursive;">BINTANG ADHI PERMANA</h2>
+                  <h2 class="text-white mb-1" style="color: white !important; font-family: 'Fredoka One', cursive;">Pengembang</h2>
+                  <h2 class="text-white mb-2" style="color: white !important; font-family: 'Fredoka One', cursive;">Bintang Adhi Permana</h2>
                   <p class="mb-1">SDN Lubang Buaya 01, Jakarta Timur</p>
                   <p class="mb-2 fw-bold" style="font-size: 0.9em; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 5px;">Kontak:</p>
                   
                   <div class="social-icons" style="font-size: 1.8em; display: flex; gap: 15px;">
-                      <!-- Tautan Media Sosial -->
-                      <a href="https://www.facebook.com/bintang.a.permana.1/" target="_blank" style="color: white; text-decoration: none;"><i class="fab fa-facebook"></i></a>
-                      <a href="https://www.youtube.com/@Bangbin_1" target="_blank" style="color: white; text-decoration: none;"><i class="fab fa-youtube"></i></a>
-                      <a href="https://wa.me/6281310051985" target="_blank" style="color: white; text-decoration: none;"><i class="fab fa-whatsapp"></i></a>
+                      <a href="https.www.facebook.com/bintang.a.permana.1/" target="_blank" style="color: white; text-decoration: none;"><i class="fab fa-facebook"></i></a>
+                      <a href="https.www.youtube.com/@Bangbin_1" target="_blank" style="color: white; text-decoration: none;"><i class="fab fa-youtube"></i></a>
+                      <a href="https.wa.me/6281310051985" target="_blank" style="color: white; text-decoration: none;"><i class="fab fa-whatsapp"></i></a>
                   </div>
               </div>
           </div>
           
-          <!-- Gambar Latar Belakang (Contoh Gambar dari VersusPancasila) -->
-          <img src="https://lh3.googleusercontent.com/d/1ivUN8B8xdd4R8Kef_-wEqNx56_eeUv4w" 
+          <img src="bangbinImg/bangbin.png" 
                alt="Background Wave" 
                class="modal-bg-image-profile"
                onerror="this.style.display='none';">
-
         </div>
       </div>
     </div>
-    
-    <!-- ============================================== -->
-    <!-- END: MODAL BARU UNTUK NAVIGASI SAMPING -->
-    <!-- ============================================== -->
-
-    <!-- Elemen Audio Player (Tersembunyi) -->
     <audio id="audioPlayer" preload="auto"></audio>
-    <!-- Player baru untuk Efek Suara (SFX) -->
     <audio id="sfxPlayer" preload="auto"></audio>
+    <script src="style/bootstrap.bundle.min.js"></script>
 
-    <!-- MENGGANTI TAILWIND DENGAN BOOTSTRAP 5 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
-    <script>
-        // --- DATA ASET GLOBAL ---
-        // Catatan: Aset Path tetap menggunakan path lokal 'bangbinImg' dan 'music', sesuai dengan file asli.
-        const alatMusikData = {
-			"Gendang":       { img: "bangbinImg/Kendang.png", soundUrl: "music/drum.mp3" },
-			"Suling":        { img: "bangbinImg/Suling.png", soundUrl: "music/Suling.mp3" },
-			"Sasando":       { img: "bangbinImg/Sasando.png", soundUrl: "music/Sasando.mp3" },
-			"Arbab":         { img: "bangbinImg/Arbab.png", soundUrl: "music/Arbab.mp3" },
-            "Gamelan":       { img: "bangbinImg/Gamelan.png", soundUrl: "music/Gamelan.mp3" },
-            "Genggong":      { img: "bangbinImg/Genggong.png", soundUrl: "music/Genggong.mp3" },
-            "Kurinding":     { img: "bangbinImg/Kurinding.png", soundUrl: "music/Kurinding.mp3" },
-            "Kolintang":     { img: "bangbinImg/Kolintang.png", soundUrl: "music/Kolintang.mp3" },
-            "Kecapi":        { img: "bangbinImg/Kecapi.png", soundUrl: "music/Kecapi.mp3" },
-            "Angklung":      { img: "bangbinImg/Angklung.png", soundUrl: "music/Angklung.mp3" },
-            "Antoneng":      { img: "bangbinImg/Antoneng.png", soundUrl: "music/Antoneng.mp3" },
-            "Keledi":        { img: "bangbinImg/Keledi.png", soundUrl: "music/Keledi.mp3" },
-        };
-        
-        // --- ASET SFX BARU ---
-        const SFX_BUTTON_HOVER = 'music/tombolBangbin.wav';
-
-
-        // --- DATA SPESIFIK GALERI ---
-        const galleryInfo = [
-            { name: "Gendang", jenis: "Membranofon", cara: "Dipukul dengan telapak tangan di kedua sisinya.", asal: "Indonesia (Jawa, Sunda, Bali)", category: "Dipukul", deskripsi: "Instrumen inti dalam gamelan, berfungsi sebagai pengatur tempo dan ritme." },
-            { name: "Suling", jenis: "Aerofon", cara: "Ditiup pada lubang tiup, jari-jari menutup lubang untuk mengubah nada.", asal: "Indonesia (Sunda, Jawa, Bali)", category: "Ditiup", deskripsi: "Sering digunakan dalam musik Kecapi Suling (Sunda) atau sebagai melodi dalam gamelan." },
-            { name: "Sasando", jenis: "Kordofon (Zither tabung)", cara: "Dipetik senar-senarnya dengan kedua tangan.", asal: "Indonesia (Pulau Rote, NTT)", category: "Dipetik", deskripsi: "Menggunakan resonator unik dari daun lontar kering yang melengkung." },
-            { name: "Kecapi", jenis: "Kordofon (Zither kotak)", cara: "Dipetik senar-senarnya dengan kuku atau plektrum.", asal: "Indonesia (Sunda)", category: "Dipetik", deskripsi: "Merupakan alat musik utama dalam tembang Sunda dan Cianjuran. Memiliki bentuk kotak resonansi." },
-            { name: "Arbab", jenis: "Kordofon (Spike fiddle)", cara: "Digesek dengan busur (bow), dimainkan dalam posisi tegak.", asal: "Indonesia (Aceh)", category: "Digesek", deskripsi: "Sering digunakan untuk mengiringi cerita atau nyanyian tradisional Aceh." },
-            { name: "Gamelan", jenis: "Ansambel (Idiofon, dll.)", cara: "Dimainkan bersama oleh banyak orang (dipukul).", asal: "Indonesia (Jawa, Bali)", category: "Dipukul", deskripsi: "Ansambel musik kaya tekstur berdasarkan tangga nada pelog dan slendro." },
-            { name: "Genggong", jenis: "Idiofon (Harpa mulut)", cara: "Bingkai ditempelkan ke bibir, bilah digetarkan sambil mengubah rongga mulut.", asal: "Indonesia (Bali, Jawa, Lombok)", category: "Ditiup", deskripsi: "Menghasilkan suara dengungan unik, sering dimainkan untuk hiburan." },
-            { name: "Kurinding", jenis: "Idiofon (Harpa mulut)", cara: "Diletakkan di mulut dan bilah getarnya dipetik atau ditarik.", asal: "Indonesia (Kalimantan Selatan)", category: "Ditiup", deskripsi: "Terbuat dari bambu atau pelepah enau, digunakan untuk musik hiburan atau ritual." },
-            { name: "Kolintang", jenis: "Idiofon (Xilofon)", cara: "Bilah-bilah kayu bernada dipukul dengan pemukul khusus.", asal: "Indonesia (Minahasa, Sulawesi Utara)", category: "Dipukul", deskripsi: "Dimainkan secara ansambel, mirip gamelan, oleh beberapa pemain." },
-            { name: "Angklung", jenis: "Idiofon", cara: "Digoyangkan sehingga tabung bambu membentur bingkai.", asal: "Indonesia (Sunda, Jawa Barat)", category: "Diguncang", deskripsi: "Satu angklung = satu nada. Membutuhkan kerjasama tim untuk memainkan melodi." },
-            { name: "Antoneng", jenis: "Kordofon (Zither tabung)", cara: "Senar dari bilah kulit bambu (dicungkil dari badan) dipetik.", asal: "Indonesia (Dayak, Kalimantan)", category: "Dipetik", deskripsi: "Zither tabung sederhana yang sering dimainkan untuk hiburan pribadi." },
-            { name: "Keledi", jenis: "Aerofon (Organ mulut)", cara: "Ditiup/dihisap melalui labu kering, jari menutup lubang pipa bambu.", asal: "Indonesia (Dayak, Kalimantan Barat)", category: "Ditiup", deskripsi: "Menghasilkan suara mirip organ dari beberapa pipa bambu dalam labu kering." },
-        ];
-        
-        // --- LOGIKA GLOBAL ---
-        const audioPlayer = document.getElementById('audioPlayer');
-        const sfxPlayer = document.getElementById('sfxPlayer'); // <-- SFX Player
-        const sections = document.querySelectorAll('.section-content');
-
-        // Fungsi utilitas untuk mendapatkan URL Placeholder (Dipertahankan)
-        function getPlaceholderUrl(name, width, height) {
-            const cleanName = encodeURIComponent(name.replace(/\s+/g, '_').substring(0, 10));
-            return `https://placehold.co/${width}x${height}/e2e8f0/94a3b8?text=${cleanName}`;
-        }
-        
-        // --- Fungsi untuk memutar SFX ---
-        function playGameSound(soundFile) {
-            // Hentikan audio instrumen
-            audioPlayer.pause();
-            audioPlayer.currentTime = 0;
-            
-            // Putar SFX
-            sfxPlayer.src = `music/${soundFile}`;
-            sfxPlayer.currentTime = 0;
-            sfxPlayer.play().catch(e => console.error(`Gagal memutar SFX: ${e}`));
-        }
-        
-        // --- Fungsi untuk memutar Suara Instrumen ---
-        function playInstrumentSound(soundUrl) {
-            // Hentikan SFX
-            sfxPlayer.pause();
-            sfxPlayer.currentTime = 0;
-            
-            // Putar audio instrumen
-            if (!audioPlayer.paused) audioPlayer.pause();
-            audioPlayer.src = soundUrl;
-            audioPlayer.play().catch(error => console.error("Gagal memutar suara lokal:", error));
-        }
-        
-        // --- LOGIKA HOVER SOUND BARU ---
-        // Menggunakan Audio API murni untuk memutar SFX hover tanpa mengganggu pemain utama
-        const hoverAudio = new Audio(SFX_BUTTON_HOVER);
-        hoverAudio.volume = 0.5; // Set volume lebih rendah
-
-        function playHoverSound() {
-            // Cek status readyState sebelum memutar
-            if (hoverAudio.readyState >= 2) {
-                // Hentikan dan putar ulang jika sedang diputar agar efek terasa instan
-                hoverAudio.currentTime = 0;
-                hoverAudio.play().catch(e => {
-                    // console.log("Gagal memutar hover sound (mungkin masalah interaksi pengguna):", e);
-                });
-            } else {
-                // Coba muat jika belum siap
-                hoverAudio.load();
-                hoverAudio.play().catch(e => {});
-            }
-        }
-        
-        // Fungsi untuk menerapkan event listener hover ke elemen
-        function addHoverSound(element) {
-            if (element && element.tagName !== 'INPUT' && element.tagName !== 'TEXTAREA') {
-                element.addEventListener('mouseenter', playHoverSound);
-            }
-        }
-        
-        // Fungsi untuk menerapkan hover sound secara massal
-        function applyHoverSoundsToAllInteractiveElements() {
-            // 1. Tombol Peta
-            document.querySelectorAll('.map-btn').forEach(addHoverSound);
-            
-            // 2. Tombol Sidebar Navigasi
-            document.querySelectorAll('.sidebar-menu button').forEach(addHoverSound);
-            
-            // 3. Tombol Game Umum (.btn-3d, .btn-primary, .btn-success, dll)
-            // Tombol dengan kelas btn-3d
-            document.querySelectorAll('.btn-3d').forEach(addHoverSound);
-            // Tombol di Game 1
-            document.getElementById('game1-play-sound')?.addEventListener('mouseenter', playHoverSound);
-            document.getElementById('game1-next')?.addEventListener('mouseenter', playHoverSound);
-            document.querySelectorAll('.game1-choice-btn').forEach(addHoverSound);
-            
-            // 4. Kartu Galeri
-            document.querySelectorAll('.materi-card').forEach(addHoverSound);
-            
-            // 5. Elemen Kontrol Modal (di modal Galeri)
-            document.getElementById('closeModal')?.addEventListener('mouseenter', playHoverSound);
-            document.getElementById('playSoundBtn')?.addEventListener('mouseenter', playHoverSound);
-            
-            // 6. Elemen Game 2 (Draggable Items dan Reset Button)
-            document.getElementById('game2-reset')?.addEventListener('mouseenter', playHoverSound);
-            // Draggable items di loadGame2, jadi tidak perlu di sini
-            
-            // 7. Elemen Game 3 (Memory Cards dan Reset Button)
-            document.getElementById('game3-reset')?.addEventListener('mouseenter', playHoverSound);
-            // Memory cards di loadGame3, jadi tidak perlu di sini
-            
-            // 8. Elemen Game 4
-            document.getElementById('game4-play-target')?.addEventListener('mouseenter', playHoverSound);
-            document.getElementById('game4-back-btn')?.addEventListener('mouseenter', playHoverSound);
-        }
-        
-        // --- Logika yang memanggil applyHoverSounds setelah DOM dimuat ---
-        window.addEventListener('load', () => {
-            // Beri sedikit jeda waktu agar browser siap memutar media
-            setTimeout(applyHoverSoundsToAllInteractiveElements, 500);
-            
-            // Karena game 2 dan 3 memuat elemen baru (dinamis), kita harus memastikan
-            // hover sound ditambahkan setiap kali konten dimuat ulang
-            
-            // Override fungsi loadGame1, loadGame2, loadGame3 agar menambahkan hover sound
-            const originalLoadGame1 = loadGame1;
-            loadGame1 = function() {
-                originalLoadGame1();
-                // Setelah memuat, tambahkan hover sound ke pilihan jawaban
-                document.querySelectorAll('.game1-choice-btn').forEach(addHoverSound);
-            }
-            
-            const originalLoadGame2 = loadGame2;
-            loadGame2 = function() {
-                originalLoadGame2();
-                // Setelah memuat, tambahkan hover sound ke item yang bisa di-drag
-                document.querySelectorAll('.draggable-item').forEach(addHoverSound);
-            }
-            
-            const originalLoadGame3 = loadGame3;
-            loadGame3 = function() {
-                originalLoadGame3();
-                // Setelah memuat, tambahkan hover sound ke kartu memori
-                document.querySelectorAll('.memory-card').forEach(addHoverSound);
-            }
-        });
-
-        // --- LOGIKA MESIN GAME / NAVIGASI ---
-        // (Isi fungsi-fungsi logika game tetap sama dengan file sebelumnya)
-        
-        let skor = 0;
-        let level1Completed = false;
-        let level2Completed = false;
-        let level3Completed = false;
-        let level4Completed = false; 
-        
-        let materiGalleryInitialized = false; 
-        let game1Initialized = false;
-        let game2Initialized = false;
-        let game3Initialized = false;
-        let game4Initialized = false; 
-
-        // Fungsi untuk pindah layar
-        function showScreen(screenId) {
-            // HENTIKAN SEMUA SUARA SAAT PINDAH LAYAR
-            audioPlayer.pause();
-            audioPlayer.currentTime = 0;
-            sfxPlayer.pause();
-            sfxPlayer.currentTime = 0;
-            
-            if(typeof hideInfo === 'function') hideInfo(); 
-            
-            // FIX LEVEL 4: Set game4Active ke false saat keluar dari level apa pun
-            game4Active = false;
-            if (game4AnimationId) {
-                cancelAnimationFrame(game4AnimationId);
-                game4AnimationId = null;
-            }
-
-            sections.forEach(section => {
-                section.classList.add('hidden');
-            });
-
-            const targetSection = document.getElementById(screenId);
-            if (targetSection) {
-                targetSection.classList.remove('hidden');
-            } else {
-                console.error("Section not found:", screenId);
-                document.getElementById('section-map').classList.remove('hidden');
-            }
-            
-            if (screenId === 'section-materi' && !materiGalleryInitialized) {
-                loadMateriGallery();
-                materiGalleryInitialized = true;
-            }
-            if (screenId === 'section-game-1' && !game1Initialized) {
-                loadGame1();
-                game1Initialized = true; 
-            }
-            if (screenId === 'section-game-2' && !game2Initialized) {
-                loadGame2();
-                game2Initialized = true; 
-            }
-            
-            // =================================================================
-            // === PERBAIKAN LOGIKA LEVEL 3 DI SINI ===
-            // =================================================================
-            if (screenId === 'section-game-3') {
-                // Saat masuk, jika belum diinisialisasi, inisialisasi dulu
-                if (!game3Initialized) {
-                    initGame3(); // initGame3() sudah memanggil loadGame3() di dalamnya
-                    game3Initialized = true; 
-                } else {
-                    // Untuk kunjungan berikutnya, panggil loadGame3() untuk reset
-                    loadGame3(); 
-                }
-            }
-            // =================================================================
-            // === AKHIR PERBAIKAN ===
-            // =================================================================
-            
-            if (screenId === 'section-game-4') { 
-                if (!game4Initialized) {
-                    initGame4(); 
-                    game4Initialized = true;
-                }
-                
-                // Mulai Game 4
-                game4Active = true;
-                if (!level4Completed) resetGame4(); 
-                game4Loop();
-            }
-            
-            if (screenId === 'section-final') {
-                updateFinalScreen();
-                playGameSound('WInner.mp3'); // <-- SFX Kemenangan Total
-            }
-            
-            // Logika profil untuk memastikan efek 3D diaktifkan saat modal terbuka
-            if (screenId === 'section-map') {
-                setTimeout(setupProfileModalInteractions, 500);
-            }
-        }
-
-        // Fungsi untuk update skor di Layar Final
-        function updateFinalScreen() {
-            document.getElementById('finalScoreDisplay').textContent = `Nilai Akhir Kamu: ${skor}`;
-        }
-
-        // Fungsi untuk reset game
-        function resetGame() {
-            skor = 0;
-            level1Completed = false;
-            level2Completed = false;
-            level3Completed = false;
-            level4Completed = false; 
-            
-            // Reset game 1
-            game1Skor = 0;
-            document.getElementById('game1-next').textContent = 'Lanjut!';
-            document.getElementById('game1-next').classList.add('d-none');
-            document.getElementById('game1-feedback').textContent = '';
-            game1Locked = false;
-            if (game1Initialized) loadGame1(); 
-
-            // Reset game 2
-            document.getElementById('game2-reset').textContent = 'Reset Game';
-            if (game2Initialized) loadGame2(); 
-            
-            // Reset game 3
-            game3Matches = 0;
-            game3Locked = false;
-            if (game3Initialized) loadGame3(); // Panggil loadGame3 untuk mereset papan
-            // game3Popup.classList.add('hidden'); // <-- Dihapus karena modal tidak ada lagi
-
-            // Reset game 4 
-            game4Score = 0;
-            if (game4Initialized) resetGame4();
-            document.getElementById('game4-back-btn').classList.add('d-none');
-            
-            showScreen('section-map'); 
-        }
-
-
-        // --- FUNGSI MEMUAT GALERI MATERI 2D ---
-        function loadMateriGallery() {
-            const grid = document.getElementById('materi-grid');
-            grid.innerHTML = ''; 
-            
-            galleryInfo.forEach(inst => {
-                const globalData = alatMusikData[inst.name];
-                
-                const col = document.createElement('div');
-                col.className = 'col'; 
-
-                const card = document.createElement('div');
-                card.className = 'materi-card h-100 d-flex flex-column justify-content-center align-items-center'; 
-                
-                const imageUrl = globalData ? globalData.img : '';
-                const placeholderUrl = getPlaceholderUrl(inst.name, 150, 120);
-
-                card.innerHTML = `
-                    <img src="${imageUrl}" 
-                         alt="${inst.name}" 
-                         style="font-size: 10px; font-weight: bold;"
-                         onerror="this.src='${placeholderUrl}'; this.style.backgroundColor='#f8f9fa';">
-                    <p class="mt-auto">${inst.name}</p>
-                `;
-                
-                const modalData = { ...inst, ...globalData };
-                
-                card.addEventListener('click', () => {
-                    showInfo(modalData); 
-                });
-                
-                col.appendChild(card);
-                grid.appendChild(col);
-                
-                // Tambahkan hover sound ke kartu galeri
-                addHoverSound(card); 
-            });
-        }
-
-
-        // --- LOGIKA MODAL (DIPERBAIKI) ---
-        const infoModal = document.getElementById('infoModal');
-        const closeModalBtn = document.getElementById('closeModal');
-        const playSoundBtn = document.getElementById('playSoundBtn');
-        let currentSoundUrl = null; 
-
-        function showInfo(data) {
-            document.getElementById('modalTitle').textContent = data.name;
-            document.getElementById('modalImage').dataset.name = data.name;
-            document.getElementById('modalImage').src = data.img; 
-            document.getElementById('modalImage').alt = data.name;
-            document.getElementById('modalJenis').textContent = data.jenis;
-            document.getElementById('modalCara').textContent = data.cara;
-            document.getElementById('modalAsal').textContent = data.asal;
-            document.getElementById('modalDeskripsi').textContent = data.deskripsi;
-            currentSoundUrl = data.soundUrl; 
-            playSoundBtn.classList.toggle('d-none', !data.soundUrl); 
-            
-            // Perbaikan: Hapus kelas 'hidden' untuk menampilkan modal
-            infoModal.classList.remove('hidden'); 
-            document.body.style.overflow = 'hidden'; // Tambahkan overflow hidden agar body tidak bisa digulir
-        }
-
-        function hideInfo() {
-            // Perbaikan: Tambahkan kelas 'hidden' untuk menyembunyikan modal
-            infoModal.classList.add('hidden'); 
-            audioPlayer.pause();
-            audioPlayer.currentTime = 0;
-            currentSoundUrl = null;
-            document.body.style.overflow = 'auto'; // Kembalikan overflow body
-        }
-
-        closeModalBtn.addEventListener('click', hideInfo);
-        playSoundBtn.addEventListener('click', () => {
-            if (currentSoundUrl) {
-                playInstrumentSound(currentSoundUrl);
-            }
-        });
-
-        // ==============================================================
-        // --- LOGIKA BARU: INTERAKSI MODAL PROFIL (DARI VersusPancasila) ---
-        // ==============================================================
-        function setupProfileModalInteractions() {
-            const profilePicContainer = document.getElementById('profile-pic-container');
-            const profilePic = document.getElementById('profile-pic');
-            
-            if (profilePicContainer && profilePic) {
-                const maxRotate = 15;
-                
-                profilePicContainer.addEventListener('mousemove', (e) => {
-                    const rect = profilePicContainer.getBoundingClientRect();
-                    // Hitung posisi mouse relatif terhadap container
-                    const mouseX = e.clientX - rect.left;
-                    const mouseY = e.clientY - rect.top;
-                    
-                    // Hitung rotasi, di mana 0.5 adalah tengah
-                    const rotateY = ((mouseX / rect.width) - 0.5) * 2 * maxRotate;
-                    const rotateX = (((mouseY / rect.height) - 0.5) * 2 * maxRotate) * -1; // -1 untuk rotasi terbalik
-                    
-                    profilePic.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.1)`;
-                });
-                
-                profilePicContainer.addEventListener('mouseleave', () => {
-                    profilePic.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
-                });
-                
-                // Tambahkan hover sound ke ikon media sosial (yang tidak terdeteksi oleh selector umum)
-                document.querySelectorAll('#infoModalProfile .social-icons a').forEach(addHoverSound);
-            }
-        }
-        
-        // Panggil fungsi interaksi saat modal profil ditampilkan (menggunakan event Bootstrap)
-        document.getElementById('infoModalProfile').addEventListener('shown.bs.modal', setupProfileModalInteractions);
-        // ==============================================================
-        
-        // --- LOGIKA GAME 1: TEBAK SUARA ---
-        const game1PlayBtn = document.getElementById('game1-play-sound');
-        const game1ChoiceGrid = document.getElementById('game1-choice-grid');
-        const game1Feedback = document.getElementById('game1-feedback');
-        const game1NextBtn = document.getElementById('game1-next');
-        let game1Answer = null;
-        let game1Locked = false;
-        let game1Skor = 0;
-        const game1Target = 3; 
-
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-                // Pastikan gambar profil tidak memiliki interaksi mouseover/mouseout
-                // Jika perlu, tambahkan kode di sini
-            }
-        }
-
-        function loadGame1() {
-            game1Locked = false;
-            if (!level1Completed) {
-                 game1Feedback.textContent = `Skor: ${game1Skor}/${game1Target}`;
-            }
-            game1NextBtn.classList.add('d-none'); 
-            game1PlayBtn.disabled = false;
-            const shuffledInstruments = [...galleryInfo];
-            shuffleArray(shuffledInstruments);
-            const choices = shuffledInstruments.slice(0, 4);
-            game1Answer = choices[0];
-            shuffleArray(choices);
-            game1ChoiceGrid.innerHTML = ''; 
-            choices.forEach(instrument => {
-                const globalData = alatMusikData[instrument.name];
-                const button = document.createElement('button');
-                button.className = 'game1-choice-btn bg-light bg-opacity-10 rounded-3 p-3 text-white'; 
-                button.dataset.name = instrument.name;
-                
-                const imageUrl = globalData ? globalData.img : '';
-                const placeholderUrl = getPlaceholderUrl(instrument.name, 96, 96);
-
-                button.innerHTML = `
-                    <img src="${imageUrl}" alt="${instrument.name}" class="w-100 h-100 mx-auto object-fit-contain pointer-events-none" style="max-height: 96px; max-width: 96px;"
-                         onerror="this.src='${placeholderUrl}'; this.style.fontSize='8px'; this.style.fontWeight='bold'; this.style.objectFit='contain'; this.style.backgroundColor='#f8f9fa';">
-                    <p class="mt-2 fw-semibold fs-5 pointer-events-none">${instrument.name}</p>
-                `;
-                button.addEventListener('click', () => checkGame1Answer(button));
-                game1ChoiceGrid.appendChild(button);
-            });
-            // Terapkan hover sound ke tombol-tombol pilihan jawaban
-            document.querySelectorAll('.game1-choice-btn').forEach(addHoverSound);
-        }
-
-        game1PlayBtn.addEventListener('click', () => {
-            if (game1Answer) {
-                const soundUrl = alatMusikData[game1Answer.name].soundUrl; 
-                playInstrumentSound(soundUrl);
-            }
-        });
-
-        function checkGame1Answer(button) {
-            if (game1Locked || level1Completed) return;
-            game1Locked = true;
-            game1PlayBtn.disabled = true;
-
-            if (button.dataset.name === game1Answer.name) {
-                game1Skor++;
-                game1Feedback.textContent = `BENAR! ✅ (Skor: ${game1Skor}/${game1Target})`;
-                game1Feedback.className = 'h-auto fs-5 fw-semibold text-success'; 
-                button.classList.add('feedback-correct'); 
-                button.style.borderColor = '#198754'; 
-                if (game1Skor >= game1Target) {
-                    level1Completed = true;
-                    skor += 100;
-                    game1Feedback.textContent = `Level 1 Selesai! Kamu dapat 100 Poin!`;
-                    game1NextBtn.textContent = 'Kembali ke Peta';
-                    game1NextBtn.classList.remove('btn-success');
-                    game1NextBtn.classList.add('btn-primary'); 
-                    playGameSound('bangbinwinlevel.mp3'); // <-- SFX Menang Level
-                } else {
-                    playGameSound('Benar.mp3'); // <-- SFX Jawaban Benar
-                }
-            } else {
-                game1Feedback.textContent = `SALAH! ❌ (Skor: ${game1Skor}/${game1Target})`;
-                game1Feedback.className = 'h-auto fs-5 fw-semibold text-danger'; 
-                button.classList.add('feedback-wrong'); 
-                button.style.borderColor = '#dc3545'; 
-                playGameSound('Wrong.mp3'); // <-- SFX Jawaban Salah
-                game1ChoiceGrid.querySelectorAll('button').forEach(btn => {
-                    if(btn.dataset.name === game1Answer.name) btn.style.borderColor = '#198754'; 
-                });
-            }
-            game1NextBtn.classList.remove('d-none');
-        }
-
-        game1NextBtn.addEventListener('click', () => {
-            if (level1Completed) {
-                showScreen('section-map');
-            } else {
-                loadGame1(); 
-            }
-        });
-
-        // --- LOGIKA GAME 2: DRAG & DROP ---
-        const game2ItemBank = document.getElementById('game2-item-bank');
-        const game2Dropzones = document.querySelectorAll('.dropzone');
-        const game2ResetBtn = document.getElementById('game2-reset');
-        let currentDraggedElement = null; 
-        let ghostElement = null; 
-        let touchOffsetX = 0; 
-        let touchOffsetY = 0; 
-        let game2ItemsToPlace = 8; 
-
-        function loadGame2() {
-            game2ItemsToPlace = 8; 
-            game2ItemBank.innerHTML = '';
-            game2Dropzones.forEach(zone => {
-                zone.querySelector('.drop-area').innerHTML = '';
-            });
-            const shuffledInstruments = [...galleryInfo];
-            shuffleArray(shuffledInstruments);
-            const gameItems = shuffledInstruments.slice(0, 8);
-            gameItems.forEach(instrument => {
-                const globalData = alatMusikData[instrument.name];
-                const item = document.createElement('img');
-                item.src = globalData ? globalData.img : ''; 
-                item.alt = instrument.name;
-                item.title = instrument.name;
-                item.className = 'draggable-item object-fit-contain bg-light bg-opacity-25 p-1 rounded-3'; 
-                item.style.width = '64px';
-                item.style.height = '64px';
-                item.draggable = true;
-                item.dataset.name = instrument.name;
-                item.dataset.category = instrument.category;
-
-                const placeholderUrl = getPlaceholderUrl(instrument.name, 64, 64);
-                item.setAttribute('onerror', `this.src='${placeholderUrl}'; this.style.fontSize='8px'; this.style.objectFit='contain'; this.style.padding='4px'; this.style.backgroundColor='#f8f9fa';`);
-
-
-                item.addEventListener('dragstart', onDragStart);
-                item.addEventListener('dragend', onDragEnd);
-                item.addEventListener('touchstart', onTouchStart, { passive: false }); 
-                game2ItemBank.appendChild(item);
-                
-                // Tambahkan hover sound ke item yang bisa di-drag
-                addHoverSound(item);
-            });
-            if (!game2Initialized) {
-                document.body.addEventListener('touchmove', onTouchMove, { passive: false });
-                document.body.addEventListener('touchend', onTouchEnd);
-            }
-        }
-        function onDragStart(event) {
-            currentDraggedElement = event.target;
-            event.dataTransfer.setData('text/plain', event.target.dataset.name);
-            event.dataTransfer.dropEffect = 'move';
-            setTimeout(() => event.target.classList.add('dragging'), 0);
-        }
-        function onDragEnd(event) {
-            if (event.target) event.target.classList.remove('dragging');
-            currentDraggedElement = null;
-        }
-        function onTouchStart(event) {
-            if (event.target.classList.contains('draggable-item')) {
-                currentDraggedElement = event.target;
-                currentDraggedElement.classList.add('dragging');
-                ghostElement = currentDraggedElement.cloneNode(true);
-                ghostElement.classList.add('ghost');
-                document.body.appendChild(ghostElement);
-                const touch = event.touches[0];
-                const rect = currentDraggedElement.getBoundingClientRect();
-                touchOffsetX = touch.clientX - rect.left;
-                touchOffsetY = touch.clientY - rect.top;
-                ghostElement.style.left = `${touch.clientX - touchOffsetX}px`;
-                ghostElement.style.top = `${touch.clientY - touchOffsetY}px`;
-            }
-        }
-        function onTouchMove(event) {
-            if (currentDraggedElement && ghostElement) {
-                event.preventDefault(); 
-                const touch = event.touches[0];
-                const x = touch.clientX, y = touch.clientY;
-                ghostElement.style.left = `${x - touchOffsetX}px`;
-                ghostElement.style.top = `${y - touchOffsetY}px`;
-                ghostElement.style.display = 'none';
-                const elementBelow = document.elementFromPoint(x, y);
-                ghostElement.style.display = ''; 
-                game2Dropzones.forEach(zone => {
-                    zone.classList.toggle('dropzone-over', zone === elementBelow || zone.contains(elementBelow));
-                });
-            }
-        }
-        function onTouchEnd(event) {
-            if (currentDraggedElement && ghostElement) {
-                document.body.removeChild(ghostElement);
-                ghostElement = null;
-                const touch = event.changedTouches[0];
-                const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-                let dropzone = null;
-                if (elementBelow) {
-                    dropzone = elementBelow.classList.contains('dropzone') ? elementBelow : elementBelow.closest('.dropzone');
-                }
-                if (dropzone) {
-                    handleDrop(currentDraggedElement, dropzone);
-                }
-                currentDraggedElement.classList.remove('dragging');
-                currentDraggedElement = null;
-                game2Dropzones.forEach(zone => zone.classList.remove('dropzone-over'));
-            }
-        }
-        game2Dropzones.forEach(zone => {
-            zone.addEventListener('dragover', (event) => {
-                event.preventDefault(); 
-                zone.classList.add('dropzone-over');
-                event.dataTransfer.dropEffect = 'move';
-            });
-            zone.addEventListener('dragleave', () => {
-                zone.classList.remove('dropzone-over');
-            });
-            zone.addEventListener('drop', (event) => {
-                event.preventDefault();
-                zone.classList.remove('dropzone-over');
-                if (currentDraggedElement) {
-                    handleDrop(currentDraggedElement, zone);
-                } else {
-                    const instrumentName = event.dataTransfer.getData('text/plain');
-                    const draggedItem = document.querySelector(`.draggable-item[data-name="${instrumentName}"]`);
-                    if(draggedItem) handleDrop(draggedItem, zone);
-                }
-            });
-        });
-        function handleDrop(item, dropzone) {
-            const instrumentCategory = item.dataset.category;
-            const zoneCategory = dropzone.dataset.category;
-            if (instrumentCategory === zoneCategory) {
-                dropzone.querySelector('.drop-area').appendChild(item);
-                item.draggable = false; 
-                item.classList.remove('dragging');
-                item.removeEventListener('touchstart', onTouchStart);
-                game2ItemsToPlace--; 
-                const soundUrl = alatMusikData[item.dataset.name]?.soundUrl; 
-                if (soundUrl) {
-                    playInstrumentSound(soundUrl);
-                }
-                
-                if (game2ItemsToPlace <= 0 && !level2Completed) {
-                    level2Completed = true;
-                    skor += 150;
-                    game2ItemBank.innerHTML = '<h2 class="fs-4 text-success fw-bold p-3">Level 2 Selesai! Kamu dapat 150 poin!</h2>';
-                    game2ResetBtn.textContent = 'Kembali ke Peta';
-                    playGameSound('bangbinwinlevel.mp3'); // <-- SFX Menang Level
-                } else {
-                    playGameSound('Benar.mp3'); // <-- SFX Jawaban Benar
-                }
-            } else {
-                item.classList.add('feedback-wrong'); 
-                setTimeout(() => item.classList.remove('feedback-wrong'), 500);
-                playGameSound('Wrong.mp3'); // <-- SFX Jawaban Salah
-            }
-        }
-        game2ResetBtn.addEventListener('click', () => {
-            if (level2Completed) {
-                showScreen('section-map');
-            } else {
-                loadGame2(); 
-            }
-        });
-
-
-        // --- LOGIKA GAME 3: MEMORY GAME ---
-        const game3Grid = document.getElementById('game3-grid');
-        const game3Feedback = document.getElementById('game3-feedback');
-        const game3ResetBtn = document.getElementById('game3-reset');
-        // const game3Popup = document.getElementById('game3-popup'); // <-- DIHAPUS
-        // const game3BackBtn = document.getElementById('game3-back-btn'); // <-- DIHAPUS
-        
-        let game3Matches = 0;
-        const game3TotalMatches = 6;
-        let game3Locked = false;
-        let game3FirstCard = null;
-        let game3SecondCard = null;
-
-        function initGame3() {
-            // FIX: Pastikan loadGame3 dipanggil di initGame3
-            loadGame3(); 
-            game3ResetBtn.addEventListener('click', loadGame3);
-            // Event listener untuk game3BackBtn dihapus
-        }
-
-        function loadGame3() {
-            // Logika reset game
-            game3Matches = 0;
-            game3Locked = false;
-            game3FirstCard = null;
-            game3SecondCard = null;
-            // FIX KRITIS: Reset level3Completed di sini saat game baru dimulai
-            level3Completed = false; 
-
-            game3Feedback.textContent = `Pasangan Ditemukan: 0 / ${game3TotalMatches}`;
-            // game3Popup.classList.add('hidden'); // <-- DIHAPUS
-            game3ResetBtn.textContent = 'Reset Game';
-            
-            const shuffledInstruments = [...galleryInfo];
-            shuffleArray(shuffledInstruments);
-            const gameCardsInfo = shuffledInstruments.slice(0, game3TotalMatches);
-            const cardPairs = [...gameCardsInfo, ...gameCardsInfo]; 
-            shuffleArray(cardPairs); 
-            
-            game3Grid.innerHTML = ''; 
-            cardPairs.forEach(instrument => {
-                const globalData = alatMusikData[instrument.name];
-                const card = document.createElement('div');
-                card.className = 'card'; 
-                card.dataset.name = instrument.name;
-                
-                const imageUrl = globalData ? globalData.img : '';
-                const placeholderUrl = getPlaceholderUrl(instrument.name, 100, 100);
-                
-                card.innerHTML = `
-                    <div class="card-inner">
-                        <div class="card-front">
-                            <i class="fa-solid fa-music"></i> <!-- <--- DIKEMBALIKAN KE fa-music -->
-                        </div>
-                        <div class="card-back">
-                            <img src="${imageUrl}" alt="${instrument.name}" 
-                                 onerror="this.src='${placeholderUrl}'; this.style.fontSize='8px'; this.style.objectFit='cover';">
-                        </div>
-                    </div>
-                `;
-                card.addEventListener('click', () => onCardClick(card));
-                game3Grid.appendChild(card);
-                
-                // Tambahkan hover sound ke kartu memori
-                addHoverSound(card);
-            });
-        }
-
-        function onCardClick(card) {
-            // FIX: Memastikan hanya jika level3Completed false, kartu dapat diklik
-            if (game3Locked || card.classList.contains('flipped') || card.classList.contains('matched') || level3Completed) return;
-            
-            card.classList.add('flipped');
-            
-            if (!game3FirstCard) {
-                game3FirstCard = card;
-                return;
-            }
-            
-            game3SecondCard = card;
-            game3Locked = true;
-            
-            checkGame3Match();
-        }
-
-        function checkGame3Match() {
-            const isMatch = game3FirstCard.dataset.name === game3SecondCard.dataset.name;
-            
-            if (isMatch) {
-                game3Matches++;
-                game3Feedback.textContent = `Pasangan Ditemukan: ${game3Matches} / ${game3TotalMatches}`;
-                
-                // Putar SFX dulu
-                if (game3Matches === game3TotalMatches) {
-                     playGameSound('bangbinwinlevel.mp3'); // <-- SFX Menang Level
-                } else {
-                     playGameSound('Benar.mp3'); // <-- SFX Jawaban Benar
-                }
-                
-                const soundUrl = alatMusikData[game3FirstCard.dataset.name]?.soundUrl; 
-                if (soundUrl) {
-                    playInstrumentSound(soundUrl);
-                }
-
-                if(game3FirstCard && game3SecondCard) {
-                    game3FirstCard.classList.add('matched');
-                    game3SecondCard.classList.add('matched');
-                }
-                
-                if (game3Matches === game3TotalMatches) {
-                    level3Completed = true; // Set ke true hanya saat game selesai
-                    skor += 200;
-                    game3ResetBtn.textContent = 'Main Lagi';
-                    
-                    // --- PERUBAHAN DI SINI ---
-                    // Modal dihapus, langsung kembali ke peta setelah 1 detik
-                    setTimeout(() => {
-                        showScreen('section-map'); 
-                    }, 1000); // Beri waktu 1 detik untuk melihat kartu terakhir
-                    // --- AKHIR PERUBAHAN ---
-                }
-                
-                resetGame3Turn();
-
-            } else {
-                playGameSound('Wrong.mp3'); // <-- SFX Jawaban Salah
-                setTimeout(() => {
-                    // Hanya balik kartu yang tidak matched
-                    if (game3FirstCard && !game3FirstCard.classList.contains('matched')) {
-                        game3FirstCard.classList.remove('flipped');
-                    }
-                    if (game3SecondCard && !game3SecondCard.classList.contains('matched')) {
-                        game3SecondCard.classList.remove('flipped');
-                    }
-                    resetGame3Turn();
-                }, 1000);
-            }
-        }
-
-        function resetGame3Turn() {
-            game3FirstCard = null;
-            game3SecondCard = null;
-            game3Locked = false;
-        }
-
-
-        // --- LOGIKA GAME 4: CATCHING GAME ---
-        let game4Active = false; 
-        let game4AnimationId = null;
-        
-        const game4Canvas = document.getElementById('game4-canvas');
-        const game4Ctx = game4Canvas.getContext('2d');
-        const game4TargetNameEl = document.getElementById('game4-target-name');
-        const game4FeedbackEl = document.getElementById('game4-feedback');
-        const game4PlayTargetBtn = document.getElementById('game4-play-target');
-        const game4BackBtn = document.getElementById('game4-back-btn');
-        
-        let game4Images = {}; 
-        let game4Target = null;
-        let game4Score = 0;
-        const game4TargetScore = 5;
-        // PERUBAHAN: Lebar Catcher ditingkatkan menjadi 100px
-        let game4Catcher = { x: game4Canvas.width / 2 - 50, y: game4Canvas.height - 30, width: 100, height: 20 }; 
-        let game4FallingItems = [];
-        let game4SpawnTimer = 0;
-        // PERUBAHAN: Ukuran item yang baru (60x60)
-        const GAME4_ITEM_SIZE = 60; 
-
-        function initGame4() {
-            loadGame4Images();
-            // Panggil resetGame4 saat inisialisasi agar target dimuat
-            resetGame4();
-            
-            game4Canvas.addEventListener('mousemove', moveCatcher);
-            game4Canvas.addEventListener('touchmove', moveCatcher, { passive: false });
-            
-            game4PlayTargetBtn.addEventListener('click', playTargetSound);
-            game4BackBtn.addEventListener('click', () => showScreen('section-map'));
-            
-            // Tambahkan hover sound ke tombol game 4
-            addHoverSound(game4PlayTargetBtn);
-            addHoverSound(game4BackBtn);
-        }
-        
-        function loadGame4Images() {
-            galleryInfo.forEach(inst => {
-                const img = new Image();
-                img.src = alatMusikData[inst.name]?.img || ''; 
-                
-                img.onerror = function() {
-                    this.isBroken = true;
-                };
-                game4Images[inst.name] = img;
-            });
-        }
-        
-        function resetGame4() {
-            game4Score = 0;
-            game4FallingItems = [];
-            // PERUBAHAN: Atur ulang posisi Catcher dengan lebar 100px (50 ke kiri, 50 ke kanan)
-            game4Catcher.x = game4Canvas.width / 2 - 50; 
-            game4BackBtn.classList.add('d-none'); 
-            game4FeedbackEl.textContent = `Tertangkap: 0 / ${game4TargetScore}`;
-            setNewGame4Target();
-        }
-        
-        function setNewGame4Target() {
-            const randomIndex = Math.floor(Math.random() * galleryInfo.length);
-            game4Target = galleryInfo[randomIndex];
-            game4TargetNameEl.textContent = game4Target.name;
-            // playTargetSound(); 
-        }
-        
-        function playTargetSound() {
-            if (game4Target) {
-                const soundUrl = alatMusikData[game4Target.name]?.soundUrl; 
-                if (soundUrl) {
-                    playInstrumentSound(soundUrl);
-                }
-            }
-        }
-        
-        function moveCatcher(event) {
-            event.preventDefault();
-            let x;
-            if (event.touches) {
-                x = event.touches[0].clientX;
-            } else {
-                x = event.clientX;
-            }
-            const rect = game4Canvas.getBoundingClientRect();
-            let newX = x - rect.left - game4Catcher.width / 2;
-            if (newX < 0) newX = 0;
-            if (newX > game4Canvas.width - game4Catcher.width) newX = game4Canvas.width - game4Catcher.width;
-            game4Catcher.x = newX;
-        }
-
-        function game4Loop() {
-            if (!game4Active) return; 
-            
-            updateGame4();
-            drawGame4();
-            
-            if (!level4Completed) {
-                game4AnimationId = requestAnimationFrame(game4Loop);
-            }
-        }
-        
-        function updateGame4() {
-            game4FallingItems.forEach((item, index) => {
-                item.y += item.speed;
-                
-                // Cek Tabrakan
-                if (item.y + item.height > game4Catcher.y &&
-                    item.x < game4Catcher.x + game4Catcher.width &&
-                    item.x + item.width > game4Catcher.x) 
-                {
-                    if (item.name === game4Target.name) {
-                        game4Score++;
-                        game4FeedbackEl.textContent = `Tertangkap: ${game4Score} / ${game4TargetScore}`;
-                        playTargetSound(); 
-                        
-                        if (game4Score >= game4TargetScore) {
-                            level4Completed = true;
-                            skor += 250;
-                            game4Active = false; 
-                            game4FeedbackEl.textContent = `Level 4 Selesai!`;
-                            game4BackBtn.classList.remove('d-none'); 
-                            playGameSound('bangbinwinlevel.mp3'); // <-- SFX Menang Level
-                        }
-                    } else {
-                        // Salah tangkap (tidak ada efek penalti)
-                        playGameSound('Wrong.mp3'); 
-                    }
-                    game4FallingItems.splice(index, 1); 
-                }
-                
-                // Cek Lolos
-                if (item.y > game4Canvas.height) {
-                    game4FallingItems.splice(index, 1);
-                }
-            });
-            
-            game4SpawnTimer++;
-            if (game4SpawnTimer > 100) { 
-                game4SpawnTimer = 0;
-                const randomIndex = Math.floor(Math.random() * galleryInfo.length);
-                const randomInst = galleryInfo[randomIndex];
-                game4FallingItems.push({
-                    name: randomInst.name,
-                    // X diatur agar tidak melebihi batas kanan (Canvas.width - ITEM_SIZE)
-                    x: Math.random() * (game4Canvas.width - GAME4_ITEM_SIZE), 
-                    // Y diatur agar mulai di atas kanvas dengan margin item size
-                    y: -GAME4_ITEM_SIZE, 
-                    width: GAME4_ITEM_SIZE, // PERUBAHAN: Ukuran gambar diperbesar
-                    height: GAME4_ITEM_SIZE, // PERUBAHAN: Ukuran gambar diperbesar
-                    // PERUBAHAN: Kecepatan diperlambat (rentang 0.5 hingga 1.5)
-                    speed: Math.random() * 1 + 0.5 
-                });
-            }
-        }
-        
-        function drawGame4() {
-            game4Ctx.clearRect(0, 0, game4Canvas.width, game4Canvas.height);
-            
-            // Gambar Catcher
-            game4Ctx.fillStyle = 'white';
-            game4Ctx.fillRect(game4Catcher.x, game4Catcher.y, game4Catcher.width, game4Catcher.height);
-            
-            // Gambar Item Jatuh
-            game4FallingItems.forEach(item => {
-                const img = game4Images[item.name];
-                
-                if (img && img.complete && !img.isBroken) {
-                    game4Ctx.drawImage(img, item.x, item.y, item.width, item.height);
-                } else {
-                    // Fallback di Canvas 
-                    game4Ctx.fillStyle = '#6c757d'; 
-                    game4Ctx.fillRect(item.x, item.y, item.width, item.height);
-                    game4Ctx.fillStyle = 'white';
-                    game4Ctx.font = '10px Arial';
-                    // Teks diletakkan di tengah item
-                    game4Ctx.fillText(item.name.substring(0, 5), item.x + item.width/2 - 15, item.y + item.height / 2 + 4); 
-                }
-            });
-        }
-
-
-        // --- EVENT LISTENER NAVIGASI UTAMA ---
-        
-        // Listener untuk Tombol Home baru
-        document.querySelectorAll('.home-btn').forEach(addHoverSound); // Tambahkan hover sound ke tombol home
-        document.querySelectorAll('.home-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const targetScreen = e.currentTarget.dataset.targetScreen;
-                if (targetScreen) {
-                    showScreen(targetScreen);
-                }
-            });
-        });
-
-        document.getElementById('map-btn-materi').addEventListener('click', () => showScreen('section-materi'));
-        document.getElementById('map-btn-level1').addEventListener('click', () => showScreen('section-game-1'));
-        document.getElementById('map-btn-level2').addEventListener('click', () => {
-            // if (level1Completed) showScreen('section-game-2'); // Kunci dihapus
-            showScreen('section-game-2');
-        });
-        document.getElementById('map-btn-level3').addEventListener('click', () => {
-            // if (level2Completed) showScreen('section-game-3'); // Kunci dihapus
-            showScreen('section-game-3');
-        });
-        document.getElementById('map-btn-level4').addEventListener('click', () => {
-            // if (level3Completed) showScreen('section-game-4'); // Kunci dihapus
-            showScreen('section-game-4');
-        });
-        document.getElementById('map-btn-final').addEventListener('click', () => {
-            // if (level4Completed) showScreen('section-final'); // Kunci dihapus
-            showScreen('section-final');
-        });
-        
-        document.getElementById('resetBtn').addEventListener('click', resetGame);
-        document.getElementById('materi-back-btn').addEventListener('click', () => showScreen('section-map'));
-
-
-        // --- MULAI APLIKASI ---
-        
-        showScreen('section-map'); 
-
+    <script>        
+    const _0xfff223=_0x20bf;(function(_0xd899db,_0x1ce9e1){const _0x5a37ca=_0x20bf,_0x511521=_0xd899db();while(!![]){try{const _0x1a5f26=parseInt(_0x5a37ca(0x1ca))/0x1+-parseInt(_0x5a37ca(0x26f))/0x2*(parseInt(_0x5a37ca(0x1f5))/0x3)+-parseInt(_0x5a37ca(0x2c5))/0x4+parseInt(_0x5a37ca(0x1ef))/0x5*(parseInt(_0x5a37ca(0x1d8))/0x6)+-parseInt(_0x5a37ca(0x1d3))/0x7+-parseInt(_0x5a37ca(0x22c))/0x8*(-parseInt(_0x5a37ca(0x274))/0x9)+parseInt(_0x5a37ca(0x29a))/0xa;if(_0x1a5f26===_0x1ce9e1)break;else _0x511521['push'](_0x511521['shift']());}catch(_0xc281df){_0x511521['push'](_0x511521['shift']());}}}(_0x3388,0x33d97));const alatMusikData={'Gendang':{'img':_0xfff223(0x2a7),'soundUrl':_0xfff223(0x233)},'Suling':{'img':_0xfff223(0x2d8),'soundUrl':'music/Suling.mp3'},'Sasando':{'img':_0xfff223(0x23b),'soundUrl':_0xfff223(0x264)},'Arbab':{'img':_0xfff223(0x261),'soundUrl':'music/Arbab.mp3'},'Gamelan':{'img':'bangbinImg/Gamelan.png','soundUrl':'music/Gamelan.mp3'},'Genggong':{'img':_0xfff223(0x27f),'soundUrl':_0xfff223(0x1d2)},'Kurinding':{'img':_0xfff223(0x1d5),'soundUrl':_0xfff223(0x2c4)},'Kolintang':{'img':'bangbinImg/Kolintang.png','soundUrl':'music/Kolintang.mp3'},'Kecapi':{'img':_0xfff223(0x2d6),'soundUrl':_0xfff223(0x2cf)},'Angklung':{'img':'bangbinImg/Angklung.png','soundUrl':_0xfff223(0x1d0)},'Antoneng':{'img':_0xfff223(0x29c),'soundUrl':_0xfff223(0x1e0)},'Keledi':{'img':_0xfff223(0x295),'soundUrl':'music/Keledi.mp3'}},SFX_BUTTON_HOVER=_0xfff223(0x25f),galleryInfo=[{'name':'Gendang','jenis':_0xfff223(0x240),'cara':_0xfff223(0x25a),'asal':_0xfff223(0x2db),'category':_0xfff223(0x267),'deskripsi':_0xfff223(0x201)},{'name':_0xfff223(0x275),'jenis':_0xfff223(0x1fc),'cara':_0xfff223(0x1d6),'asal':'Indonesia\x20(Sunda,\x20Jawa,\x20Bali)','category':'Ditiup','deskripsi':_0xfff223(0x25b)},{'name':'Sasando','jenis':_0xfff223(0x249),'cara':_0xfff223(0x29d),'asal':_0xfff223(0x2a5),'category':_0xfff223(0x29b),'deskripsi':'Menggunakan\x20resonator\x20unik\x20dari\x20daun\x20lontar\x20kering\x20yang\x20melengkung.'},{'name':_0xfff223(0x297),'jenis':'Kordofon\x20(Zither\x20kotak)','cara':_0xfff223(0x1c9),'asal':_0xfff223(0x203),'category':_0xfff223(0x29b),'deskripsi':_0xfff223(0x2a2)},{'name':_0xfff223(0x1e9),'jenis':_0xfff223(0x276),'cara':_0xfff223(0x22d),'asal':_0xfff223(0x236),'category':_0xfff223(0x225),'deskripsi':_0xfff223(0x1eb)},{'name':_0xfff223(0x281),'jenis':_0xfff223(0x283),'cara':'Dimainkan\x20bersama\x20oleh\x20banyak\x20orang\x20(dipukul).','asal':_0xfff223(0x24b),'category':_0xfff223(0x267),'deskripsi':_0xfff223(0x2c6)},{'name':_0xfff223(0x2e0),'jenis':_0xfff223(0x27b),'cara':_0xfff223(0x239),'asal':_0xfff223(0x1e8),'category':_0xfff223(0x212),'deskripsi':_0xfff223(0x202)},{'name':_0xfff223(0x1dd),'jenis':_0xfff223(0x27b),'cara':_0xfff223(0x23c),'asal':'Indonesia\x20(Sunda,\x20Banten)','category':_0xfff223(0x212),'deskripsi':_0xfff223(0x26c)},{'name':_0xfff223(0x260),'jenis':_0xfff223(0x256),'cara':_0xfff223(0x290),'asal':_0xfff223(0x2b6),'category':_0xfff223(0x267),'deskripsi':_0xfff223(0x28d)},{'name':_0xfff223(0x2b3),'jenis':_0xfff223(0x270),'cara':_0xfff223(0x291),'asal':_0xfff223(0x2a1),'category':'Diguncang','deskripsi':_0xfff223(0x1ed)},{'name':_0xfff223(0x272),'jenis':_0xfff223(0x249),'cara':_0xfff223(0x2c9),'asal':'Indonesia\x20(Dayak,\x20Kalimantan)','category':_0xfff223(0x29b),'deskripsi':_0xfff223(0x1fd)},{'name':_0xfff223(0x20d),'jenis':_0xfff223(0x294),'cara':_0xfff223(0x1db),'asal':_0xfff223(0x231),'category':'Ditiup','deskripsi':'Menghasilkan\x20suara\x20mirip\x20organ\x20dari\x20beberapa\x20pipa\x20bambu\x20dalam\x20labu\x20kering.'}],audioPlayer=document['getElementById']('audioPlayer'),sfxPlayer=document['getElementById'](_0xfff223(0x1ce)),sections=document[_0xfff223(0x1f4)]('.section-content');function getPlaceholderUrl(_0x35da23,_0x4d13f0,_0x4458ae){const _0x1e691a=_0xfff223,_0x2bc229=encodeURIComponent(_0x35da23['replace'](/\s+/g,'_')['substring'](0x0,0xa));return _0x1e691a(0x211)+_0x4d13f0+'x'+_0x4458ae+_0x1e691a(0x2ab)+_0x2bc229;}function playGameSound(_0x1f05d3){const _0x22108f=_0xfff223;audioPlayer[_0x22108f(0x251)](),audioPlayer['currentTime']=0x0,sfxPlayer[_0x22108f(0x2a8)]=_0x22108f(0x266)+_0x1f05d3,sfxPlayer[_0x22108f(0x2dd)]=0x0,sfxPlayer[_0x22108f(0x262)]()[_0x22108f(0x2cc)](_0x3f49c4=>console['error'](_0x22108f(0x2c2)+_0x3f49c4));}function playInstrumentSound(_0x53a39d){const _0x854ac1=_0xfff223;sfxPlayer[_0x854ac1(0x251)](),sfxPlayer[_0x854ac1(0x2dd)]=0x0;if(!audioPlayer[_0x854ac1(0x263)])audioPlayer[_0x854ac1(0x251)]();audioPlayer['src']=_0x53a39d,audioPlayer[_0x854ac1(0x262)]()[_0x854ac1(0x2cc)](_0x5c9a6a=>console[_0x854ac1(0x228)](_0x854ac1(0x2a4),_0x5c9a6a));}const hoverAudio=new Audio(SFX_BUTTON_HOVER);hoverAudio['volume']=0.5;function playHoverSound(){const _0xd733a2=_0xfff223;hoverAudio['readyState']>=0x2?(hoverAudio[_0xd733a2(0x2dd)]=0x0,hoverAudio[_0xd733a2(0x262)]()[_0xd733a2(0x2cc)](_0x374e4d=>{})):(hoverAudio[_0xd733a2(0x218)](),hoverAudio[_0xd733a2(0x262)]()[_0xd733a2(0x2cc)](_0x55934c=>{}));}function addHoverSound(_0xb96f11){const _0x303b8e=_0xfff223;_0xb96f11&&_0xb96f11[_0x303b8e(0x220)]!==_0x303b8e(0x217)&&_0xb96f11[_0x303b8e(0x220)]!==_0x303b8e(0x29f)&&_0xb96f11[_0x303b8e(0x1cd)]('mouseenter',playHoverSound);}function applyHoverSoundsToAllInteractiveElements(){const _0x4466c6=_0xfff223;document[_0x4466c6(0x1f4)](_0x4466c6(0x224))['forEach'](addHoverSound),document[_0x4466c6(0x1f4)](_0x4466c6(0x1f9))[_0x4466c6(0x1f7)](addHoverSound),document['querySelectorAll'](_0x4466c6(0x204))[_0x4466c6(0x1f7)](addHoverSound),document[_0x4466c6(0x2b8)]('game1-play-sound')?.[_0x4466c6(0x1cd)](_0x4466c6(0x223),playHoverSound),document[_0x4466c6(0x2b8)](_0x4466c6(0x1cf))?.['addEventListener'](_0x4466c6(0x223),playHoverSound),document[_0x4466c6(0x1f4)]('.game1-choice-btn')['forEach'](addHoverSound),document[_0x4466c6(0x1f4)](_0x4466c6(0x230))[_0x4466c6(0x1f7)](addHoverSound),document[_0x4466c6(0x2b8)](_0x4466c6(0x237))?.['addEventListener'](_0x4466c6(0x223),playHoverSound),document['getElementById'](_0x4466c6(0x23d))?.[_0x4466c6(0x1cd)](_0x4466c6(0x223),playHoverSound),document['getElementById'](_0x4466c6(0x2a0))?.['addEventListener'](_0x4466c6(0x223),playHoverSound),document['getElementById'](_0x4466c6(0x2c0))?.[_0x4466c6(0x1cd)](_0x4466c6(0x223),playHoverSound),document['getElementById'](_0x4466c6(0x24d))?.['addEventListener'](_0x4466c6(0x223),playHoverSound),document[_0x4466c6(0x2b8)](_0x4466c6(0x22b))?.[_0x4466c6(0x1cd)](_0x4466c6(0x223),playHoverSound);}window[_0xfff223(0x1cd)](_0xfff223(0x218),()=>{setTimeout(applyHoverSoundsToAllInteractiveElements,0x1f4);const _0x19b6df=loadGame1;loadGame1=function(){const _0x1c4424=_0x20bf;_0x19b6df(),document[_0x1c4424(0x1f4)]('.game1-choice-btn')[_0x1c4424(0x1f7)](addHoverSound);};const _0x1a7e0c=loadGame2;loadGame2=function(){const _0x2b8b09=_0x20bf;_0x1a7e0c(),document[_0x2b8b09(0x1f4)](_0x2b8b09(0x244))[_0x2b8b09(0x1f7)](addHoverSound);};const _0xaf930e=loadGame3;loadGame3=function(){const _0x338ac9=_0x20bf;_0xaf930e(),document[_0x338ac9(0x1f4)](_0x338ac9(0x245))[_0x338ac9(0x1f7)](addHoverSound);};});let skor=0x0,level1Completed=![],level2Completed=![],level3Completed=![],level4Completed=![],materiGalleryInitialized=![],game1Initialized=![],game2Initialized=![],game3Initialized=![],game4Initialized=![];function updateMapLocks(){const _0x115db1=_0xfff223;document[_0x115db1(0x2b8)]('map-btn-materi')[_0x115db1(0x2bc)][_0x115db1(0x2df)](_0x115db1(0x2ce)),document[_0x115db1(0x2b8)](_0x115db1(0x24f))[_0x115db1(0x2bc)][_0x115db1(0x2df)]('locked'),document[_0x115db1(0x2b8)](_0x115db1(0x2c1))[_0x115db1(0x2bc)][_0x115db1(0x29e)]('locked',!level1Completed),document[_0x115db1(0x2b8)]('map-btn-level3')[_0x115db1(0x2bc)][_0x115db1(0x29e)](_0x115db1(0x2ce),!level2Completed),document[_0x115db1(0x2b8)](_0x115db1(0x2d4))[_0x115db1(0x2bc)][_0x115db1(0x29e)]('locked',!level3Completed),document['getElementById']('map-btn-final')['classList'][_0x115db1(0x29e)](_0x115db1(0x2ce),!level4Completed);}function showScreen(_0x51d1b4){const _0x5ba389=_0xfff223;audioPlayer[_0x5ba389(0x251)](),audioPlayer[_0x5ba389(0x2dd)]=0x0,sfxPlayer[_0x5ba389(0x251)](),sfxPlayer[_0x5ba389(0x2dd)]=0x0;if(typeof hideInfo===_0x5ba389(0x26d))hideInfo();game4Active=![];game4AnimationId&&(cancelAnimationFrame(game4AnimationId),game4AnimationId=null);sections[_0x5ba389(0x1f7)](_0x53cd8e=>{const _0x3eb5ae=_0x5ba389;_0x53cd8e[_0x3eb5ae(0x2bc)][_0x3eb5ae(0x2b1)](_0x3eb5ae(0x271));});const _0x1de4dc=document[_0x5ba389(0x2b8)](_0x51d1b4);_0x1de4dc?_0x1de4dc[_0x5ba389(0x2bc)][_0x5ba389(0x2df)]('hidden'):(console[_0x5ba389(0x228)](_0x5ba389(0x246),_0x51d1b4),document[_0x5ba389(0x2b8)](_0x5ba389(0x22e))[_0x5ba389(0x2bc)][_0x5ba389(0x2df)](_0x5ba389(0x271)));_0x51d1b4==='section-materi'&&!materiGalleryInitialized&&(loadMateriGallery(),materiGalleryInitialized=!![]);_0x51d1b4===_0x5ba389(0x247)&&!game1Initialized&&(loadGame1(),game1Initialized=!![]);_0x51d1b4===_0x5ba389(0x1df)&&!game2Initialized&&(loadGame2(),game2Initialized=!![]);_0x51d1b4==='section-game-3'&&(!game3Initialized?(initGame3(),game3Initialized=!![]):loadGame3());if(_0x51d1b4===_0x5ba389(0x2b4)){!game4Initialized&&(initGame4(),game4Initialized=!![]);game4Active=!![];if(!level4Completed)resetGame4();game4Loop();}_0x51d1b4==='section-final'&&(updateFinalScreen(),playGameSound(_0x5ba389(0x2af))),_0x51d1b4===_0x5ba389(0x22e)&&(updateMapLocks(),setTimeout(setupProfileModalInteractions,0x1f4));}function updateFinalScreen(){const _0x3e1907=_0xfff223;document[_0x3e1907(0x2b8)](_0x3e1907(0x1e5))[_0x3e1907(0x200)]=_0x3e1907(0x229)+skor;}function _0x20bf(_0x55100f,_0x2b4749){const _0x338886=_0x3388();return _0x20bf=function(_0x20bfa7,_0x9965c){_0x20bfa7=_0x20bfa7-0x1c8;let _0x2065ac=_0x338886[_0x20bfa7];return _0x2065ac;},_0x20bf(_0x55100f,_0x2b4749);}function resetGame(){const _0x16e3f5=_0xfff223;skor=0x0,level1Completed=![],level2Completed=![],level3Completed=![],level4Completed=![],game1Skor=0x0,document['getElementById'](_0x16e3f5(0x1cf))[_0x16e3f5(0x200)]=_0x16e3f5(0x259),document[_0x16e3f5(0x2b8)]('game1-next')['classList'][_0x16e3f5(0x2b1)]('d-none'),document[_0x16e3f5(0x2b8)](_0x16e3f5(0x278))[_0x16e3f5(0x200)]='',game1Locked=![];if(game1Initialized)loadGame1();document[_0x16e3f5(0x2b8)]('game2-reset')[_0x16e3f5(0x200)]=_0x16e3f5(0x2a3);if(game2Initialized)loadGame2();game3Matches=0x0,game3Locked=![];if(game3Initialized)loadGame3();game4Score=0x0;if(game4Initialized)resetGame4();document['getElementById'](_0x16e3f5(0x22b))[_0x16e3f5(0x2bc)][_0x16e3f5(0x2b1)](_0x16e3f5(0x288)),showScreen(_0x16e3f5(0x22e));}function loadMateriGallery(){const _0x230581=_0xfff223,_0xc7ab97=document[_0x230581(0x2b8)](_0x230581(0x269));_0xc7ab97[_0x230581(0x1da)]='',galleryInfo[_0x230581(0x1f7)](_0x56e638=>{const _0x560cbd=_0x230581,_0x4829da=alatMusikData[_0x56e638[_0x560cbd(0x2da)]],_0xbd3df6=document[_0x560cbd(0x253)](_0x560cbd(0x221));_0xbd3df6[_0x560cbd(0x2aa)]=_0x560cbd(0x235);const _0x200a87=document[_0x560cbd(0x253)]('div');_0x200a87[_0x560cbd(0x2aa)]=_0x560cbd(0x1f0);const _0x27cf5b=_0x4829da?_0x4829da[_0x560cbd(0x234)]:'',_0xd66979=getPlaceholderUrl(_0x56e638[_0x560cbd(0x2da)],0x96,0x78);_0x200a87[_0x560cbd(0x1da)]='\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<img\x20src=\x22'+_0x27cf5b+_0x560cbd(0x2be)+_0x56e638['name']+_0x560cbd(0x1d7)+_0xd66979+_0x560cbd(0x1e1)+_0x56e638[_0x560cbd(0x2da)]+_0x560cbd(0x277);const _0x1e4c1b={..._0x56e638,..._0x4829da};_0x200a87[_0x560cbd(0x1cd)](_0x560cbd(0x2d1),()=>{showInfo(_0x1e4c1b);}),_0xbd3df6[_0x560cbd(0x2b7)](_0x200a87),_0xc7ab97['appendChild'](_0xbd3df6),addHoverSound(_0x200a87);});}const infoModal=document[_0xfff223(0x2b8)](_0xfff223(0x2d0)),closeModalBtn=document['getElementById'](_0xfff223(0x237)),playSoundBtn=document[_0xfff223(0x2b8)]('playSoundBtn');let currentSoundUrl=null;function showInfo(_0x4b2918){const _0x1a1a7d=_0xfff223;document[_0x1a1a7d(0x2b8)](_0x1a1a7d(0x2b0))[_0x1a1a7d(0x200)]=_0x4b2918[_0x1a1a7d(0x2da)],document[_0x1a1a7d(0x2b8)](_0x1a1a7d(0x242))[_0x1a1a7d(0x2bf)][_0x1a1a7d(0x2da)]=_0x4b2918['name'],document[_0x1a1a7d(0x2b8)](_0x1a1a7d(0x242))[_0x1a1a7d(0x2a8)]=_0x4b2918['img'],document[_0x1a1a7d(0x2b8)]('modalImage')[_0x1a1a7d(0x25e)]=_0x4b2918[_0x1a1a7d(0x2da)],document['getElementById'](_0x1a1a7d(0x285))[_0x1a1a7d(0x200)]=_0x4b2918[_0x1a1a7d(0x1de)],document['getElementById']('modalCara')[_0x1a1a7d(0x200)]=_0x4b2918[_0x1a1a7d(0x22f)],document[_0x1a1a7d(0x2b8)]('modalAsal')[_0x1a1a7d(0x200)]=_0x4b2918[_0x1a1a7d(0x282)],document['getElementById'](_0x1a1a7d(0x287))[_0x1a1a7d(0x200)]=_0x4b2918[_0x1a1a7d(0x257)],currentSoundUrl=_0x4b2918[_0x1a1a7d(0x27d)],playSoundBtn['classList'][_0x1a1a7d(0x29e)](_0x1a1a7d(0x288),!_0x4b2918[_0x1a1a7d(0x27d)]),infoModal[_0x1a1a7d(0x2bc)][_0x1a1a7d(0x2df)](_0x1a1a7d(0x271)),document[_0x1a1a7d(0x2cd)]['style']['overflow']='hidden';}function hideInfo(){const _0x575eee=_0xfff223;infoModal['classList'][_0x575eee(0x2b1)](_0x575eee(0x271)),audioPlayer[_0x575eee(0x251)](),audioPlayer[_0x575eee(0x2dd)]=0x0,currentSoundUrl=null,document[_0x575eee(0x2cd)][_0x575eee(0x23f)]['overflow']=_0x575eee(0x1ff);}closeModalBtn[_0xfff223(0x1cd)](_0xfff223(0x2d1),hideInfo),playSoundBtn[_0xfff223(0x1cd)](_0xfff223(0x2d1),()=>{currentSoundUrl&&playInstrumentSound(currentSoundUrl);});function setupProfileModalInteractions(){const _0x54e710=_0xfff223,_0x118f53=document[_0x54e710(0x2b8)](_0x54e710(0x205)),_0x21dc9a=document[_0x54e710(0x2b8)]('profile-pic');if(_0x118f53&&_0x21dc9a){const _0x4a48b8=0xf;_0x118f53['addEventListener']('mousemove',_0x5954d3=>{const _0x528608=_0x54e710,_0x9763e0=_0x118f53[_0x528608(0x255)](),_0x38ceed=_0x5954d3[_0x528608(0x1fa)]-_0x9763e0[_0x528608(0x222)],_0x63064a=_0x5954d3['clientY']-_0x9763e0['top'],_0x163159=(_0x38ceed/_0x9763e0[_0x528608(0x1dc)]-0.5)*0x2*_0x4a48b8,_0x391989=(_0x63064a/_0x9763e0[_0x528608(0x22a)]-0.5)*0x2*_0x4a48b8*-0x1;_0x21dc9a['style'][_0x528608(0x2ae)]=_0x528608(0x292)+_0x391989+_0x528608(0x2a6)+_0x163159+'deg)\x20scale(1.1)';}),_0x118f53[_0x54e710(0x1cd)](_0x54e710(0x23e),()=>{const _0x43dbf3=_0x54e710;_0x21dc9a[_0x43dbf3(0x23f)][_0x43dbf3(0x2ae)]=_0x43dbf3(0x289);}),document['querySelectorAll'](_0x54e710(0x28e))[_0x54e710(0x1f7)](addHoverSound);}}document['getElementById'](_0xfff223(0x206))[_0xfff223(0x1cd)](_0xfff223(0x2bd),setupProfileModalInteractions);const game1PlayBtn=document[_0xfff223(0x2b8)](_0xfff223(0x21f)),game1ChoiceGrid=document[_0xfff223(0x2b8)]('game1-choice-grid'),game1Feedback=document[_0xfff223(0x2b8)]('game1-feedback'),game1NextBtn=document[_0xfff223(0x2b8)]('game1-next');let game1Answer=null,game1Locked=![],game1Skor=0x0;const game1Target=0x3;function shuffleArray(_0x5a357c){const _0x3105fb=_0xfff223;for(let _0x4fa2c9=_0x5a357c[_0x3105fb(0x2ac)]-0x1;_0x4fa2c9>0x0;_0x4fa2c9--){const _0x3274e0=Math[_0x3105fb(0x1f1)](Math[_0x3105fb(0x254)]()*(_0x4fa2c9+0x1));[_0x5a357c[_0x4fa2c9],_0x5a357c[_0x3274e0]]=[_0x5a357c[_0x3274e0],_0x5a357c[_0x4fa2c9]];}}function loadGame1(){const _0x49ec27=_0xfff223;game1Locked=![];!level1Completed&&(game1Feedback['textContent']='Skor:\x20'+game1Skor+'/'+game1Target);game1NextBtn[_0x49ec27(0x2bc)][_0x49ec27(0x2b1)](_0x49ec27(0x288)),game1PlayBtn[_0x49ec27(0x1ec)]=![];const _0x3994f9=[...galleryInfo];shuffleArray(_0x3994f9);const _0x501ea1=_0x3994f9['slice'](0x0,0x4);game1Answer=_0x501ea1[0x0],shuffleArray(_0x501ea1),game1ChoiceGrid[_0x49ec27(0x1da)]='',_0x501ea1['forEach'](_0x529dfa=>{const _0x4f14ac=_0x49ec27,_0x28b78d=alatMusikData[_0x529dfa['name']],_0x1bb64e=document[_0x4f14ac(0x253)](_0x4f14ac(0x213));_0x1bb64e['className']='game1-choice-btn\x20bg-light\x20bg-opacity-10\x20rounded-3\x20p-3\x20text-white',_0x1bb64e['dataset'][_0x4f14ac(0x2da)]=_0x529dfa['name'];const _0x2cfcad=_0x28b78d?_0x28b78d[_0x4f14ac(0x234)]:'',_0x54db64=getPlaceholderUrl(_0x529dfa[_0x4f14ac(0x2da)],0x60,0x60);_0x1bb64e[_0x4f14ac(0x1da)]=_0x4f14ac(0x2d2)+_0x2cfcad+_0x4f14ac(0x28f)+_0x529dfa['name']+_0x4f14ac(0x286)+_0x54db64+'\x27;\x20this.style.fontSize=\x278px\x27;\x20this.style.fontWeight=\x27bold\x27;\x20this.style.objectFit=\x27contain\x27;\x20this.style.backgroundColor=\x27#f8f9fa\x27;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p\x20class=\x22mt-2\x20fw-semibold\x20fs-5\x20pointer-events-none\x22>'+_0x529dfa['name']+_0x4f14ac(0x277),_0x1bb64e[_0x4f14ac(0x1cd)]('click',()=>checkGame1Answer(_0x1bb64e)),game1ChoiceGrid[_0x4f14ac(0x2b7)](_0x1bb64e);}),document['querySelectorAll'](_0x49ec27(0x2c7))[_0x49ec27(0x1f7)](addHoverSound);}game1PlayBtn['addEventListener'](_0xfff223(0x2d1),()=>{const _0x3339f5=_0xfff223;if(game1Answer){const _0xc9c1a6=alatMusikData[game1Answer[_0x3339f5(0x2da)]][_0x3339f5(0x27d)];playInstrumentSound(_0xc9c1a6);}});function checkGame1Answer(_0x38c8a9){const _0x4a1fdf=_0xfff223;if(game1Locked||level1Completed)return;game1Locked=!![],game1PlayBtn['disabled']=!![],_0x38c8a9[_0x4a1fdf(0x2bf)]['name']===game1Answer['name']?(game1Skor++,game1Feedback[_0x4a1fdf(0x200)]=_0x4a1fdf(0x20b)+game1Skor+'/'+game1Target+')',game1Feedback['className']=_0x4a1fdf(0x25c),_0x38c8a9['classList'][_0x4a1fdf(0x2b1)](_0x4a1fdf(0x2e1)),_0x38c8a9['style'][_0x4a1fdf(0x2ba)]='#198754',game1Skor>=game1Target?(level1Completed=!![],skor+=0x64,game1Feedback['textContent']=_0x4a1fdf(0x24e),game1NextBtn[_0x4a1fdf(0x200)]=_0x4a1fdf(0x280),game1NextBtn[_0x4a1fdf(0x2bc)][_0x4a1fdf(0x2df)](_0x4a1fdf(0x2c3)),game1NextBtn[_0x4a1fdf(0x2bc)]['add'](_0x4a1fdf(0x248)),playGameSound(_0x4a1fdf(0x2dc))):playGameSound(_0x4a1fdf(0x243))):(game1Feedback[_0x4a1fdf(0x200)]=_0x4a1fdf(0x1fe)+game1Skor+'/'+game1Target+')',game1Feedback[_0x4a1fdf(0x2aa)]=_0x4a1fdf(0x2c8),_0x38c8a9['classList'][_0x4a1fdf(0x2b1)](_0x4a1fdf(0x20c)),_0x38c8a9[_0x4a1fdf(0x23f)][_0x4a1fdf(0x2ba)]=_0x4a1fdf(0x208),playGameSound(_0x4a1fdf(0x227)),game1ChoiceGrid[_0x4a1fdf(0x1f4)](_0x4a1fdf(0x213))[_0x4a1fdf(0x1f7)](_0x2b3393=>{const _0x3f84b0=_0x4a1fdf;if(_0x2b3393[_0x3f84b0(0x2bf)]['name']===game1Answer[_0x3f84b0(0x2da)])_0x2b3393[_0x3f84b0(0x23f)][_0x3f84b0(0x2ba)]=_0x3f84b0(0x252);})),game1NextBtn[_0x4a1fdf(0x2bc)][_0x4a1fdf(0x2df)](_0x4a1fdf(0x288));}game1NextBtn[_0xfff223(0x1cd)](_0xfff223(0x2d1),()=>{const _0x1b2f05=_0xfff223;level1Completed?showScreen(_0x1b2f05(0x22e)):loadGame1();});const game2ItemBank=document[_0xfff223(0x2b8)](_0xfff223(0x1e4)),game2Dropzones=document[_0xfff223(0x1f4)](_0xfff223(0x1f8)),game2ResetBtn=document[_0xfff223(0x2b8)](_0xfff223(0x2a0));let currentDraggedElement=null,ghostElement=null,touchOffsetX=0x0,touchOffsetY=0x0,game2ItemsToPlace=0x8;function loadGame2(){const _0xd9093d=_0xfff223;game2ItemsToPlace=0x8,game2ItemBank[_0xd9093d(0x1da)]='',game2Dropzones[_0xd9093d(0x1f7)](_0x4f27aa=>{const _0x4f3b6b=_0xd9093d;_0x4f27aa[_0x4f3b6b(0x1e6)](_0x4f3b6b(0x265))[_0x4f3b6b(0x1da)]='';});const _0x154eae=[...galleryInfo];shuffleArray(_0x154eae);const _0x10d92d=_0x154eae[_0xd9093d(0x24a)](0x0,0x8);_0x10d92d[_0xd9093d(0x1f7)](_0x1f95fc=>{const _0x4ff9ce=_0xd9093d,_0x1bfe7c=alatMusikData[_0x1f95fc['name']],_0x3c6051=document[_0x4ff9ce(0x253)](_0x4ff9ce(0x234));_0x3c6051[_0x4ff9ce(0x2a8)]=_0x1bfe7c?_0x1bfe7c[_0x4ff9ce(0x234)]:'',_0x3c6051['alt']=_0x1f95fc['name'],_0x3c6051[_0x4ff9ce(0x21b)]=_0x1f95fc[_0x4ff9ce(0x2da)],_0x3c6051['className']=_0x4ff9ce(0x28b),_0x3c6051[_0x4ff9ce(0x23f)][_0x4ff9ce(0x1dc)]=_0x4ff9ce(0x24c),_0x3c6051[_0x4ff9ce(0x23f)][_0x4ff9ce(0x22a)]=_0x4ff9ce(0x24c),_0x3c6051['draggable']=!![],_0x3c6051[_0x4ff9ce(0x2bf)]['name']=_0x1f95fc['name'],_0x3c6051[_0x4ff9ce(0x2bf)][_0x4ff9ce(0x1f3)]=_0x1f95fc['category'];const _0x36bec7=getPlaceholderUrl(_0x1f95fc[_0x4ff9ce(0x2da)],0x40,0x40);_0x3c6051[_0x4ff9ce(0x2ad)](_0x4ff9ce(0x1cb),_0x4ff9ce(0x299)+_0x36bec7+_0x4ff9ce(0x268)),_0x3c6051[_0x4ff9ce(0x1cd)](_0x4ff9ce(0x2e2),onDragStart),_0x3c6051[_0x4ff9ce(0x1cd)]('dragend',onDragEnd),_0x3c6051[_0x4ff9ce(0x1cd)]('touchstart',onTouchStart,{'passive':![]}),game2ItemBank[_0x4ff9ce(0x2b7)](_0x3c6051),addHoverSound(_0x3c6051);}),!game2Initialized&&(document[_0xd9093d(0x2cd)][_0xd9093d(0x1cd)](_0xd9093d(0x238),onTouchMove,{'passive':![]}),document[_0xd9093d(0x2cd)][_0xd9093d(0x1cd)](_0xd9093d(0x20a),onTouchEnd));}function onDragStart(_0x518f68){const _0x5dec17=_0xfff223;currentDraggedElement=_0x518f68[_0x5dec17(0x20f)],_0x518f68[_0x5dec17(0x258)]['setData'](_0x5dec17(0x1f6),_0x518f68[_0x5dec17(0x20f)][_0x5dec17(0x2bf)]['name']),_0x518f68[_0x5dec17(0x258)][_0x5dec17(0x26e)]=_0x5dec17(0x21d),setTimeout(()=>_0x518f68['target'][_0x5dec17(0x2bc)][_0x5dec17(0x2b1)](_0x5dec17(0x1d9)),0x0);}function onDragEnd(_0x228a85){const _0x5c26a9=_0xfff223;if(_0x228a85['target'])_0x228a85[_0x5c26a9(0x20f)]['classList'][_0x5c26a9(0x2df)]('dragging');currentDraggedElement=null;}function onTouchStart(_0x2b5c9e){const _0x7e9be4=_0xfff223;if(_0x2b5c9e[_0x7e9be4(0x20f)][_0x7e9be4(0x2bc)][_0x7e9be4(0x273)](_0x7e9be4(0x2bb))){currentDraggedElement=_0x2b5c9e[_0x7e9be4(0x20f)],currentDraggedElement[_0x7e9be4(0x2bc)][_0x7e9be4(0x2b1)](_0x7e9be4(0x1d9)),ghostElement=currentDraggedElement['cloneNode'](!![]),ghostElement[_0x7e9be4(0x2bc)]['add'](_0x7e9be4(0x293)),document[_0x7e9be4(0x2cd)][_0x7e9be4(0x2b7)](ghostElement);const _0x58270c=_0x2b5c9e[_0x7e9be4(0x250)][0x0],_0x4c9ce7=currentDraggedElement[_0x7e9be4(0x255)]();touchOffsetX=_0x58270c[_0x7e9be4(0x1fa)]-_0x4c9ce7[_0x7e9be4(0x222)],touchOffsetY=_0x58270c[_0x7e9be4(0x2b9)]-_0x4c9ce7[_0x7e9be4(0x28a)],ghostElement[_0x7e9be4(0x23f)][_0x7e9be4(0x222)]=_0x58270c[_0x7e9be4(0x1fa)]-touchOffsetX+'px',ghostElement[_0x7e9be4(0x23f)]['top']=_0x58270c['clientY']-touchOffsetY+'px';}}function onTouchMove(_0x52803f){const _0x4824b7=_0xfff223;if(currentDraggedElement&&ghostElement){_0x52803f[_0x4824b7(0x26a)]();const _0x26483f=_0x52803f['touches'][0x0],_0x676fda=_0x26483f[_0x4824b7(0x1fa)],_0x331b72=_0x26483f['clientY'];ghostElement['style'][_0x4824b7(0x222)]=_0x676fda-touchOffsetX+'px',ghostElement[_0x4824b7(0x23f)][_0x4824b7(0x28a)]=_0x331b72-touchOffsetY+'px',ghostElement['style'][_0x4824b7(0x216)]=_0x4824b7(0x298);const _0x564a07=document[_0x4824b7(0x2d3)](_0x676fda,_0x331b72);ghostElement[_0x4824b7(0x23f)][_0x4824b7(0x216)]='',game2Dropzones['forEach'](_0x48cc61=>{const _0x558a78=_0x4824b7;_0x48cc61['classList'][_0x558a78(0x29e)](_0x558a78(0x1fb),_0x48cc61===_0x564a07||_0x48cc61[_0x558a78(0x273)](_0x564a07));});}}function onTouchEnd(_0x3e5238){const _0x2c6819=_0xfff223;if(currentDraggedElement&&ghostElement){document[_0x2c6819(0x2cd)][_0x2c6819(0x296)](ghostElement),ghostElement=null;const _0x1bcdb3=_0x3e5238[_0x2c6819(0x232)][0x0],_0x585c7f=document[_0x2c6819(0x2d3)](_0x1bcdb3[_0x2c6819(0x1fa)],_0x1bcdb3['clientY']);let _0x459e76=null;_0x585c7f&&(_0x459e76=_0x585c7f[_0x2c6819(0x2bc)][_0x2c6819(0x273)]('dropzone')?_0x585c7f:_0x585c7f[_0x2c6819(0x214)]('.dropzone')),_0x459e76&&handleDrop(currentDraggedElement,_0x459e76),currentDraggedElement[_0x2c6819(0x2bc)][_0x2c6819(0x2df)](_0x2c6819(0x1d9)),currentDraggedElement=null,game2Dropzones['forEach'](_0x3bf987=>_0x3bf987[_0x2c6819(0x2bc)][_0x2c6819(0x2df)](_0x2c6819(0x1fb)));}}game2Dropzones[_0xfff223(0x1f7)](_0x4885c1=>{const _0x2d4bbf=_0xfff223;_0x4885c1['addEventListener']('dragover',_0x4e89d3=>{const _0x4fb5e9=_0x20bf;_0x4e89d3['preventDefault'](),_0x4885c1['classList'][_0x4fb5e9(0x2b1)](_0x4fb5e9(0x1fb)),_0x4e89d3[_0x4fb5e9(0x258)]['dropEffect']=_0x4fb5e9(0x21d);}),_0x4885c1['addEventListener'](_0x2d4bbf(0x215),()=>{const _0x152a25=_0x2d4bbf;_0x4885c1[_0x152a25(0x2bc)][_0x152a25(0x2df)]('dropzone-over');}),_0x4885c1[_0x2d4bbf(0x1cd)](_0x2d4bbf(0x2d5),_0x367966=>{const _0x2b24db=_0x2d4bbf;_0x367966[_0x2b24db(0x26a)](),_0x4885c1[_0x2b24db(0x2bc)]['remove']('dropzone-over');if(currentDraggedElement)handleDrop(currentDraggedElement,_0x4885c1);else{const _0x10979a=_0x367966[_0x2b24db(0x258)][_0x2b24db(0x1e2)](_0x2b24db(0x1f6)),_0x106781=document[_0x2b24db(0x1e6)]('.draggable-item[data-name=\x22'+_0x10979a+'\x22]');if(_0x106781)handleDrop(_0x106781,_0x4885c1);}});});function handleDrop(_0xfb6057,_0x5a31d6){const _0x5e55cc=_0xfff223,_0x41e889=_0xfb6057[_0x5e55cc(0x2bf)]['category'],_0x164abc=_0x5a31d6[_0x5e55cc(0x2bf)][_0x5e55cc(0x1f3)];if(_0x41e889===_0x164abc){_0x5a31d6['querySelector'](_0x5e55cc(0x265))[_0x5e55cc(0x2b7)](_0xfb6057),_0xfb6057['draggable']=![],_0xfb6057[_0x5e55cc(0x2bc)]['remove'](_0x5e55cc(0x1d9)),_0xfb6057[_0x5e55cc(0x1ea)](_0x5e55cc(0x1f2),onTouchStart),game2ItemsToPlace--;const _0x1aeb96=alatMusikData[_0xfb6057[_0x5e55cc(0x2bf)][_0x5e55cc(0x2da)]]?.[_0x5e55cc(0x27d)];_0x1aeb96&&playInstrumentSound(_0x1aeb96),game2ItemsToPlace<=0x0&&!level2Completed?(level2Completed=!![],skor+=0x64,game2ItemBank['innerHTML']=_0x5e55cc(0x21e),game2ResetBtn[_0x5e55cc(0x200)]=_0x5e55cc(0x280),playGameSound('bangbinwinlevel.mp3')):playGameSound(_0x5e55cc(0x243));}else _0xfb6057[_0x5e55cc(0x2bc)]['add'](_0x5e55cc(0x20c)),setTimeout(()=>_0xfb6057[_0x5e55cc(0x2bc)][_0x5e55cc(0x2df)](_0x5e55cc(0x20c)),0x1f4),playGameSound(_0x5e55cc(0x227));}game2ResetBtn[_0xfff223(0x1cd)](_0xfff223(0x2d1),()=>{const _0x27e64b=_0xfff223;level2Completed?showScreen(_0x27e64b(0x22e)):loadGame2();});const game3Grid=document['getElementById']('game3-grid'),game3Feedback=document[_0xfff223(0x2b8)](_0xfff223(0x1c8)),game3ResetBtn=document[_0xfff223(0x2b8)](_0xfff223(0x2c0));let game3Matches=0x0;const game3TotalMatches=0x6;let game3Locked=![],game3FirstCard=null,game3SecondCard=null;function initGame3(){const _0x6b37b9=_0xfff223;loadGame3(),game3ResetBtn[_0x6b37b9(0x1cd)](_0x6b37b9(0x2d1),loadGame3);}function loadGame3(){const _0x48d5a6=_0xfff223;game3Matches=0x0,game3Locked=![],game3FirstCard=null,game3SecondCard=null,game3Feedback[_0x48d5a6(0x200)]='Pasangan\x20Ditemukan:\x200\x20/\x20'+game3TotalMatches,game3ResetBtn['textContent']='Reset\x20Game';const _0x5c2b7b=[...galleryInfo];shuffleArray(_0x5c2b7b);const _0x34064a=_0x5c2b7b[_0x48d5a6(0x24a)](0x0,game3TotalMatches),_0x26e382=[..._0x34064a,..._0x34064a];shuffleArray(_0x26e382),game3Grid[_0x48d5a6(0x1da)]='',_0x26e382[_0x48d5a6(0x1f7)](_0x34dd7a=>{const _0x2ef937=_0x48d5a6,_0x4da9e6=alatMusikData[_0x34dd7a[_0x2ef937(0x2da)]],_0x9d075e=document[_0x2ef937(0x253)]('div');_0x9d075e[_0x2ef937(0x2aa)]='card',_0x9d075e[_0x2ef937(0x2bf)][_0x2ef937(0x2da)]=_0x34dd7a[_0x2ef937(0x2da)];const _0x2707fe=_0x4da9e6?_0x4da9e6[_0x2ef937(0x234)]:'',_0x31bf0c=getPlaceholderUrl(_0x34dd7a[_0x2ef937(0x2da)],0x64,0x64);_0x9d075e[_0x2ef937(0x1da)]=_0x2ef937(0x2b2)+_0x2707fe+'\x22\x20alt=\x22'+_0x34dd7a[_0x2ef937(0x2da)]+_0x2ef937(0x209)+_0x31bf0c+'\x27;\x20this.style.fontSize=\x278px\x27;\x20this.style.objectFit=\x27cover\x27;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20',_0x9d075e['addEventListener'](_0x2ef937(0x2d1),()=>onCardClick(_0x9d075e)),game3Grid[_0x2ef937(0x2b7)](_0x9d075e),addHoverSound(_0x9d075e);});}function onCardClick(_0x43abde){const _0x2c3764=_0xfff223;if(game3Locked||_0x43abde[_0x2c3764(0x2bc)][_0x2c3764(0x273)](_0x2c3764(0x1cc))||_0x43abde['classList'][_0x2c3764(0x273)](_0x2c3764(0x27a)))return;_0x43abde[_0x2c3764(0x2bc)][_0x2c3764(0x2b1)](_0x2c3764(0x1cc));if(!game3FirstCard){game3FirstCard=_0x43abde;return;}game3SecondCard=_0x43abde,game3Locked=!![],checkGame3Match();}function checkGame3Match(){const _0x472156=_0xfff223,_0x207c1e=game3FirstCard[_0x472156(0x2bf)]['name']===game3SecondCard[_0x472156(0x2bf)][_0x472156(0x2da)];if(_0x207c1e){game3Matches++,game3Feedback[_0x472156(0x200)]='Pasangan\x20Ditemukan:\x20'+game3Matches+_0x472156(0x210)+game3TotalMatches;game3Matches===game3TotalMatches?playGameSound(_0x472156(0x2dc)):playGameSound('Benar.mp3');const _0x140648=alatMusikData[game3FirstCard[_0x472156(0x2bf)][_0x472156(0x2da)]]?.[_0x472156(0x27d)];_0x140648&&playInstrumentSound(_0x140648),game3FirstCard&&game3SecondCard&&(game3FirstCard[_0x472156(0x2bc)]['add'](_0x472156(0x27a)),game3SecondCard[_0x472156(0x2bc)][_0x472156(0x2b1)](_0x472156(0x27a))),game3Matches===game3TotalMatches&&(!level3Completed&&(skor+=0x64,level3Completed=!![]),game3ResetBtn[_0x472156(0x200)]=_0x472156(0x26b),game3Feedback[_0x472156(0x200)]='Level\x203\x20Selesai!\x20(+100\x20Poin!)',setTimeout(()=>{const _0x417b19=_0x472156;showScreen(_0x417b19(0x22e));},0x3e8)),resetGame3Turn();}else playGameSound(_0x472156(0x227)),setTimeout(()=>{const _0x11c730=_0x472156;game3FirstCard&&!game3FirstCard[_0x11c730(0x2bc)]['contains'](_0x11c730(0x27a))&&game3FirstCard[_0x11c730(0x2bc)][_0x11c730(0x2df)]('flipped'),game3SecondCard&&!game3SecondCard['classList'][_0x11c730(0x273)](_0x11c730(0x27a))&&game3SecondCard[_0x11c730(0x2bc)][_0x11c730(0x2df)]('flipped'),resetGame3Turn();},0x3e8);}function resetGame3Turn(){game3FirstCard=null,game3SecondCard=null,game3Locked=![];}let game4Active=![],game4AnimationId=null;const game4Canvas=document[_0xfff223(0x2b8)](_0xfff223(0x1d1)),game4Ctx=game4Canvas[_0xfff223(0x2a9)]('2d'),game4TargetNameEl=document[_0xfff223(0x2b8)]('game4-target-name'),game4FeedbackEl=document[_0xfff223(0x2b8)]('game4-feedback'),game4PlayTargetBtn=document[_0xfff223(0x2b8)](_0xfff223(0x24d)),game4BackBtn=document['getElementById'](_0xfff223(0x22b));let game4Images={},game4Target=null,game4Score=0x0;const game4TargetScore=0x5;let game4Catcher={'x':game4Canvas[_0xfff223(0x1dc)]/0x2-0x32,'y':game4Canvas['height']-0x1e,'width':0x64,'height':0x14},game4FallingItems=[],game4SpawnTimer=0x0;const GAME4_ITEM_SIZE=0x3c;function initGame4(){const _0x207780=_0xfff223;loadGame4Images(),resetGame4(),game4Canvas[_0x207780(0x1cd)]('mousemove',moveCatcher),game4Canvas[_0x207780(0x1cd)](_0x207780(0x238),moveCatcher,{'passive':![]}),game4PlayTargetBtn[_0x207780(0x1cd)](_0x207780(0x2d1),playTargetSound),game4BackBtn[_0x207780(0x1cd)]('click',()=>showScreen(_0x207780(0x22e))),addHoverSound(game4PlayTargetBtn),addHoverSound(game4BackBtn);}function _0x3388(){const _0x5e7778=['Bilah-bilah\x20kayu\x20bernada\x20dipukul\x20dengan\x20pemukul\x20khusus.','Digoyangkan\x20sehingga\x20tabung\x20bambu\x20membentur\x20bingkai.','rotateX(','ghost','Aerofon\x20(Organ\x20mulut)','bangbinImg/Keledi.png','removeChild','Kecapi','none','this.src=\x27','6431700dtJOnE','Dipetik','bangbinImg/Antoneng.png','Dipetik\x20senar-senarnya\x20dengan\x20kedua\x20tangan.','toggle','TEXTAREA','game2-reset','Indonesia\x20(Sunda,\x20Jawa\x20Barat)','Merupakan\x20alat\x20musik\x20utama\x20dalam\x20tembang\x20Sunda\x20dan\x20Cianjuran.\x20Memiliki\x20bentuk\x20kotak\x20resonansi.','Reset\x20Game','Gagal\x20memutar\x20suara\x20lokal:','Indonesia\x20(Pulau\x20Rote,\x20NTT)','deg)\x20rotateY(','bangbinImg/Kendang.png','src','getContext','className','/e2e8f0/94a3b8?text=','length','setAttribute','transform','WInner.mp3','modalTitle','add','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22card-inner\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22card-front\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<i\x20class=\x22fa-solid\x20fa-music\x22></i>\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22card-back\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<img\x20src=\x22','Angklung','section-game-4','targetScreen','Indonesia\x20(Minahasa,\x20Sulawesi\x20Utara)','appendChild','getElementById','clientY','borderColor','draggable-item','classList','shown.bs.modal','\x22\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20alt=\x22','dataset','game3-reset','map-btn-level2','Gagal\x20memutar\x20SFX:\x20','btn-success','music/Kurinding.mp3','1080348MYpUPm','Ansambel\x20musik\x20kaya\x20tekstur\x20berdasarkan\x20tangga\x20nada\x20pelog\x20dan\x20slendro.','.game1-choice-btn','h-auto\x20fs-5\x20fw-semibold\x20text-danger','Senar\x20dari\x20bilah\x20kulit\x20bambu\x20(dicungkil\x20dari\x20badan)\x20dipetik.','Tertangkap:\x20','Tertangkap:\x200\x20/\x20','catch','body','locked','music/Kecapi.mp3','infoModal','click','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<img\x20src=\x22','elementFromPoint','map-btn-level4','drop','bangbinImg/Kecapi.png','10px\x20Arial','bangbinImg/Suling.png','section-final','name','Indonesia\x20(Jawa,\x20Sunda,\x20Bali)','bangbinwinlevel.mp3','currentTime','fillText','remove','Genggong','feedback-correct','dragstart','game3-feedback','Dipetik\x20senar-senarnya\x20dengan\x20kuku\x20atau\x20plektrum.','28812hcSxrg','onerror','flipped','addEventListener','sfxPlayer','game1-next','music/Angklung.mp3','game4-canvas','music/Genggong.mp3','2438611yXEdHp','substring','bangbinImg/Kurinding.png','Ditiup\x20pada\x20lubang\x20tiup,\x20jari-jari\x20menutup\x20lubang\x20untuk\x20mengubah\x20nada.','\x22\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20style=\x22font-size:\x2010px;\x20font-weight:\x20bold;\x22\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20onerror=\x22this.src=\x27','66ReznlD','dragging','innerHTML','Ditiup/dihisap\x20melalui\x20labu\x20kering,\x20jari\x20menutup\x20lubang\x20pipa\x20bambu.','width','Kurinding','jenis','section-game-2','music/Antoneng.mp3','\x27;\x20this.style.backgroundColor=\x27#f8f9fa\x27;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p\x20class=\x22mt-auto\x22>','getData','currentTarget','game2-item-bank','finalScoreDisplay','querySelector','map-btn-final','Indonesia\x20(Bali,\x20Jawa,\x20Lombok)','Arbab','removeEventListener','Sering\x20digunakan\x20untuk\x20mengiringi\x20cerita\x20atau\x20nyanyian\x20tradisional\x20Aceh.','disabled','Satu\x20angklung\x20=\x20satu\x20nada.\x20Membutuhkan\x20kerjasama\x20tim\x20untuk\x20memainkan\x20melodi.','map-btn-materi','129365DglIAL','materi-card\x20h-100\x20d-flex\x20flex-column\x20justify-content-center\x20align-items-center','floor','touchstart','category','querySelectorAll','867CPsahX','text/plain','forEach','.dropzone','.sidebar-menu\x20button','clientX','dropzone-over','Aerofon','Zither\x20tabung\x20sederhana\x20yang\x20sering\x20dimainkan\x20untuk\x20hiburan\x20pribadi.','SALAH!\x20❌\x20(Skor:\x20','auto','textContent','Instrumen\x20inti\x20dalam\x20gamelan,\x20berfungsi\x20sebagai\x20pengatur\x20tempo\x20dan\x20ritme.','Menghasilkan\x20suara\x20dengungan\x20unik,\x20sering\x20dimainkan\x20untuk\x20hiburan.','Indonesia\x20(Sunda)','.btn-3d','profile-pic-container','infoModalProfile','section-game-3','#dc3545','\x22\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20onerror=\x22this.src=\x27','touchend','BENAR!\x20✅\x20(Skor:\x20','feedback-wrong','Keledi','splice','target','\x20/\x20','https://placehold.co/','Ditiup','button','closest','dragleave','display','INPUT','load','complete','map-btn-level3','title','white','move','<h2\x20class=\x22fs-4\x20text-success\x20fw-bold\x20p-3\x22>Level\x202\x20Selesai!\x20Kamu\x20dapat\x20100\x20poin!</h2>','game1-play-sound','tagName','div','left','mouseenter','.map-btn','Digesek','push','Wrong.mp3','error','Nilai\x20Akhir\x20Kamu:\x20','height','game4-back-btn','1312936YaIcRY','Digesek\x20dengan\x20busur\x20(bow),\x20dimainkan\x20dalam\x20posisi\x20tegak.','section-map','cara','.materi-card','Indonesia\x20(Dayak,\x20Kalimantan\x20Barat)','changedTouches','music/drum.mp3','img','col','Indonesia\x20(Aceh)','closeModal','touchmove','Bingkai\x20ditempelkan\x20ke\x20bibir,\x20bilah\x20digetarkan\x20sambil\x20mengubah\x20rongga\x20mulut.','.home-btn','bangbinImg/Sasando.png','Diletakkan\x20di\x20mulut\x20dan\x20bilah\x20getarnya\x20dipetik\x20atau\x20ditarik.','playSoundBtn','mouseleave','style','Membranofon','isBroken','modalImage','Benar.mp3','.draggable-item','.memory-card','Section\x20not\x20found:','section-game-1','btn-primary','Kordofon\x20(Zither\x20tabung)','slice','Indonesia\x20(Jawa,\x20Bali)','64px','game4-play-target','Level\x201\x20Selesai!\x20Kamu\x20dapat\x20100\x20Poin!','map-btn-level1','touches','pause','#198754','createElement','random','getBoundingClientRect','Idiofon\x20(Xilofon)','deskripsi','dataTransfer','Lanjut!','Dipukul\x20dengan\x20telapak\x20tangan\x20di\x20kedua\x20sisinya.','Sering\x20digunakan\x20dalam\x20musik\x20Kecapi\x20Suling\x20(Sunda)\x20atau\x20sebagai\x20melodi\x20dalam\x20gamelan.','h-auto\x20fs-5\x20fw-semibold\x20text-success','speed','alt','music/tombolBangbin.wav','Kolintang','bangbinImg/Arbab.png','play','paused','music/Sasando.mp3','.drop-area','music/','Dipukul','\x27;\x20this.style.fontSize=\x278px\x27;\x20this.style.objectFit=\x27contain\x27;\x20this.style.padding=\x274px\x27;\x20this.style.backgroundColor=\x27#f8f9fa\x27;','materi-grid','preventDefault','Main\x20Lagi','Terbuat\x20dari\x20bambu\x20atau\x20pelepah\x20enau,\x20digunakan\x20untuk\x20musik\x20hiburan\x20atau\x20ritual.','function','dropEffect','2006cuZOOZ','Idiofon','hidden','Antoneng','contains','9MfOcWQ','Suling','Kordofon\x20(Spike\x20fiddle)','</p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','game1-feedback','fillRect','matched','Idiofon\x20(Harpa\x20mulut)','font','soundUrl','section-materi','bangbinImg/Genggong.png','Kembali\x20ke\x20Peta','Gamelan','asal','Ansambel\x20(Idiofon,\x20dll.)','fillStyle','modalJenis','\x22\x20class=\x22w-100\x20h-100\x20mx-auto\x20object-fit-contain\x20pointer-events-none\x22\x20style=\x22max-height:\x2096px;\x20max-width:\x2096px;\x22\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20onerror=\x22this.src=\x27','modalDeskripsi','d-none','rotateX(0deg)\x20rotateY(0deg)\x20scale(1)','top','draggable-item\x20object-fit-contain\x20bg-light\x20bg-opacity-25\x20p-1\x20rounded-3','materi-back-btn','Dimainkan\x20secara\x20ansambel,\x20mirip\x20gamelan,\x20oleh\x20beberapa\x20pemain.','#infoModalProfile\x20.social-icons\x20a','\x22\x20alt=\x22'];_0x3388=function(){return _0x5e7778;};return _0x3388();}function loadGame4Images(){const _0x4cc210=_0xfff223;galleryInfo[_0x4cc210(0x1f7)](_0x2ed47d=>{const _0x4e7c28=_0x4cc210,_0x339f14=new Image();_0x339f14[_0x4e7c28(0x2a8)]=alatMusikData[_0x2ed47d[_0x4e7c28(0x2da)]]?.['img']||'',_0x339f14[_0x4e7c28(0x1cb)]=function(){const _0x3485a4=_0x4e7c28;this[_0x3485a4(0x241)]=!![];},game4Images[_0x2ed47d['name']]=_0x339f14;});}function resetGame4(){const _0x4f4382=_0xfff223;game4Score=0x0,game4FallingItems=[],game4Catcher['x']=game4Canvas[_0x4f4382(0x1dc)]/0x2-0x32,game4BackBtn[_0x4f4382(0x2bc)][_0x4f4382(0x2b1)](_0x4f4382(0x288)),game4FeedbackEl['textContent']=_0x4f4382(0x2cb)+game4TargetScore,setNewGame4Target();}function setNewGame4Target(){const _0x38cb3e=_0xfff223,_0x5a1b2d=Math['floor'](Math[_0x38cb3e(0x254)]()*galleryInfo[_0x38cb3e(0x2ac)]);game4Target=galleryInfo[_0x5a1b2d],game4TargetNameEl[_0x38cb3e(0x200)]=game4Target[_0x38cb3e(0x2da)];}function playTargetSound(){const _0x30da71=_0xfff223;if(game4Target){const _0xa9bb6d=alatMusikData[game4Target[_0x30da71(0x2da)]]?.[_0x30da71(0x27d)];_0xa9bb6d&&playInstrumentSound(_0xa9bb6d);}}function moveCatcher(_0x4c4224){const _0x395047=_0xfff223;_0x4c4224['preventDefault']();let _0x5db2f2;_0x4c4224[_0x395047(0x250)]?_0x5db2f2=_0x4c4224['touches'][0x0][_0x395047(0x1fa)]:_0x5db2f2=_0x4c4224[_0x395047(0x1fa)];const _0x3a7b20=game4Canvas['getBoundingClientRect']();let _0x4d1d91=_0x5db2f2-_0x3a7b20[_0x395047(0x222)]-game4Catcher[_0x395047(0x1dc)]/0x2;if(_0x4d1d91<0x0)_0x4d1d91=0x0;if(_0x4d1d91>game4Canvas[_0x395047(0x1dc)]-game4Catcher[_0x395047(0x1dc)])_0x4d1d91=game4Canvas[_0x395047(0x1dc)]-game4Catcher[_0x395047(0x1dc)];game4Catcher['x']=_0x4d1d91;}function game4Loop(){if(!game4Active)return;updateGame4(),drawGame4(),!level4Completed&&(game4AnimationId=requestAnimationFrame(game4Loop));}function updateGame4(){const _0x267c3f=_0xfff223;game4FallingItems['forEach']((_0xfb89ef,_0x213e0f)=>{const _0x490b99=_0x20bf;_0xfb89ef['y']+=_0xfb89ef[_0x490b99(0x25d)],_0xfb89ef['y']+_0xfb89ef[_0x490b99(0x22a)]>game4Catcher['y']&&_0xfb89ef['x']<game4Catcher['x']+game4Catcher[_0x490b99(0x1dc)]&&_0xfb89ef['x']+_0xfb89ef[_0x490b99(0x1dc)]>game4Catcher['x']&&(_0xfb89ef[_0x490b99(0x2da)]===game4Target[_0x490b99(0x2da)]?(game4Score++,game4FeedbackEl['textContent']=_0x490b99(0x2ca)+game4Score+_0x490b99(0x210)+game4TargetScore,playTargetSound(),game4Score>=game4TargetScore&&(!level4Completed&&(skor+=0x64,level4Completed=!![]),game4Active=![],game4FeedbackEl[_0x490b99(0x200)]='Level\x204\x20Selesai!\x20(+100\x20Poin!)',game4BackBtn['classList'][_0x490b99(0x2df)](_0x490b99(0x288)),playGameSound(_0x490b99(0x2dc)))):playGameSound(_0x490b99(0x227)),game4FallingItems[_0x490b99(0x20e)](_0x213e0f,0x1)),_0xfb89ef['y']>game4Canvas[_0x490b99(0x22a)]&&game4FallingItems['splice'](_0x213e0f,0x1);}),game4SpawnTimer++;if(game4SpawnTimer>0x64){game4SpawnTimer=0x0;const _0x44cdb0=Math[_0x267c3f(0x1f1)](Math[_0x267c3f(0x254)]()*galleryInfo[_0x267c3f(0x2ac)]),_0x141b35=galleryInfo[_0x44cdb0];game4FallingItems[_0x267c3f(0x226)]({'name':_0x141b35['name'],'x':Math[_0x267c3f(0x254)]()*(game4Canvas['width']-GAME4_ITEM_SIZE),'y':-GAME4_ITEM_SIZE,'width':GAME4_ITEM_SIZE,'height':GAME4_ITEM_SIZE,'speed':Math[_0x267c3f(0x254)]()*0x1+0.5});}}function drawGame4(){const _0x1ab098=_0xfff223;game4Ctx['clearRect'](0x0,0x0,game4Canvas['width'],game4Canvas[_0x1ab098(0x22a)]),game4Ctx[_0x1ab098(0x284)]=_0x1ab098(0x21c),game4Ctx[_0x1ab098(0x279)](game4Catcher['x'],game4Catcher['y'],game4Catcher[_0x1ab098(0x1dc)],game4Catcher[_0x1ab098(0x22a)]),game4FallingItems['forEach'](_0x22b91d=>{const _0x511563=_0x1ab098,_0x5ecdec=game4Images[_0x22b91d[_0x511563(0x2da)]];_0x5ecdec&&_0x5ecdec[_0x511563(0x219)]&&!_0x5ecdec[_0x511563(0x241)]?game4Ctx['drawImage'](_0x5ecdec,_0x22b91d['x'],_0x22b91d['y'],_0x22b91d[_0x511563(0x1dc)],_0x22b91d['height']):(game4Ctx[_0x511563(0x284)]='#6c757d',game4Ctx[_0x511563(0x279)](_0x22b91d['x'],_0x22b91d['y'],_0x22b91d[_0x511563(0x1dc)],_0x22b91d[_0x511563(0x22a)]),game4Ctx['fillStyle']=_0x511563(0x21c),game4Ctx[_0x511563(0x27c)]=_0x511563(0x2d7),game4Ctx[_0x511563(0x2de)](_0x22b91d['name'][_0x511563(0x1d4)](0x0,0x5),_0x22b91d['x']+_0x22b91d[_0x511563(0x1dc)]/0x2-0xf,_0x22b91d['y']+_0x22b91d[_0x511563(0x22a)]/0x2+0x4));});}document[_0xfff223(0x1f4)](_0xfff223(0x23a))[_0xfff223(0x1f7)](addHoverSound),document[_0xfff223(0x1f4)]('.home-btn')[_0xfff223(0x1f7)](_0x48f8c4=>{_0x48f8c4['addEventListener']('click',_0x4c489c=>{const _0x5e5512=_0x20bf,_0x432a62=_0x4c489c[_0x5e5512(0x1e3)]['dataset'][_0x5e5512(0x2b5)];_0x432a62&&showScreen(_0x432a62);});}),document[_0xfff223(0x2b8)](_0xfff223(0x1ee))[_0xfff223(0x1cd)](_0xfff223(0x2d1),()=>showScreen(_0xfff223(0x27e))),document[_0xfff223(0x2b8)]('map-btn-level1')[_0xfff223(0x1cd)](_0xfff223(0x2d1),()=>showScreen(_0xfff223(0x247))),document[_0xfff223(0x2b8)](_0xfff223(0x2c1))[_0xfff223(0x1cd)](_0xfff223(0x2d1),()=>{const _0x5c760e=_0xfff223;if(level1Completed)showScreen(_0x5c760e(0x1df));}),document['getElementById'](_0xfff223(0x21a))['addEventListener'](_0xfff223(0x2d1),()=>{const _0x2cb6ef=_0xfff223;if(level2Completed)showScreen(_0x2cb6ef(0x207));}),document[_0xfff223(0x2b8)](_0xfff223(0x2d4))[_0xfff223(0x1cd)]('click',()=>{const _0x3f931e=_0xfff223;if(level3Completed)showScreen(_0x3f931e(0x2b4));}),document[_0xfff223(0x2b8)](_0xfff223(0x1e7))[_0xfff223(0x1cd)](_0xfff223(0x2d1),()=>{const _0x334c04=_0xfff223;if(level4Completed)showScreen(_0x334c04(0x2d9));}),document[_0xfff223(0x2b8)]('resetBtn')[_0xfff223(0x1cd)](_0xfff223(0x2d1),resetGame),document[_0xfff223(0x2b8)](_0xfff223(0x28c))['addEventListener']('click',()=>showScreen(_0xfff223(0x22e))),showScreen(_0xfff223(0x22e));
     </script>
 </body>
 </html>
