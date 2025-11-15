@@ -707,12 +707,37 @@
                     <button class="btn menu-btn level-btn pro hover-sound-btn" onclick="selectLevel('waktu_pro')">
                         <span class="level-icon">⭐⭐⭐</span>
                         <span class="level-name">Pro</span>
-                        <span class="level-desc">Jam ke Detik (1-2 Jam)</span>
+                        <span class="level-desc">Konversi Zona Waktu (WIB/WITA/WIT)</span>
                     </button>
                 </div>
                 <hr class="my-4">
                 <div class="text-center">
                     <button class="btn btn-secondary btn-lg px-5 shadow hover-sound-btn" onclick="backToGameTypeMenu()">
+                        <i class="fas fa-arrow-left me-2"></i> Kembali
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="nameInputPage" class="content-page container">
+            <div class="card p-4 p-md-5 shadow-lg rounded-4 menu-card mx-auto text-center" style="max-width: 600px;">
+                <h2 class="fw-bold text-primary mb-4">Masukkan Nama Pemain</h2>
+                
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="playerLeftNameInput" placeholder="Pemain Kiri" value="Pemain Kiri">
+                    <label for="playerLeftNameInput">Nama Pemain Kiri (Mobil Hijau)</label>
+                </div>
+                
+                <div class="form-floating mb-4">
+                    <input type="text" class="form-control" id="playerRightNameInput" placeholder="Pemain Kanan" value="Pemain Kanan">
+                    <label for="playerRightNameInput">Nama Pemain Kanan (Mobil Biru)</label>
+                </div>
+
+                <div class="d-grid gap-3">
+                    <button class="btn btn-success btn-lg main-menu-btn shadow hover-sound-btn" onclick="startCountdownFromNames()">
+                        <i class="fas fa-play me-2"></i> Mulai Bermain
+                    </button>
+                    <button class="btn btn-secondary btn-lg shadow hover-sound-btn" onclick="backToLevelMenu()">
                         <i class="fas fa-arrow-left me-2"></i> Kembali
                     </button>
                 </div>
@@ -777,7 +802,7 @@
 
     <div id="profileModal" class="modal">
         <div class="modal-content">
-            <img src="https://bangbin85.github.io/Game/IFP2025/Berpacu-Waktu/bangbin_Waktu_File/Bangbin.jpg" alt="Foto Profil" class="profile-picture">
+            <img src="https://bangbin85.github.io/Game/IFP2025/Berpacu-Waktu/bangbin_Waktu_File/Bangbin.png" alt="Foto Profil" class="profile-picture">
             <h2 id="profileText" style="margin-top: 20px; margin-bottom: 10px;"><i class="fas fa-user-circle me-2"></i> Profil Pengembang</h2>
             <p id="profileName" style="font-size: 1.5em; font-weight: 600; color: white; margin-bottom: 15px; margin-top: 0;">Bintang Adhi Permana</p>
             <p id="profileDescription" style="font-size: 1.0em; color: rgba(255,255,255,0.85); margin-bottom: 35px; max-width: 400px; margin-left: auto; margin-right: auto; line-height: 1.5;">
@@ -805,10 +830,12 @@ const RACE_LENGTH = 5;
 
 const gameState = {
     leftPlayer: {
+        name: "Pemain Kiri",
         score: 0,
         racePosition: 0,
     },
     rightPlayer: {
+        name: "Pemain Kanan",
         score: 0,
         racePosition: 0,
     },
@@ -921,10 +948,10 @@ function handleAnswer(player, selectedIndex) {
         
         const WINNING_HOPS = RACE_LENGTH;
         if (gameState.leftPlayer.racePosition >= WINNING_HOPS) {
-            setTimeout(() => showWinnerModal('Pemain Kiri', 'Selamat! Anda berhasil mencapai garis finish!'), 600);
+            setTimeout(() => showWinnerModal('left', 'Selamat! Anda berhasil mencapai garis finish!'), 600);
             return;
         } else if (gameState.rightPlayer.racePosition >= WINNING_HOPS) {
-            setTimeout(() => showWinnerModal('Pemain Kanan', 'Selamat! Anda berhasil mencapai garis finish!'), 600);
+            setTimeout(() => showWinnerModal('right', 'Selamat! Anda berhasil mencapai garis finish!'), 600);
             return;
         }
 
@@ -1037,13 +1064,16 @@ function createConfetti() {
     }, 50);
 }
 
-function showWinnerModal(winner, message) {
+function showWinnerModal(playerKey, message) {
     playSound(audioWin);
     
     createConfetti();
     const modal = document.getElementById('winnerModal');
     
-    document.getElementById('winnerText').innerHTML = `<i class="fas fa-car-side me-2" style="color: ${winner === 'Pemain Kiri' ? '#667eea' : '#f44336'}"></i><span>${winner} Menang!</span><i class="fas fa-flag-checkered ms-2"></i>`;
+    const winnerName = (playerKey === 'left') ? gameState.leftPlayer.name : gameState.rightPlayer.name;
+    const winnerColor = (playerKey === 'left') ? '#667eea' : '#f44336';
+    
+    document.getElementById('winnerText').innerHTML = `<i class="fas fa-car-side me-2" style="color: ${winnerColor}"></i><span>${winnerName} Menang!</span><i class="fas fa-flag-checkered ms-2"></i>`;
     
     document.getElementById('winnerMessage').textContent = message;
     modal.style.display = 'flex';
@@ -1066,7 +1096,7 @@ function closeModal() {
     }
     document.querySelectorAll('.confetti').forEach(c => c.remove());
     
-    showCountdown();
+    showNameInput();
 }
 
 function generateTimeQuestion() {
@@ -1121,15 +1151,43 @@ function generateTimeQuestion() {
             break;
         case 'waktu_pro':
             {
-                const num = Math.floor(Math.random() * 2) + 1;
-                question = `${num} jam = ? detik`;
-                correctAnswer = num * 3600;
-                options = [
-                    correctAnswer,
-                    num * 60,
-                    num * 360,
-                    (num * 3600) + 60
-                ];
+                const fromIndex = Math.floor(Math.random() * timezones.length);
+                let toIndex = Math.floor(Math.random() * timezones.length);
+                while (toIndex === fromIndex) {
+                    toIndex = Math.floor(Math.random() * timezones.length);
+                }
+                
+                const fromZone = timezones[fromIndex];
+                const toZone = timezones[toIndex];
+
+                const startHour = Math.floor(Math.random() * 24);
+                const startMinute = Math.floor(Math.random() * 4) * 15;
+                const startTimeString = formatTime(startHour, startMinute);
+
+                const timeDifference = toZone.offset - fromZone.offset;
+                let correctHour = (startHour + timeDifference);
+                const correctMinute = startMinute;
+
+                if (correctHour >= 24) { correctHour -= 24; }
+                if (correctHour < 0) { correctHour += 24; }
+                
+                correctAnswer = formatTime(correctHour, correctMinute);
+                
+                question = `Jika di ${fromZone.name} pukul ${startTimeString},<br>maka di ${toZone.name} pukul...`;
+                
+                options = [correctAnswer];
+
+                let wrongHour1 = (startHour - timeDifference);
+                if (wrongHour1 >= 24) { wrongHour1 -= 24; }
+                if (wrongHour1 < 0) { wrongHour1 += 24; }
+                options.push(formatTime(wrongHour1, correctMinute));
+
+                let wrongHour2 = (correctHour + 1);
+                if (wrongHour2 >= 24) { wrongHour2 -= 24; }
+                options.push(formatTime(wrongHour2, correctMinute));
+
+                let wrongMinute3 = (startMinute + 15) % 60;
+                options.push(formatTime(correctHour, wrongMinute3));
             }
             break;
     }
@@ -1137,7 +1195,9 @@ function generateTimeQuestion() {
     let uniqueOptions = [...new Set(options)];
     while (uniqueOptions.length < 4) {
         if (gameState.currentLevel === 'waktu_pro') {
-            uniqueOptions.push(correctAnswer + (Math.floor(Math.random() * 5) + 1) * 100);
+            const randomHour = Math.floor(Math.random() * 24);
+            const randomMinute = Math.floor(Math.random() * 4) * 15;
+            uniqueOptions.push(formatTime(randomHour, randomMinute));
         } else {
             uniqueOptions.push(correctAnswer + (Math.floor(Math.random() * 5) + 1) * 10);
         }
@@ -1162,7 +1222,7 @@ function generateNewQuestion() {
     
     const centralQuestionBox = document.getElementById('centralQuestionBox');
     if(centralQuestionBox) {
-        centralQuestionBox.textContent = newQuestionData.question;
+        centralQuestionBox.innerHTML = newQuestionData.question;
     }
 
     const allButtons = document.querySelectorAll('#gameScreenBalapmobil .option-btn');
@@ -1199,6 +1259,26 @@ function resetGame() {
 function selectLevel(level) {
     gameState.currentLevel = level;
     gameState.currentMode = 'waktu';
+    showNameInput();
+}
+
+function showNameInput() {
+    document.getElementById('playerLeftNameInput').value = gameState.leftPlayer.name;
+    document.getElementById('playerRightNameInput').value = gameState.rightPlayer.name;
+    showPage('nameInputPage');
+}
+
+function backToLevelMenu() {
+    showPage('levelMenuWaktu');
+}
+
+function startCountdownFromNames() {
+    const leftName = document.getElementById('playerLeftNameInput').value;
+    const rightName = document.getElementById('playerRightNameInput').value;
+
+    gameState.leftPlayer.name = leftName.trim() || "Pemain Kiri";
+    gameState.rightPlayer.name = rightName.trim() || "Pemain Kanan";
+    
     showCountdown();
 }
 
