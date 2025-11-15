@@ -9,14 +9,11 @@
     <link rel="icon" type="image/x-icon" href="https://lh3.googleusercontent.com/d/16rll5zsRdwTbR3nF_NmPKwY51tg4tnOn">
     <title>Edukasi Pengukuran Waktu</title>
     
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     
-    <!-- Font Awesome CSS (untuk ikon) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
-        /* Import Poppins Font (DARI FILE ASLI) */
         @font-face {
             font-family: 'Poppins';
             src: url('fonts/Poppins-Regular.ttf') format('truetype');
@@ -38,24 +35,22 @@
             font-style: normal;
         }
 
-        /* Reset dan styling dasar */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            /* FONT ASLI DIPERTAHANKAN */
             font-family: 'Poppins', 'Arial', sans-serif;
         }
 
         html, body {
             height: 100vh;
-            height: 100dvh; /* Dynamic viewport height */
+            height: 100dvh;
             width: 100vw;
             width: 100dvw;
             margin: 0;
             padding: 0;
             overflow: hidden;
-            position: fixed; /* Mencegah scroll di mobile */
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
@@ -70,14 +65,20 @@
             justify-content: center;
             align-items: center;
             background: linear-gradient(180deg, #a8d8ff 0%, #ffffff 100%);
-            overscroll-behavior: none; /* Mencegah pull-to-refresh */
+            overscroll-behavior: none;
         }
 
-        /* Fullscreen Button (DARI FILE ASLI) */
-        .fullscreen-btn {
+        .top-center-controls {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10002;
+        }
+
+        .fullscreen-btn {
             width: 56px;
             height: 56px;
             background: rgba(255, 255, 255, 0.4);
@@ -87,7 +88,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 10002;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12),
                         0 2px 4px rgba(0, 0, 0, 0.08);
@@ -96,21 +96,34 @@
             overflow: hidden;
         }
 
-        /* Tombol Home (DARI FILE ASLI) */
         .home-btn {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
             width: 56px;
             height: 56px;
             background: rgba(255, 255, 255, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: 16px;
             cursor: pointer;
-            display: none; /* Ditampilkan oleh JS saat game */
+            display: none;
             align-items: center;
             justify-content: center;
-            z-index: 10002;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12),
+                        0 2px 4px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(12px);
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .profile-btn {
+            width: 56px;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12),
                         0 2px 4px rgba(0, 0, 0, 0.08);
@@ -119,29 +132,27 @@
             overflow: hidden;
         }
         
-        /* PERUBAHAN: Ikon Home di-style untuk Font Awesome */
         .home-icon {
-            /* width: 26px;
-            height: 26px;
-            object-fit: contain; */
-            font-size: 26px; /* Ukuran ikon */
-            color: #1a237e; /* Samakan dengan ikon fullscreen */
-            line-height: 1; /* Pusatkan ikon */
+            font-size: 26px;
+            color: #1a237e;
+            line-height: 1;
         }
-
-        /* PERUBAHAN: Ikon Fullscreen di-style untuk Font Awesome */
+        
         .fullscreen-icon {
-            /* width: 26px;
-            height: 26px; */
-            font-size: 26px; /* Ganti width/height dengan font-size */
-            line-height: 1; /* Pusatkan */
+            font-size: 26px;
+            line-height: 1;
             color: #1a237e;
         }
         .fullscreen-icon.collapse { display: none; }
         body.fullscreen .fullscreen-icon.expand { display: none; }
         body.fullscreen .fullscreen-icon.collapse { display: block; }
 
-        /* Copyright Footer (DARI FILE ASLI) */
+        .profile-icon {
+            font-size: 26px;
+            color: #1a237e; 
+            line-height: 1;
+        }
+
         .copyright-footer {
             position: fixed;
             bottom: 20px;
@@ -157,57 +168,43 @@
             font-weight: 500;
         }
 
-        /* ================================== */
-        /* STYLING BARU (BOOTSTRAP 5)         */
-        /* ================================== */
-        
-        /* Kontainer utama untuk semua halaman */
         .page-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh; /* Tinggi penuh */
+            height: 100vh;
             height: 100dvh;
             width: 100vw;
             width: 100dvw;
             padding: 1rem;
-            overflow-y: auto; /* Izinkan scroll jika konten card > tinggi layar */
+            overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             position: fixed;
             top: 0;
             left: 0;
         }
 
-        /* Halaman default disembunyikan */
         .content-page {
             display: none;
             width: 100%;
             max-height: 100%;
         }
         
-        /* Styling untuk card menu (Bootstrap) */
         .menu-card {
             background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.75);
-            max-width: 800px; /* Lebar maksimum untuk konten */
-            overflow-y: auto; /* Izinkan scroll di dalam card jika perlu */
-            max-height: calc(100vh - 40px); /* Maks tinggi card */
+            max-width: 800px;
+            overflow-y: auto;
+            max-height: calc(100vh - 40px);
         }
         
-        /* Tombol Menu Utama (Bootstrap) */
         .main-menu-btn {
             font-size: clamp(1rem, 2.5vw, 1.5rem);
             padding: clamp(12px, 2vh, 20px);
             font-weight: 600;
         }
 
-
-        /* ================================== */
-        /* CSS UNTUK GAME (DIPERTAHANKAN)     */
-        /* ================================== */
-
-        /* Tombol Level (CSS Asli Dipertahankan) */
         .menu-btn.level-btn {
             display: flex;
             flex-direction: column;
@@ -219,7 +216,6 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15),
                         0 3px 8px rgba(0, 0, 0, 0.1);
-            /* Hapus style .menu-btn umum agar gradient tidak tertimpa */
             background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
             border: none;
             border-radius: clamp(10px, 1.5vw, 22px);
@@ -239,9 +235,8 @@
         .level-name { font-size: clamp(0.85rem, 1.8vw, 1.3rem); white-space: nowrap; line-height: 1.2; }
         .level-desc { font-size: clamp(0.65rem, 1.3vw, 0.85rem); opacity: 0.9; white-space: nowrap; line-height: 1.1; }
 
-        /* Kontainer Game (CSS Asli Dipertahankan) */
         .game-container {
-            display: none; /* Diubah oleh JS */
+            display: none;
             width: 100vw;
             width: 100dvw;
             height: 100vh;
@@ -346,13 +341,11 @@
         .keypad-row-5.visible { display: flex; }
         .keypad-row-5 .go-btn-alt { width: 100%; }
 
-        /* Tombol keypad (Bootstrap tidak dipakai di sini) */
         .keypad button { flex: 1; height: clamp(45px, 7vh, 85px); border-radius: clamp(10px, 1.5vw, 22px); border: none; font-size: clamp(1rem, 2.5vw, 1.8rem); font-weight: 600; cursor: pointer; transition: background-color 0.15s ease; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.08); position: relative; -webkit-tap-highlight-color: transparent; touch-action: manipulation; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1; }
         .keypad button:active { transform: scale(0.97); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
         .number-btn { background: #ffffff; color: #2c3e50; }
         .number-btn:active { background: #e8ecf1; }
         
-        /* Tombol minus & decimal (tidak dipakai di game waktu) */
         .minus-btn { background: #ff9800; color: white; display: none; }
         .minus-btn:active { background: #f57c00; }
         .minus-btn.visible { display: flex; }
@@ -360,7 +353,6 @@
         .decimal-btn:active { background: #5d4037; }
         .decimal-btn.visible { display: flex; }
         
-        /* Layout tombol keypad (mode waktu/penjumlahan) */
         .keypad-row-4 .clear-btn { order: 3; } .keypad-row-4 .number-btn { order: 4; } .keypad-row-4 .go-btn { order: 5; }
         .keypad-row-4.subtraction-mode .minus-btn { order: 1; } .keypad-row-4.subtraction-mode .number-btn { order: 3; } .keypad-row-4.subtraction-mode .clear-btn { order: 4; } .keypad-row-4.subtraction-mode .go-btn { order: 5; }
         .keypad-row-4.division-mode .decimal-btn { order: 1; } .keypad-row-4.division-mode .number-btn { order: 2; } .keypad-row-4.division-mode .clear-btn { order: 3; } .keypad-row-4.division-mode .go-btn { order: 4; }
@@ -373,40 +365,38 @@
         .go-btn-alt { background: #42a5f5; color: white; }
         .go-btn-alt:active { background: #2196f3; }
 
-        /* Style untuk Tombol Pilihan Ganda BARU */
         .answer-options {
             width: 100%;
         }
         .option-btn {
-            font-size: clamp(0.8rem, 1.8vw, 1.1rem); /* Ukuran font lebih kecil agar pas */
+            font-size: clamp(0.8rem, 1.8vw, 1.1rem);
             font-weight: 600;
             padding: clamp(10px, 1.5vh, 16px);
             transition: all 0.2s ease;
             border: 2px solid transparent;
             word-wrap: break-word;
             white-space: normal;
-            min-height: 60px; /* Tinggi minimum */
+            min-height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         .option-btn:hover {
             transform: translateY(-2px);
-            border-color: #0d6efd; /* Bootstrap primary */
+            border-color: #0d6efd;
         }
         .option-btn.correct {
-            background-color: #198754 !important; /* Bootstrap success */
+            background-color: #198754 !important;
             color: white !important;
             border-color: #198754 !important;
             animation: pulse 0.3s;
         }
         .option-btn.wrong {
-            background-color: #dc3545 !important; /* Bootstrap danger */
+            background-color: #dc3545 !important;
             color: white !important;
             border-color: #dc3545 !important;
             animation: shake 0.5s;
         }
-        /* Nonaktifkan hover saat tombol terkunci */
         .option-btn:disabled:hover {
             transform: none;
             border-color: transparent;
@@ -422,7 +412,6 @@
 
         .game-field { position: relative; width: 100%; height: clamp(150px, 25vh, 350px); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 0 20px; }
 
-        /* Modal Styles (DARI FILE ASLI) */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.75); backdrop-filter: blur(5px); justify-content: center; align-items: center; animation: fadeInModal 0.3s ease-out; }
         @keyframes fadeInModal { from { opacity: 0; } to { opacity: 1; } }
         .modal-content { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 55px 70px; border-radius: 36px; text-align: center; box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4); animation: modalSlideIn 0.5s ease-out; max-width: 650px; min-width: 500px; border: 2px solid rgba(255, 255, 255, 0.2); position: relative; }
@@ -433,41 +422,35 @@
         .play-again-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35); }
         .play-again-btn:active { transform: translateY(-1px) scale(0.98); }
 
-        /* Confetti (DIUBAH UNTUK IKON) */
         .confetti { 
             position: fixed; 
-            width: auto; /* Diubah */
-            height: auto; /* Diubah */
-            top: -20px; /* Mulai sedikit lebih atas */
+            width: auto;
+            height: auto;
+            top: -20px;
             z-index: 1001; 
             animation: confettiFall linear forwards; 
             pointer-events: none; 
-            font-size: 24px; /* Ukuran ikon */
-            color: #000; /* Warna default, akan di-override */
+            font-size: 24px;
+            color: #000;
         }
         @keyframes confettiFall { to { transform: translateY(100vh) rotate(360deg); } }
 
-        /* PERUBAHAN: Animasi gradien untuk countdown */
         @keyframes changingGradient {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        /* Countdown (DARI FILE ASLI) */
         .countdown-overlay { 
             display: none; 
             position: fixed; 
             top: 0; left: 0; right: 0; bottom: 0; 
             width: 100vw; height: 100vh; 
-            /* PERUBAHAN: Latar belakang gradien animasi */
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
             background-size: 400% 400%;
             z-index: 10000; 
             justify-content: center; 
             align-items: center; 
-            /* HAPUS: backdrop-filter: blur(10px); */
-            /* PERUBAHAN: Tambah animasi gradien */
             animation: fadeInOverlay 0.3s ease-out, changingGradient 10s ease infinite; 
         }
         .countdown-overlay.show { display: flex; }
@@ -482,17 +465,18 @@
         .countdown-text.start { animation: startTextAnimation 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); font-size: 3em; color: #ffd700; }
         @keyframes startTextAnimation { 0% { opacity: 0; transform: translateY(-30px) scale(0.8); } 50% { transform: translateY(0) scale(1.1); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
         
-        /* Balap mobil (DARI FILE ASLI) */
-        .balap-mobil-game { background: linear-gradient(180deg, #87ceeb 0%, #98d8e8 50%, #90ee90 100%); }
+        .balap-mobil-game { 
+            background: linear-gradient(-45deg, #87ceeb, #a8d8ff, #90ee90, #98fb98, #87ceeb);
+            background-size: 400% 400%;
+            animation: changingGradient 15s ease infinite;
+        }
         .balap-mobil-field { position: relative; width: 100%; max-width: clamp(600px, 70vw, 900px); height: clamp(250px, 35vh, 350px); display: flex; align-items: center; justify-content: center; overflow: visible; }
         
-        /* PERUBAHAN: Perpanjang (tinggikan) track */
         .race-track { 
             position: relative; 
             width: 100%; 
             max-width: clamp(600px, 70vw, 900px); 
-            /* height: clamp(180px, 25vh, 250px); */
-            height: clamp(220px, 30vh, 300px); /* DITINGGIKAN */
+            height: clamp(220px, 30vh, 300px);
             display: flex; 
             align-items: center; 
             justify-content: center; 
@@ -503,8 +487,7 @@
             left: 0; 
             width: 100%; 
             height: auto; 
-            /* max-height: clamp(100px, 14vh, 140px); */
-            max-height: clamp(140px, 20vh, 200px); /* DITINGGIKAN */
+            max-height: clamp(140px, 20vh, 200px);
             object-fit: contain; 
             z-index: 1; 
         }
@@ -513,17 +496,14 @@
         .racer-image { position: absolute; bottom: 0; width: 100%; height: auto; max-height: 150px; object-fit: contain; object-position: center bottom; }
         .racer-image.stand { display: block; } .racer-image.hop { display: none; }
         
-        /* PERUBAHAN: Sesuaikan posisi mobil dengan track baru */
         .left-racer { 
-            /* bottom: clamp(35px, 4.5vh, 50px); */
-            bottom: clamp(45px, 6vh, 70px); /* DISESUAIKAN */
+            bottom: clamp(45px, 6vh, 70px);
             left: 3.5%; 
             z-index: 3; 
             transform: scale(1); 
         }
         .right-racer { 
-            /* bottom: clamp(65px, 8.5vh, 90px); */
-            bottom: clamp(85px, 11vh, 120px); /* DISESUAIKAN */
+            bottom: clamp(85px, 11vh, 120px);
             left: 6.5%; 
             z-index: 2; 
             transform: scale(0.9); 
@@ -539,8 +519,8 @@
         .left-racer.shaking { animation: shakeRacerFront 0.4s; }
         .right-racer.shaking { animation: shakeRacerBack 0.4s; }
         
-        /* Responsive Media Queries untuk Game (DIPERTAHANKAN) */
         @media screen and (max-width: 768px) { .countdown-number { font-size: 10em; } .countdown-number.start { font-size: 8em; } .countdown-text { font-size: 2em; } .countdown-text.start { font-size: 2.5em; } }
+        
         @media screen and (max-height: 600px) and (orientation: landscape) {
             .game-container { padding: 8px 15px; gap: 15px; }
             .player-section { width: 260px; padding: 10px; gap: 8px; }
@@ -553,16 +533,16 @@
             .game-field { height: 160px; padding: 0 10px; }
             .score-indicator { font-size: 0.9em; padding: 6px; margin-top: 6px; }
             
-            /* PERUBAHAN: Disesuaikan untuk landscape */
             .balap-mobil-field { max-width: 500px; height: 200px; } 
-            .race-track { max-width: 500px; height: 180px; } /* DITINGGIKAN */
-            .track-image { max-height: 120px; } /* DITINGGIKAN */
+            .race-track { max-width: 500px; height: 180px; }
+            .track-image { max-height: 120px; }
             .racer-container { width: 90px; height: 110px; } .racer-image { max-height: 110px; }
-            .left-racer { bottom: 45px; } /* DISESUAIKAN */
-            .right-racer { bottom: 75px; } /* DISESUAIKAN */
+            .left-racer { bottom: 45px; }
+            .right-racer { bottom: 75px; }
             
-            .fullscreen-btn, .home-btn { width: 44px; height: 44px; bottom: 10px; }
-            .fullscreen-btn { right: 10px; } .home-btn { left: 10px; }
+            .top-center-controls { top: 10px; gap: 8px; }
+            .fullscreen-btn, .home-btn, .profile-btn { width: 44px; height: 44px; }
+            
             .copyright-footer { bottom: 10px; } .copyright-footer p { font-size: 0.75em; }
             .modal-content { padding: 30px 40px; min-width: 350px; max-width: 500px; }
             .modal-content h2 { font-size: 1.5em; margin-bottom: 15px; }
@@ -581,51 +561,54 @@
             .game-field { height: 110px; }
             .score-indicator { font-size: 0.8em; padding: 4px; margin-top: 3px; }
             
-            /* PERUBAHAN: Disesuaikan untuk landscape kecil */
             .balap-mobil-field { max-width: 380px; height: 150px; } 
-            .race-track { max-width: 380px; height: 140px; } /* DITINGGIKAN */
-            .track-image { max-height: 95px; } /* DITINGGIKAN */
+            .race-track { max-width: 380px; height: 140px; }
+            .track-image { max-height: 95px; }
             .racer-container { width: 65px; height: 85px; } .racer-image { max-height: 85px; }
-            .left-racer { bottom: 35px; } /* DISESUAIKAN */
-            .right-racer { bottom: 55px; } /* DISESUAIKAN */
+            .left-racer { bottom: 35px; }
+            .right-racer { bottom: 55px; }
             
-            .fullscreen-btn, .home-btn { width: 38px; height: 38px; bottom: 5px; }
-            .fullscreen-btn { right: 5px; } .home-btn { left: 5px; }
+            .top-center-controls { top: 5px; gap: 5px; }
+            .fullscreen-btn, .home-btn, .profile-btn { width: 38px; height: 38px; }
+
             .copyright-footer { bottom: 5px; } .copyright-footer p { font-size: 0.65em; }
             .modal-content { padding: 25px 35px; min-width: 280px; max-width: 450px; }
             .modal-content h2 { font-size: 1.3em; margin-bottom: 12px; }
             .modal-content p { font-size: 0.85em; margin-bottom: 18px; }
             .play-again-btn { padding: 10px 35px; font-size: 0.95em; }
         }
+        
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            object-fit: cover;
+        }
 
     </style>
 
-    <link rel="preload" as="image" href="https://bangbin85.github.io/Game/IFP2025/Berpacu-Waktu/bangbin_Waktu_File/icon_home.png">
-    <link rel="preload" as="image" href="https://bangbin85.github.io/Game/IFP2025/Berpacu-Waktu/bangbin_Waktu_File/icon_balap_mobil.png">
-    <link rel="preload" as="image" href="https://bangbin85.github.io/Game/IFP2025/Berpacu-Waktu/bangbin_Waktu_File/bangbinTrack.png">
-    <link rel="preload" as="image" href="https://bangbin85.github.io/Game/IFP2025/Berpacu-Waktu/bangbin_Waktu_File/bangbinCar1.png">
-    <link rel="preload" as="image" href="https://bangbin85.github.io/Game/IFP2025/Berpacu-Waktu/bangbin_Waktu_File/bangbinCar1Jalan.png">
-    <link rel="preload" as="image" href="https://bangbin85.github.io/Game/IFP2025/Berpacu-Waktu/bangbin_Waktu_File/bangbinCar2.png">
-    <link rel="preload" as="image" href="https://bangbin85.github.io/Game/IFP2025/Berpacu-Waktu/bangbin_Waktu_File/bangbinCar2Jalan.png">
 </head>
 <body>
-    <!-- Fullscreen Button -->
-    <!-- PERUBAHAN: Ganti SVG dengan Font Awesome -->
-    <button id="fullscreenBtn" class="fullscreen-btn hover-sound-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">
-        <i class="fas fa-expand fullscreen-icon expand"></i>
-        <i class="fas fa-compress fullscreen-icon collapse"></i>
-    </button>
+    <div class="top-center-controls">
+        <button id="homeBtn" class="home-btn hover-sound-btn" onclick="backToGameTypeMenu()" title="Menu Utama" style="display: none;">
+            <i class="fas fa-home home-icon"></i>
+        </button>
 
-    <!-- Home Button -->
-    <!-- PERUBAHAN: Ganti <img> dengan Font Awesome -->
-    <button id="homeBtn" class="home-btn hover-sound-btn" onclick="backToGameTypeMenu()" title="Menu Utama" style="display: none;">
-        <i class="fas fa-home home-icon"></i>
-    </button>
+        <button id="fullscreenBtn" class="fullscreen-btn hover-sound-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">
+            <i class="fas fa-expand fullscreen-icon expand"></i>
+            <i class="fas fa-compress fullscreen-icon collapse"></i>
+        </button>
 
-    <!-- Kontainer Halaman Utama (BOOTSTRAP) -->
+        <button id="profileBtn" class="profile-btn hover-sound-btn" onclick="showProfileModal()" title="Profil Pengembang">
+            <i class="fas fa-user profile-icon"></i>
+        </button>
+    </div>
+
+
     <div class="page-container">
 
-        <!-- Menu Game Mode Selection (DIUBAH KE BOOTSTRAP) -->
         <div id="gameTypeMenu" class="content-page container text-center" style="display: flex;">
             <div class="card p-4 p-md-5 shadow-lg rounded-4 menu-card mx-auto" style="max-width: 600px;">
                 <h1 class="display-5 fw-bold text-primary mb-3">Edukasi Waktu</h1>
@@ -644,7 +627,6 @@
             </div>
         </div>
 
-        <!-- Halaman Materi Waktu (HALAMAN BARU) -->
         <div id="materiWaktu" class="content-page container">
             <div class="card p-4 p-md-5 shadow-lg rounded-4 menu-card mx-auto">
                 <h2 class="text-center fw-bold text-primary mb-4">Materi Pengukuran Waktu</h2>
@@ -677,7 +659,6 @@
             </div>
         </div>
 
-        <!-- Halaman Tujuan & Petunjuk (HALAMAN BARU) -->
         <div id="tujuanPetunjuk" class="content-page container">
              <div class="card p-4 p-md-5 shadow-lg rounded-4 menu-card mx-auto">
                 <h2 class="text-center fw-bold text-info mb-4">Tujuan & Petunjuk</h2>
@@ -696,7 +677,6 @@
                     <li>Pilih menu <strong>"Game Balap mobil"</strong> untuk bermain.</li>
                     <li>Di dalam game, pilih level kesulitan untuk memulai.</li>
                     <li>Jawab pertanyaan konversi waktu dengan benar untuk memajukan pembalap.</li>
-                    <!-- PERUBAHAN: Ganti <img> dengan Font Awesome -->
                     <li>Gunakan tombol <strong>"Kembali"</strong> atau tombol <i class="fas fa-home" style="color: #1a237e; vertical-align: middle; font-size: 20px;"></i> untuk kembali ke menu utama.</li>
                 </ol>
 
@@ -709,12 +689,10 @@
             </div>
         </div>
 
-        <!-- Menu Level Selection - Waktu (DIPERTAHANKAN & DIBERI CARD BOOTSTRAP) -->
         <div id="levelMenuWaktu" class="content-page container">
             <div class="card p-4 p-md-5 shadow-lg rounded-4 menu-card mx-auto text-center" style="max-width: 600px;">
                 <h2 class="fw-bold text-success mb-2">Balap mobil: Waktu</h2>
                 <p class="fs-5 text-muted mb-4">Pilih Level Kesulitan</p>
-                <!-- Tombol level menggunakan CSS kustom asli (level-btn) -->
                 <div class="d-grid gap-3 mx-auto" style="max-width: 400px;">
                     <button class="btn menu-btn level-btn beginner hover-sound-btn" onclick="selectLevel('waktu_beginner')">
                         <span class="level-icon">⭐</span>
@@ -734,7 +712,6 @@
                 </div>
                 <hr class="my-4">
                 <div class="text-center">
-                    <!-- Tombol kembali Bootstrap -->
                     <button class="btn btn-secondary btn-lg px-5 shadow hover-sound-btn" onclick="backToGameTypeMenu()">
                         <i class="fas fa-arrow-left me-2"></i> Kembali
                     </button>
@@ -743,9 +720,7 @@
         </div>
 
 
-        <!-- Game Screen - Balap mobil (DIPERTAHANKAN UTUH DARI ASLI) -->
         <div id="gameScreenBalapmobil" class="game-container balap-mobil-game" style="display: none;">
-            <!-- Bagian Pemain Kiri -->
             <div class="player-section left-player">
                 <div class="answer-options d-grid gap-2">
                     <button class="btn btn-light btn-lg option-btn shadow-sm hover-sound-btn" onclick="handleAnswer('left', 0)">...</button>
@@ -753,29 +728,23 @@
                     <button class="btn btn-light btn-lg option-btn shadow-sm hover-sound-btn" onclick="handleAnswer('left', 2)">...</button>
                     <button class="btn btn-light btn-lg option-btn shadow-sm hover-sound-btn" onclick="handleAnswer('left', 3)">...</button>
                 </div>
-                <!-- PERUBAHAN: 0/10 -> 0/5 -->
                 <div class="score-indicator">Posisi: <span class="score-value">0/5</span></div>
             </div>
 
-            <!-- Bagian Tengah -->
             <div class="center-section balap-mobil-center">
                 <h1>Balap Mobil Waktu</h1>
-                <!-- Kotak Soal BARU di Tengah -->
                 <div id="centralQuestionBox" class="question-box text-center mb-3 fs-4" style="--player-color: #333; --player-color-dark: #222; min-height: 80px; width: 100%; max-width: 600px; font-size: clamp(1rem, 2.5vw, 1.75rem); letter-spacing: 1px;">
                     Memuat soal...
                 </div>
                 <div class="game-field balap-mobil-field">
-                    <!-- Track (GAMBAR ASLI) -->
                     <div class="race-track">
                         <img src="https://bangbin85.github.io/Game/IFP2025/Berpacu-Waktu/bangbin_Waktu_File/bangbinTrack.png" alt="Track" class="track-image">
                         
-                        <!-- Racer Kiri (GAMBAR ASLI) -->
                         <div class="racer-container left-racer">
                             <img src="https://bangbin85.github.io/Game/IFP2025/Berpacu-Waktu/bangbin_Waktu_File/bangbinCar1.png" alt="Pemain Kiri" class="racer-image stand">
                             <img src="https://bangbin85.github.io/Game/IFP2025/Berpacu-Waktu/bangbin_Waktu_File/bangbinCar1Jalan.png" alt="Pemain Kiri Hop" class="racer-image hop" style="display: none;">
                         </div>
                         
-                        <!-- Racer Kanan (GAMBAR ASLI) -->
                         <div class="racer-container right-racer">
                             <img src="https://bangbin85.github.io/Game/IFP2025/Berpacu-Waktu/bangbin_Waktu_File/bangbinCar2.png" alt="Pemain Kanan" class="racer-image stand">
                             <img src="https://bangbin85.github.io/Game/IFP2025/Berpacu-Waktu/bangbin_Waktu_File/bangbinCar2Jalan.png" alt="Pemain Kanan Hop" class="racer-image hop" style="display: none;">
@@ -785,23 +754,19 @@
                 <p class="instruction">Jawab soal untuk melaju sampai garis finish!</p>
             </div>
 
-            <!-- Bagian Pemain Kanan -->
             <div class="player-section right-player">
-                <!-- Kotak Soal & Jawaban Dihapus, diganti Pilihan Ganda -->
                 <div class="answer-options d-grid gap-2">
                     <button class="btn btn-light btn-lg option-btn shadow-sm hover-sound-btn" onclick="handleAnswer('right', 0)">...</button>
                     <button class="btn btn-light btn-lg option-btn shadow-sm hover-sound-btn" onclick="handleAnswer('right', 1)">...</button>
                     <button class="btn btn-light btn-lg option-btn shadow-sm hover-sound-btn" onclick="handleAnswer('right', 2)">...</button>
                     <button class="btn btn-light btn-lg option-btn shadow-sm hover-sound-btn" onclick="handleAnswer('right', 3)">...</button>
                 </div>
-                 <!-- PERUBAHAN: 0/7 -> 0/5 -->
                 <div class="score-indicator">Posisi: <span class="score-value">0/5</span></div>
             </div>
         </div>
-    </div> <!-- Akhir .page-container -->
+    </div>
 
 
-    <!-- Modal Pemenang (DIPERTAHANKAN) -->
     <div id="winnerModal" class="modal">
         <div class="modal-content">
             <h2 id="winnerText">🎉 Pemain Menang! 🎉</h2>
@@ -810,7 +775,18 @@
         </div>
     </div>
 
-    <!-- Countdown Overlay (DIPERTAHANKAN) -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <img src="https://bangbin85.github.io/Game/IFP2025/Berpacu-Waktu/bangbin_Waktu_File/Bangbin.jpg" alt="Foto Profil" class="profile-picture">
+            <h2 id="profileText" style="margin-top: 20px; margin-bottom: 10px;"><i class="fas fa-user-circle me-2"></i> Profil Pengembang</h2>
+            <p id="profileName" style="font-size: 1.5em; font-weight: 600; color: white; margin-bottom: 15px; margin-top: 0;">Bintang Adhi Permana</p>
+            <p id="profileDescription" style="font-size: 1.0em; color: rgba(255,255,255,0.85); margin-bottom: 35px; max-width: 400px; margin-left: auto; margin-right: auto; line-height: 1.5;">
+                Pengembang yang bersemangat dalam menciptakan media edukasi interaktif dan menyenangkan untuk pembelajaran.
+            </p>
+            <button class="play-again-btn hover-sound-btn" onclick="closeProfileModal()">Tutup</button>
+        </div>
+    </div>
+
     <div id="countdownOverlay" class="countdown-overlay">
         <div class="countdown-content">
             <div id="countdownNumber" class="countdown-number">3</div>
@@ -818,83 +794,58 @@
         </div>
     </div>
 
-    <!-- Copyright Footer (DIPINDAH KE LUAR CONTAINER) -->
     <div class="copyright-footer">
         <p>© Bangbin 2025</p>
     </div>
 
-    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <script>
-// --- State Aplikasi (Disederhanakan) ---
-
-// PERUBAHAN: Konstanta baru untuk panjang balapan
 const RACE_LENGTH = 5;
 
 const gameState = {
     leftPlayer: {
-        // Hapus 'answer', 'lastQuestion', 'currentCorrectAnswer'
         score: 0,
-        racePosition: 0,   // untuk balap mobil (0-RACE_LENGTH)
+        racePosition: 0,
     },
     rightPlayer: {
-        // Hapus 'answer', 'lastQuestion', 'currentCorrectAnswer'
         score: 0,
-        racePosition: 0,   // untuk balap mobil (0-RACE_LENGTH)
+        racePosition: 0,
     },
-    currentGameType: 'balap-mobil', // Default ke balap mobil
-    currentMode: 'waktu', // Default ke waktu
-    currentLevel: 'waktu_beginner', // 'waktu_beginner', etc.
+    currentGameType: 'balap-mobil',
+    currentMode: 'waktu',
+    currentLevel: 'waktu_beginner',
 
-    // State BARU untuk soal terpusat
     currentQuestionData: {
         question: "Memuat...",
         options: ["...", "...", "...", "..."],
         correctAnswerIndex: 0
     },
-    // Cooldown untuk mencegah jawaban ganda
     gameCooldown: false
 };
 
-// --- (BARU) Audio Assets ---
 const audioCorrect = new Audio('https://bangbin85.github.io/Game/IFP2025/Berpacu-Waktu/bangbin_Waktu_File/bangbinCarBenar.mp3');
 const audioWrong = new Audio('https://bangbin85.github.io/Game/IFP2025/Berpacu-Waktu/bangbin_Waktu_File/bangbinCarSalah.mp3');
 const audioMove = new Audio('https://bangbin85.github.io/Game/IFP2025/Berpacu-Waktu/bangbin_Waktu_File/bangbinCar.mp3');
 const audioWin = new Audio('https://bangbin85.github.io/Game/IFP2025/Berpacu-Waktu/bangbin_Waktu_File/bangbinWinner.mp3');
 const audioStart = new Audio('https://bangbin85.github.io/Game/IFP2025/Berpacu-Waktu/bangbin_Waktu_File/bangbinStart.mp3');
-// PERUBAHAN: Tambahkan audio hover
 const audioHover = new Audio('https://bangbin85.github.io/Game/IFP2025/Berpacu-Waktu/bangbin_Waktu_File/bangbinKlik.mp3');
 
-/**
- * (BARU) Helper function untuk memainkan audio
- * Mencegah error dan mengulang audio dari awal
- */
 function playSound(audioElement) {
-    // Atur volume agar tidak terlalu keras
     audioElement.volume = 0.7; 
-    audioElement.currentTime = 0; // Rewind ke awal
+    audioElement.currentTime = 0;
     audioElement.play().catch(error => {
-        // Sembunyikan error jika browser memblokir autoplay (akan main di interaksi berikutnya)
         console.log("Audio play failed (will retry on next user interaction):", error.message);
     });
 }
 
-// PERUBAHAN: Fungsi terpisah untuk hover sound
 function playHoverSound() {
-    audioHover.volume = 0.3; // Buat suara hover lebih pelan
+    audioHover.volume = 0.3;
     playSound(audioHover);
 }
 
-
-// --- Navigasi Halaman (Disederhanakan) ---
-// ... (Fungsi navigasi showPage, selectGameType, backToGameTypeMenu tetap sama) ...
-// --- Navigasi Halaman (Disederhanakan) ---
 const allPages = document.querySelectorAll('.content-page, .game-container');
 
-/**
- * Menampilkan halaman yang dipilih dan menyembunyikan halaman lainnya.
- */
 function showPage(pageId) {
     allPages.forEach(page => {
         page.style.display = 'none';
@@ -902,14 +853,11 @@ function showPage(pageId) {
     
     const pageToShow = document.getElementById(pageId);
     if (pageToShow) {
-        // Jika ini halaman game, gunakan flex. Jika card menu, gunakan block.
         if (pageId === 'gameScreenBalapmobil') {
             pageToShow.style.display = 'flex';
         } else {
-            // Untuk menu (gameTypeMenu, levelMenuWaktu) dan halaman statis (materiWaktu, tujuanPetunjuk)
             pageToShow.style.display = 'block';
             
-            // Pusatkan menu/konten statis di page-container
             const pageContainer = document.querySelector('.page-container');
             if (pageContainer) {
                 pageContainer.style.display = 'flex';
@@ -919,22 +867,21 @@ function showPage(pageId) {
         }
     }
 
-    // Sembunyikan/tampilkan tombol home
     const homeBtn = document.getElementById('homeBtn');
-    if (pageId === 'gameScreenBalapmobil' || pageId === 'levelMenuWaktu' || pageId === 'materiWaktu' || pageId === 'tujuanPetunjuk') {
-        homeBtn.style.display = 'flex';
-    } else {
-        homeBtn.style.display = 'none';
-    }
-
-    // Tampilkan/Sembunyikan tombol fullscreen
     const fullscreenBtn = document.getElementById('fullscreenBtn');
-    if (fullscreenBtn) {
-        fullscreenBtn.style.display = 'flex';
+    const profileBtn = document.getElementById('profileBtn');
+
+    if (pageId === 'gameTypeMenu') {
+        if (homeBtn) homeBtn.style.display = 'none';
+        if (fullscreenBtn) fullscreenBtn.style.display = 'flex';
+        if (profileBtn) profileBtn.style.display = 'flex';
+    } else {
+        if (homeBtn) homeBtn.style.display = 'flex';
+        if (fullscreenBtn) fullscreenBtn.style.display = 'flex';
+        if (profileBtn) profileBtn.style.display = 'flex';
     }
 }
 
-// Fungsi untuk memilih game type (MENU UTAMA)
 function selectGameType(gameType) {
     gameState.currentGameType = gameType;
     if (gameType === 'materi-waktu') {
@@ -942,85 +889,61 @@ function selectGameType(gameType) {
     } else if (gameType === 'tujuan-petunjuk') {
         showPage('tujuanPetunjuk');
     } else if (gameType === 'balap-mobil') {
-        // Langsung ke menu level Waktu
         showPage('levelMenuWaktu');
     }
 }
 
-// Fungsi untuk kembali ke menu game type (Tombol Home)
 function backToGameTypeMenu() {
     showPage('gameTypeMenu');
-    // Sembunyikan tombol home di menu utama
-    const homeBtn = document.getElementById('homeBtn');
-    if (homeBtn) homeBtn.style.display = 'none';
 }
 
-
-// FUNGSI DIHAPUS: updateAnswer(player, value)
-// FUNGSI DIHAPUS: checkAnswer(player)
-
-// FUNGSI BARU: handleAnswer (dipanggil oleh tombol pilihan ganda)
 function handleAnswer(player, selectedIndex) {
-    // Jika game sedang cooldown (menunggu soal baru), jangan lakukan apa-apa
     if (gameState.gameCooldown) return;
 
-    // Aktifkan cooldown untuk kedua pemain
     gameState.gameCooldown = true;
 
     const isCorrect = (selectedIndex === gameState.currentQuestionData.correctAnswerIndex);
     const playerButtons = document.querySelectorAll(`#gameScreenBalapmobil .${player}-player .option-btn`);
 
-    // Nonaktifkan semua tombol untuk kedua pemain
     document.querySelectorAll('#gameScreenBalapmobil .option-btn').forEach(btn => btn.disabled = true);
 
     if (isCorrect) {
-        // --- Jawaban Benar ---
-        playSound(audioCorrect); // <-- (BARU) Mainkan suara benar
+        playSound(audioCorrect);
         playerButtons[selectedIndex].classList.add('correct');
         
-        // Logic untuk Balap mobil - Jawaban BENAR
         if (player === 'left') {
             gameState.leftPlayer.racePosition++;
         } else {
             gameState.rightPlayer.racePosition++;
         }
-        updateRacerPosition(player); // <-- Suara mobil main di dalam fungsi ini
-        updateScoreDisplay(player); // Update tampilan score
+        updateRacerPosition(player);
+        updateScoreDisplay(player);
         
-        // Cek kemenangan
-        // PERUBAHAN: Menggunakan RACE_LENGTH
         const WINNING_HOPS = RACE_LENGTH;
         if (gameState.leftPlayer.racePosition >= WINNING_HOPS) {
             setTimeout(() => showWinnerModal('Pemain Kiri', 'Selamat! Anda berhasil mencapai garis finish!'), 600);
-            return; // Hentikan game
+            return;
         } else if (gameState.rightPlayer.racePosition >= WINNING_HOPS) {
             setTimeout(() => showWinnerModal('Pemain Kanan', 'Selamat! Anda berhasil mencapai garis finish!'), 600);
-            return; // Hentikan game
+            return;
         }
 
-        // Muat soal baru setelah animasi hop selesai
-        setTimeout(generateNewQuestion, 600); // 500ms (animasi hop) + 100ms buffer
+        setTimeout(generateNewQuestion, 600);
 
     } else {
-        // --- Jawaban Salah ---
-        playSound(audioWrong); // <-- (BARU) Mainkan suara salah
+        playSound(audioWrong);
         playerButtons[selectedIndex].classList.add('wrong');
-        // Tunjukkan jawaban yang benar
         playerButtons[gameState.currentQuestionData.correctAnswerIndex].classList.add('correct');
 
-        // Getarkan pembalap
         const racerClass = player === 'left' ? '.left-racer' : '.right-racer';
         const racerContainer = document.querySelector(`#gameScreenBalapmobil ${racerClass}`);
         racerContainer.classList.add('shaking');
         setTimeout(() => racerContainer.classList.remove('shaking'), 500);
 
-        // Muat soal baru setelah pemain melihat jawaban benar (delay lebih lama)
         setTimeout(generateNewQuestion, 1500);
     }
 }
 
-
-// Fungsi untuk update tampilan score (Hanya Balap mobil)
 function updateScoreDisplay(player) {
     const gameScreen = '#gameScreenBalapmobil';
     const scoreElement = document.querySelector(`${gameScreen} .${player}-player .score-value`);
@@ -1029,15 +952,12 @@ function updateScoreDisplay(player) {
         const score = player === 'left' ? 
             gameState.leftPlayer.racePosition : 
             gameState.rightPlayer.racePosition;
-        // PERUBAHAN: Menggunakan RACE_LENGTH
         scoreElement.textContent = `${score}/${RACE_LENGTH}`;
     }
 }
 
-
-// Fungsi untuk mengupdate posisi racer (Balap mobil) (DARI FILE ASLI)
 function updateRacerPosition(player) {
-    playSound(audioMove); // <-- (BARU) Mainkan suara mobil bergerak
+    playSound(audioMove);
     
     const racerClass = player === 'left' ? '.left-racer' : '.right-racer';
     const racerContainer = document.querySelector(`#gameScreenBalapmobil ${racerClass}`);
@@ -1051,14 +971,13 @@ function updateRacerPosition(player) {
         gameState.leftPlayer.racePosition : 
         gameState.rightPlayer.racePosition;
     
-    // PERUBAHAN: Menggunakan RACE_LENGTH
     const TOTAL_HOPS = RACE_LENGTH;
     let START_PIXEL, FINISH_PIXEL, HOP_DISTANCE;
     
-    if (player === 'left') { // Blue player
+    if (player === 'left') {
         START_PIXEL = trackWidth * 0.035;
         FINISH_PIXEL = trackWidth * 0.82;
-    } else { // Red player
+    } else {
         START_PIXEL = trackWidth * 0.065;
         FINISH_PIXEL = trackWidth * 0.78;
     }
@@ -1080,28 +999,22 @@ function updateRacerPosition(player) {
     }, 500);
 }
 
-// PERUBAHAN: Variabel untuk interval confetti
 let confettiInterval = null;
 
-// Fungsi untuk membuat confetti (DIUBAH MENJADI IKON)
 function createConfetti() {
     const duration = 3000;
     const animationEnd = Date.now() + duration;
     
-    // PERUBAHAN: Menggunakan ikon dan warna
     const icons = [
-        { icon: 'fa-car-side', color: '#1a237e' }, // Mobil biru
-        { icon: 'fa-flag-checkered', color: '#333333' }, // Bendera hitam
-        { icon: 'fa-car-side', color: '#b71c1c' }, // Mobil merah
-        { icon: 'fa-flag-checkered', color: '#FFFFFF' } // Bendera putih
+        { icon: 'fa-car-side', color: '#1a237e' },
+        { icon: 'fa-flag-checkered', color: '#333333' },
+        { icon: 'fa-car-side', color: '#b71c1c' },
+        { icon: 'fa-flag-checkered', color: '#FFFFFF' }
     ];
     
     function randomInRange(min, max) { return Math.random() * (max - min) + min; }
     
-    // PERUBAHAN: Menyimpan interval
     confettiInterval = setInterval(function() {
-        // Cek interval di dalam (meskipun akan di-clear di luar, ini_
-        // adalah best practice jika durasi > 0)
         if (Date.now() > animationEnd) {
              clearInterval(confettiInterval);
              confettiInterval = null;
@@ -1112,54 +1025,50 @@ function createConfetti() {
             const confetti = document.createElement('div');
             confetti.className = 'confetti';
             
-            // PERUBAHAN: Logika ikon
             const iconData = icons[Math.floor(Math.random() * icons.length)];
             confetti.innerHTML = `<i class="fas ${iconData.icon}"></i>`;
             confetti.style.color = iconData.color;
-            // END PERUBAHAN
 
             confetti.style.left = randomInRange(0, 100) + '%';
             confetti.style.animationDuration = randomInRange(2, 4) + 's';
             document.body.appendChild(confetti);
             setTimeout(() => confetti.remove(), 4000);
         }
-    }, 50); // Buat ikon baru setiap 50ms
+    }, 50);
 }
 
-// Fungsi untuk menampilkan modal pemenang (DARI FILE ASLI)
 function showWinnerModal(winner, message) {
-    playSound(audioWin); // <-- (BARU) Mainkan suara pemenang
+    playSound(audioWin);
     
-    createConfetti(); // PERUBAHAN: Sekarang memanggil createConfetti versi ikon
+    createConfetti();
     const modal = document.getElementById('winnerModal');
     
-    // PERUBAHAN: Ganti judul modal dengan ikon Font Awesome
     document.getElementById('winnerText').innerHTML = `<i class="fas fa-car-side me-2" style="color: ${winner === 'Pemain Kiri' ? '#667eea' : '#f44336'}"></i><span>${winner} Menang!</span><i class="fas fa-flag-checkered ms-2"></i>`;
     
     document.getElementById('winnerMessage').textContent = message;
     modal.style.display = 'flex';
+    
     document.getElementById('homeBtn').style.display = 'none';
     document.getElementById('fullscreenBtn').style.display = 'none';
+    document.getElementById('profileBtn').style.display = 'none';
 }
 
-// Fungsi untuk menutup modal dan restart game
 function closeModal() {
     document.getElementById('winnerModal').style.display = 'none';
+
     document.getElementById('homeBtn').style.display = 'flex';
     document.getElementById('fullscreenBtn').style.display = 'flex';
+    document.getElementById('profileBtn').style.display = 'flex';
     
-    // PERUBAHAN: Hentikan interval confetti dan hapus sisa ikon
     if (confettiInterval) {
         clearInterval(confettiInterval);
         confettiInterval = null;
     }
     document.querySelectorAll('.confetti').forEach(c => c.remove());
-    // END PERUBAHAN
     
-    showCountdown(); // Mulai lagi
+    showCountdown();
 }
 
-// FUNGSI generateTimeQuestion (DIRUBAH TOTAL untuk Pilihan Ganda)
 function generateTimeQuestion() {
     let question = '';
     let correctAnswer = 0;
@@ -1171,7 +1080,6 @@ function generateTimeQuestion() {
         { name: 'Ambon (WIT)', offset: 9 }
     ];
 
-    // Helper untuk shuffle array
     const shuffleArray = (array) => {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -1180,32 +1088,29 @@ function generateTimeQuestion() {
         return array;
     };
     
-    // Helper untuk format jam (misal 19:15)
     const formatTime = (hour, minute) => {
         return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
     };
 
     switch(gameState.currentLevel) {
-        case 'waktu_beginner': // Jam ke Menit
+        case 'waktu_beginner':
             {
-                const num = Math.floor(Math.random() * 10) + 1; // 1-10 jam
+                const num = Math.floor(Math.random() * 10) + 1;
                 question = `${num} jam = ? menit`;
                 correctAnswer = num * 60;
-                // Buat pengecoh
                 options = [
                     correctAnswer,
-                    num * 30,  // Salah
-                    num * 100, // Salah
-                    (num + 1) * 60 // Salah
+                    num * 30,
+                    num * 100,
+                    (num + 1) * 60
                 ];
             }
             break;
-        case 'waktu_amateur': // Menit ke Detik
+        case 'waktu_amateur':
             {
-                const num = Math.floor(Math.random() * 10) + 1; // 1-10 menit
+                const num = Math.floor(Math.random() * 10) + 1;
                 question = `${num} menit = ? detik`;
                 correctAnswer = num * 60;
-                // Buat pengecoh
                 options = [
                     correctAnswer,
                     num * 30,
@@ -1214,41 +1119,33 @@ function generateTimeQuestion() {
                 ];
             }
             break;
-        case 'waktu_pro': // ZONA WAKTU BARU
+        case 'waktu_pro':
             {
-                // (LOGIKA LEVEL PRO SEBELUMNYA DIUBAH MENJADI JAM KE DETIK SESUAI DESKRIPSI MENU)
-                const num = Math.floor(Math.random() * 2) + 1; // 1-2 jam
+                const num = Math.floor(Math.random() * 2) + 1;
                 question = `${num} jam = ? detik`;
                 correctAnswer = num * 3600;
-                // Buat pengecoh
                 options = [
                     correctAnswer,
-                    num * 60, // salah (menit)
-                    num * 360, // salah
-                    (num * 3600) + 60 // salah
+                    num * 60,
+                    num * 360,
+                    (num * 3600) + 60
                 ];
             }
             break;
     }
 
-    // Pastikan semua opsi unik (jika ada yg sama, ganti)
     let uniqueOptions = [...new Set(options)];
     while (uniqueOptions.length < 4) {
-        // Jika level Pro (string), tambahkan jam acak
         if (gameState.currentLevel === 'waktu_pro') {
-             // (LOGIKA PENGECOH DISESUAIKAN UNTUK JAM KE DETIK)
             uniqueOptions.push(correctAnswer + (Math.floor(Math.random() * 5) + 1) * 100);
         } else {
-            // Jika level lain (angka), tambahkan angka acak
             uniqueOptions.push(correctAnswer + (Math.floor(Math.random() * 5) + 1) * 10);
         }
         uniqueOptions = [...new Set(uniqueOptions)];
     }
 
-    // Acak opsinya
     const shuffledOptions = shuffleArray(uniqueOptions);
     
-    // Cari index jawaban yang benar setelah diacak
     const correctAnswerIndex = shuffledOptions.findIndex(opt => opt === correctAnswer);
 
     return {
@@ -1259,44 +1156,34 @@ function generateTimeQuestion() {
 }
 
 
-// Fungsi untuk generate soal baru (DIRUBAH TOTAL)
 function generateNewQuestion() {
-    // 1. Generate data soal baru
     const newQuestionData = generateTimeQuestion();
     gameState.currentQuestionData = newQuestionData;
     
-    // 2. Update kotak soal utama
     const centralQuestionBox = document.getElementById('centralQuestionBox');
     if(centralQuestionBox) {
         centralQuestionBox.textContent = newQuestionData.question;
     }
 
-    // 3. Update tombol pilihan ganda (kiri dan kanan)
     const allButtons = document.querySelectorAll('#gameScreenBalapmobil .option-btn');
     allButtons.forEach((btn, index) => {
-        // index 0-3 untuk pemain kiri, 4-7 untuk pemain kanan
         const optionIndex = index % 4; 
         btn.textContent = newQuestionData.options[optionIndex];
         
-        // 4. Reset style tombol
         btn.classList.remove('correct', 'wrong');
         btn.disabled = false;
     });
 
-    // 5. Reset cooldown
     gameState.gameCooldown = false;
 }
 
-// Fungsi untuk reset game (Disederhanakan)
 function resetGame() {
     gameState.leftPlayer = { ...gameState.leftPlayer, score: 0, racePosition: 0 };
     gameState.rightPlayer = { ...gameState.rightPlayer, score: 0, racePosition: 0 };
-    gameState.gameCooldown = true; // Set cooldown saat reset
+    gameState.gameCooldown = true;
 
-    // Reset posisi pembalap
     recalculateRacerPositions(); 
     
-    // Reset gambar ke 'stand'
     document.querySelectorAll('.racer-container').forEach(container => {
         container.querySelector('.stand').style.display = 'block';
         container.querySelector('.hop').style.display = 'none';
@@ -1306,35 +1193,31 @@ function resetGame() {
     updateScoreDisplay('left');
     updateScoreDisplay('right');
     
-    // Generate soal baru (yang akan reset cooldown)
     generateNewQuestion();
 }
 
-// FUNGSI DIHAPUS: setupEventListeners(gameScreenId)
-
-// Fungsi untuk memilih level dan mulai game
-// ... (Fungsi selectLevel tetap sama) ...
 function selectLevel(level) {
     gameState.currentLevel = level;
-    gameState.currentMode = 'waktu'; // Pastikan mode adalah waktu
+    gameState.currentMode = 'waktu';
     showCountdown();
 }
 
-// Fungsi untuk menampilkan countdown (DARI FILE ASLI)
 function showCountdown() {
     const overlay = document.getElementById('countdownOverlay');
+    
     document.getElementById('homeBtn').style.display = 'none';
     document.getElementById('fullscreenBtn').style.display = 'none';
+    document.getElementById('profileBtn').style.display = 'none';
+
     overlay.classList.add('show');
     
-    // PERUBAHAN: Mainkan audio start di sini (dipindahkan dari dalam updateCountdown)
     playSound(audioStart);
 
     const sequence = [
         { number: '3', text: 'Bersiap...' },
         { number: '2', text: 'Konsentrasi...' },
         { number: '1', text: 'Fokus...' },
-        { number: 'Mulai!', text: 'Gasskan!!!...', isStart: true }
+        { number: 'Mulai!', text: 'Ayooo Kamu Bisa!!!...', isStart: true }
     ];
     
     function updateCountdown(index) {
@@ -1354,8 +1237,6 @@ function showCountdown() {
         if (current.isStart) { 
             numberEl.classList.add('start'); 
             textEl.classList.add('start'); 
-            // PERUBAHAN: Audio dipindahkan ke atas
-            // playSound(audioStart); // <-- DIHAPUS DARI SINI
         } 
         else { 
             numberEl.classList.remove('start'); 
@@ -1363,29 +1244,23 @@ function showCountdown() {
         }
 
         numberEl.style.animation = 'none'; textEl.style.animation = 'none';
-        void numberEl.offsetHeight; // Reflow
+        void numberEl.offsetHeight;
         numberEl.style.animation = ''; textEl.style.animation = '';
         setTimeout(() => updateCountdown(index + 1), index < sequence.length - 1 ? 1000 : 800);
     }
     updateCountdown(0);
 }
 
-// Fungsi untuk memulai game
 function startGame() {
     document.getElementById('homeBtn').style.display = 'flex';
     document.getElementById('fullscreenBtn').style.display = 'flex';
+    document.getElementById('profileBtn').style.display = 'flex';
     
-    // Hanya tampilkan Balap mobil
     showPage('gameScreenBalapmobil');
     
-    // updateKeypadLayout(); // Tidak perlu lagi
     resetGame();
 }
 
-// FUNGSI updateKeypadLayout DIHAPUS
-
-// --- Logika Fullscreen (DARI FILE ASLI) ---
-// ... (Fungsi Fullscreen, handleFullscreenChange, recalculateRacerPositions, resize listener tetap sama) ...
 function toggleFullscreen() {
     if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
         const elem = document.documentElement;
@@ -1407,7 +1282,7 @@ function handleFullscreenChange() {
     } else {
         document.body.classList.remove('fullscreen');
     }
-    setTimeout(recalculateRacerPositions, 100); // Recalculate game layout
+    setTimeout(recalculateRacerPositions, 100);
 }
 
 document.addEventListener('fullscreenchange', handleFullscreenChange);
@@ -1415,13 +1290,11 @@ document.addEventListener('mozfullscreenchange', handleFullscreenChange);
 document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
 document.addEventListener('MSFullscreenChange', handleFullscreenChange);
 
-// Fungsi untuk recalculate racer positions (DARI FILE ASLI)
 function recalculateRacerPositions() {
     const raceTrack = document.querySelector('#gameScreenBalapmobil .race-track');
     if (!raceTrack || raceTrack.offsetWidth === 0) return; 
     
     const trackWidth = raceTrack.offsetWidth;
-    // PERUBAHAN: Menggunakan RACE_LENGTH
     const TOTAL_HOPS = RACE_LENGTH;
 
     const leftRacer = document.querySelector('#gameScreenBalapmobil .left-racer');
@@ -1445,7 +1318,6 @@ function recalculateRacerPositions() {
     }
 }
 
-// Resize listener
 let resizeTimeout;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
@@ -1456,7 +1328,6 @@ window.addEventListener('resize', () => {
     }, 100);
 });
 
-// PERUBAHAN: Tambahkan event listener untuk sound hover saat DOM siap
 document.addEventListener('DOMContentLoaded', () => {
     const hoverButtons = document.querySelectorAll('.hover-sound-btn');
     hoverButtons.forEach(btn => {
@@ -1465,7 +1336,21 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// Initialize - tampilkan menu game type
+function showProfileModal() {
+    const modal = document.getElementById('profileModal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+function closeProfileModal() {
+    const modal = document.getElementById('profileModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+
 backToGameTypeMenu();
 
     </script>
