@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="id" style="overflow: hidden;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-R8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" type="image/x-icon" href="bangbin_pacu_File/favicon.ico">
+    <title>Pacu Tokoh Bangsa</title> <!-- JUDUL DIUBAH -->
+
+    <link href="../Berpacu-Waktu/style/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../Berpacu-Waktu/style/fontawesome/css/all.min.css" rel="stylesheet">
+    <link href="../Berpacu-Waktu/style/banbinFont.css" rel="stylesheet">
+ 
+    <style>
+        @font-face {
+            font-family: 'Poppins';
+            src: url('fonts/Poppins-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Poppins';
+            src: url('fonts/Poppins-Bold.ttf') format('truetype');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Poppins';
+            src: url('fonts/Poppins-SemiBold.ttf') format('truetype');
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        html, body {
+            height: 100vh;
+            height: 100dvh;
+            width: 100vw;
+            width: 100dvw;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        @keyframes animatedCircuit {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('bangbin_pacu_File/bangbinBG.png');
+            background-size: cover;
+            background-position: center;
+            animation: animatedCircuit 60s ease infinite; 
+            overscroll-behavior: none;
+        }
+        
+        /* --- KEYFRAMES UNTUK ANIMASI PEMBUKA --- */
+        @keyframes slideUpContainer {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* --- AKHIR KEYFRAMES --- */
+
+
+        .top-center-controls {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10002;
+        }
+
+        .fullscreen-btn {
+            width: 56px;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12),
+                        0 2px 4px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(12px);
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .home-btn {
+            width: 56px;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 16px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12),
+                        0 2px 4px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(12px);
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .profile-btn {
+            width: 56px;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12),
+                        0 2px 4px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(12px);
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        .home-icon {
+            font-size: 26px;
+            color: #1a237e;
+            line-height: 1;
+        }
+        
+        .fullscreen-icon {
+            font-size: 26px;
+            line-height: 1;
+            color: #1a237e;
+        }
+        .fullscreen-icon.collapse { display: none; }
+        body.fullscreen .fullscreen-icon.expand { display: none; }
+        body.fullscreen .fullscreen-icon.collapse { display: block; }
+
+        .profile-icon {
+            font-size: 26px;
+            color: #1a237e; 
+            line-height: 1;
+        }
+
+        .copyright-footer {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 101;
+        }
+        .copyright-footer p {
+            margin: 0;
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .page-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            height: 100dvh;
+            width: 100vw;
+            width: 100dvw;
+            padding: 1rem;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .content-page {
+            display: none;
+            width: 100%;
+            max-height: 100%;
+        }
+        
+        .menu-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.75);
+            max-width: 2600px;
+            overflow-y: auto;
+            max-height: calc(100vh - 40px);
+            transition: background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+        
+        /* PERUBAHAN BARU: Menambahkan efek transparan & hover untuk menu level */
+        #levelMenuWaktu .menu-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: none;
+        }
+        
+        #levelMenuWaktu .menu-card:hover {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.75);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        #gameTypeMenu .menu-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: none;
+            
+            /* --- PENGATURAN ANIMASI PEMBUKA --- */
+            opacity: 0; /* Mulai transparan */
+            animation: slideUpContainer 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s forwards;
+        }
+        
+        #gameTypeMenu .menu-card:hover {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.75);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* --- ANIMASI UNTUK JUDUL, PARAGRAF, DAN TOMBOL --- */
+        #gameTypeMenu .display-5 { /* Judul H1 */
+            opacity: 0;
+            animation: floatIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.7s forwards;
+        }
+        
+        #gameTypeMenu .fs-5 { /* Paragraf */
+            opacity: 0;
+            animation: floatIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.8s forwards;
+        }
+
+        #gameTypeMenu .row .col-6,
+        #gameTypeMenu .d-grid .main-menu-btn {
+            opacity: 0;
+            animation: floatIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+        
+        /* Delay berbeda untuk setiap tombol */
+        #gameTypeMenu .row .col-6:nth-child(1) { animation-delay: 0.9s; }
+        #gameTypeMenu .row .col-6:nth-child(2) { animation-delay: 1.0s; }
+        #gameTypeMenu .row .col-6:nth-child(3) { animation-delay: 1.1s; }
+        #gameTypeMenu .row .col-6:nth-child(4) { animation-delay: 1.2s; }
+        #gameTypeMenu .d-grid .main-menu-btn { animation-delay: 1.3s; }
+        /* --- AKHIR PENGATURAN ANIMASI --- */
+
+
+        #materiPancasila .menu-card, /* ID DIUBAH */
+        #tujuanPage .menu-card,
+        #petunjukPage .menu-card,
+        #pustakaPage .menu-card {
+            max-width: 1000px;
+        }
+
+        .accordion-button {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #1a237e; 
+        }
+        .accordion-button:not(.collapsed) {
+            background-color: rgba(26, 35, 126, 0.05);
+            color: #1a237e;
+            box-shadow: none;
+        }
+        .accordion-button:focus {
+            box-shadow: none;
+            border-color: rgba(0,0,0,.125);
+        }
+        .accordion-item {
+            background-color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+        
+        .example-box {
+            background-color: rgba(232, 245, 253, 0.8); 
+            border-left: 5px solid #0d6efd;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        .example-box h5 {
+            color: #0a58ca;
+            font-weight: 600;
+        }
+        
+        /* --- PERUBAHAN BESAR PADA TOMBOL MENU --- */
+        @keyframes animatedGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .main-menu-btn {
+            font-size: clamp(1rem, 2.5vw, 1.25rem); /* Sedikit lebih kecil agar muat */
+            padding: clamp(12px, 2vh, 20px);
+            font-weight: 600;
+            position: relative;
+            border: none;
+            color: white;
+            border-radius: 16px; 
+            transition: all 0.1s ease-in-out;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            -webkit-tap-highlight-color: transparent; 
+            touch-action: manipulation; 
+            background-size: 300% 300%; /* Untuk animasi gradasi */
+            animation: animatedGradient 8s ease infinite; /* Terapkan animasi */
+            width: 100%; /* Pastikan tombol mengisi kolom */
+        }
+        
+        .main-menu-btn.mulai-btn {
+             font-size: clamp(1.1rem, 2.5vw, 1.5rem); /* Tombol mulai bisa lebih besar */
+             animation-duration: 6s; /* Animasi lebih cepat untuk tombol utama */
+        }
+
+        .main-menu-btn:active {
+            transform: translateY(4px); 
+            box-shadow: 0 2px 0 var(--btn-shadow-color), inset 0 2px 3px rgba(0,0,0,0.2); /* Bayangan atas + inset */
+        }
+        
+        #gameTypeMenu .btn-primary {
+            --btn-shadow-color: #0a58ca;
+            background-image: linear-gradient(145deg, #4c9aff, #0d6efd, #2b84fd);
+            box-shadow: 0 6px 0 var(--btn-shadow-color), 0 8px 15px rgba(0,0,0,0.2);
+        }
+        #gameTypeMenu .btn-primary:active {
+            background-image: linear-gradient(145deg, #0d6efd, #2b84fd, #4c9aff);
+        }
+
+        #gameTypeMenu .btn-info {
+            --btn-shadow-color: #0aa3b2;
+            background-image: linear-gradient(145deg, #31d2f2, #0dcaf0, #5ee0ff);
+            color: #000;
+            box-shadow: 0 6px 0 var(--btn-shadow-color), 0 8px 15px rgba(0,0,0,0.2);
+        }
+         #gameTypeMenu .btn-info:active {
+            background-image: linear-gradient(145deg, #0dcaf0, #31d2f2, #5ee0ff);
+         }
+         #gameTypeMenu .btn-info:hover {
+            color: #000;
+            background-image: linear-gradient(145deg, #4ad8f3, #1bcff1, #5ee0ff);
+         }
+        
+        /* TOMBOL BARU UNTUK PETUNJUK */
+        #gameTypeMenu .btn-warning {
+            --btn-shadow-color: #c77c00;
+            background-image: linear-gradient(145deg, #ffca2c, #ffc107, #ffd75e);
+            color: #000;
+            box-shadow: 0 6px 0 var(--btn-shadow-color), 0 8px 15px rgba(0,0,0,0.2);
+        }
+         #gameTypeMenu .btn-warning:active {
+            background-image: linear-gradient(145deg, #ffc107, #ffca2c, #ffd75e);
+         }
+         #gameTypeMenu .btn-warning:hover {
+            color: #000;
+            background-image: linear-gradient(145deg, #ffd24d, #ffc720, #ffd75e);
+         }
+
+        /* TOMBOL BARU UNTUK PUSTAKA */
+        #gameTypeMenu .btn-secondary {
+            --btn-shadow-color: #4a545e;
+            background-image: linear-gradient(145deg, #909da8, #6c757d, #aab5c0);
+            color: white;
+            box-shadow: 0 6px 0 var(--btn-shadow-color), 0 8px 15px rgba(0,0,0,0.2);
+        }
+         #gameTypeMenu .btn-secondary:active {
+            background-image: linear-gradient(145deg, #6c757d, #909da8, #aab5c0);
+         }
+         #gameTypeMenu .btn-secondary:hover {
+            color: white;
+            background-image: linear-gradient(145deg, #a0acb8, #7d868d, #aab5c0);
+         }
+
+
+        #gameTypeMenu .btn-success {
+            --btn-shadow-color: #146c43;
+            background-image: linear-gradient(145deg, #25c975, #198754, #1db163);
+            box-shadow: 0 6px 0 var(--btn-shadow-color), 0 8px 15px rgba(0,0,0,0.2);
+        }
+        #gameTypeMenu .btn-success:active {
+            background-image: linear-gradient(145deg, #198754, #1db163, #25c975);
+        }
+
+         #gameTypeMenu .btn-success:hover {
+            color: white;
+            background-image: linear-gradient(145deg, #25c975, #1dab62, #1db163);
+         }
+
+         #gameTypeMenu .btn-primary:hover {
+            color: white;
+            background-image: linear-gradient(145deg, #4c9aff, #2680fd, #2b84fd);
+         }
+        /* --- AKHIR PERUBAHAN TOMBOL MENU --- */
+
+
+        .menu-btn.level-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(3px, 0.6vh, 8px);
+            padding: clamp(10px, 1.5vh, 20px) clamp(20px, 2.5vw, 35px);
+            min-width: clamp(180px, 25vw, 280px);
+            color: white;
+            transition: all 0.1s ease-in-out; 
+            box-shadow: 0 6px 0 var(--btn-shadow-color-dark), 0 8px 15px rgba(0, 0, 0, 0.2);
+            border: none;
+            border-radius: clamp(10px, 1.5vw, 22px);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            -webkit-tap-highlight-color: transparent; 
+            touch-action: manipulation;
+            /* PERUBAHAN: Menambahkan animasi gradien */
+            background-size: 300% 300%;
+            animation: animatedGradient 8s ease infinite;
+        }
+
+        .menu-btn.level-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 var(--btn-shadow-color-dark), inset 0 2px 3px rgba(0,0,0,0.2);
+        }
+
+        .level-btn.beginner { 
+            --btn-shadow-color-dark: #2e7d32; /* Hijau tua */
+            /* PERUBAHAN: background -> background-image */
+            background-image: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%); 
+        }
+        .level-btn.beginner:hover { 
+            background-image: linear-gradient(135deg, #81c784 0%, #66bb6a 100%); 
+        }
+        .level-btn.beginner:active {
+             background-image: linear-gradient(135deg, #4caf50, #66bb6a);
+        }
+
+        .level-btn.amateur { 
+            --btn-shadow-color-dark: #e65100; /* Orange tua */
+            /* PERUBAHAN: background -> background-image */
+            background-image: linear-gradient(135deg, #ffa726 0%, #ff9800 100%); 
+        }
+        .level-btn.amateur:hover { 
+            background-image: linear-gradient(135deg, #ffb74d 0%, #ffa726 100%); 
+        }
+        .level-btn.amateur:active {
+            background-image: linear-gradient(135deg, #ff9800, #ffa726);
+        }
+
+        .level-btn.pro { 
+            --btn-shadow-color-dark: #b71c1c; /* Merah tua */
+            /* PERUBAHAN: background -> background-image */
+            background-image: linear-gradient(135deg, #ef5350 0%, #f44336 100%); 
+        }
+        .level-btn.pro:hover { 
+            background-image: linear-gradient(135deg, #e57373 0%, #ef5350 100%); 
+        }
+        .level-btn.pro:active {
+            background-image: linear-gradient(135deg, #f44336, #ef5350);
+        }
+
+        .level-icon { font-size: clamp(1rem, 2vw, 1.6rem); line-height: 1; }
+        .level-name { font-size: clamp(0.85rem, 1.8vw, 1.3rem); white-space: nowrap; line-height: 1.2; }
+        .level-desc { font-size: clamp(0.65rem, 1.3vw, 0.85rem); opacity: 0.9; white-space: normal; line-height: 1.1; } /* DIUBAH: white-space normal */
+
+        .game-container {
+            display: none;
+            width: 100vw;
+            width: 100dvw;
+            height: 100vh;
+            height: 100dvh;
+            max-width: 100%;
+            max-height: 100%;
+            flex-direction: row;
+            padding: clamp(10px, 2vh, 30px) clamp(20px, 3vw, 80px);
+            gap: clamp(20px, 4vw, 100px);
+            justify-content: space-between;
+            box-sizing: border-box;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+        }
+
+        .player-section {
+            width: clamp(200px, 22vw, 400px);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(8px, 1.5vh, 20px);
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.35);
+            padding: clamp(10px, 2vh, 25px);
+            border-radius: clamp(12px, 2vw, 30px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+                        0 2px 8px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-sizing: border-box;
+            align-self: center;
+            height: fit-content;
+            max-height: 90vh;
+        }
+
+        .question-box {
+            background: linear-gradient(135deg, var(--player-color) 0%, var(--player-color-dark) 100%);
+            color: white;
+            width: 100%;
+            padding: clamp(12px, 2vh, 28px) clamp(10px, 1.5vw, 22px);
+            border-radius: clamp(10px, 1.5vw, 22px);
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15),
+                        0 2px 4px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            min-height: clamp(60px, 10vh, 100px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: clamp(1px, 0.2vw, 3px);
+        }
+
+        .left-player { --player-color: #1a237e; --player-color-dark: #0d1642; }
+        .right-player { --player-color: #b71c1c; --player-color-dark: #7f0000; }
+
+        .answer-box {
+            background: rgba(255, 255, 255, 0.95);
+            width: 100%;
+            height: clamp(50px, 8vh, 80px);
+            border-radius: clamp(10px, 1.5vw, 22px);
+            border: none;
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08),
+                        inset 0 2px 4px rgba(0, 0, 0, 0.05);
+            box-sizing: border-box;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: bold;
+            letter-spacing: clamp(1px, 0.3vw, 4px);
+            backdrop-filter: blur(5px);
+        }
+
+        .answer-box.wrong {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            color: #f44336;
+            animation: shake 0.5s;
+        }
+        .answer-box.correct {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            color: #4caf50;
+            animation: pulse 0.3s;
+        }
+
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); } 20%, 40%, 60%, 80% { transform: translateX(10px); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .keypad { display: flex; flex-direction: column; gap: clamp(6px, 1vh, 15px); width: 100%; padding: clamp(8px, 1.5vh, 20px); background: rgba(255, 255, 255, 0.25); border-radius: clamp(10px, 1.5vw, 25px); backdrop-filter: blur(10px); }
+        .keypad-row { display: flex; gap: clamp(6px, 1vw, 15px); justify-content: space-between; }
+        .keypad-row-5 { display: none; }
+        .keypad-row-5.visible { display: flex; }
+        .keypad-row-5 .go-btn-alt { width: 100%; }
+        .keypad button { flex: 1; height: clamp(45px, 7vh, 85px); border-radius: clamp(10px, 1.5vw, 22px); border: none; font-size: clamp(1rem, 2.5vw, 1.8rem); font-weight: 600; cursor: pointer; transition: background-color 0.15s ease; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.08); position: relative; -webkit-tap-highlight-color: transparent; touch-action: manipulation; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1; }
+        .keypad button:active { transform: scale(0.97); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+        .number-btn { background: #ffffff; color: #2c3e50; }
+        .number-btn:active { background: #e8ecf1; }
+        .minus-btn { background: #ff9800; color: white; display: none; }
+        .minus-btn:active { background: #f57c00; }
+        .minus-btn.visible { display: flex; }
+        .decimal-btn { background: #795548; color: white; display: none; font-size: 1.8em; }
+        .decimal-btn:active { background: #5d4037; }
+        .decimal-btn.visible { display: flex; }
+        .keypad-row-4 .clear-btn { order: 3; } .keypad-row-4 .number-btn { order: 4; } .keypad-row-4 .go-btn { order: 5; }
+        .keypad-row-4.subtraction-mode .minus-btn { order: 1; } .keypad-row-4.subtraction-mode .number-btn { order: 3; } .keypad-row-4.subtraction-mode .clear-btn { order: 4; } .keypad-row-4.subtraction-mode .go-btn { order: 5; }
+        .keypad-row-4.division-mode .decimal-btn { order: 1; } .keypad-row-4.division-mode .number-btn { order: 2; } .keypad-row-4.division-mode .clear-btn { order: 3; } .keypad-row-4.division-mode .go-btn { order: 4; }
+        .clear-btn { background: #ff5252; color: white; }
+        .clear-btn:active { background: #f44336; }
+        .go-btn { background: #42a5f5; color: white; }
+        .go-btn:active { background: #2196f3; }
+        .go-btn.hidden { display: none; }
+        .go-btn-alt { background: #42a5f5; color: white; }
+        .go-btn-alt:active { background: #2196f3; }
+
+        .answer-options {
+            width: 100%;
+        }
+        .option-btn {
+            font-size: clamp(0.8rem, 1.8vw, 1.1rem);
+            font-weight: 600;
+            padding: clamp(10px, 1.5vh, 16px);
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            word-wrap: break-word;
+            white-space: normal;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .option-btn:hover {
+            transform: translateY(-2px);
+            border-color: #0d6efd;
+        }
+        .option-btn.correct {
+            background-color: #198754 !important;
+            color: white !important;
+            border-color: #198754 !important;
+            animation: pulse 0.3s;
+        }
+        .option-btn.wrong {
+            background-color: #dc3545 !important;
+            color: white !important;
+            border-color: #dc3545 !important;
+            animation: shake 0.5s;
+        }
+        .option-btn:disabled:hover {
+            transform: none;
+            border-color: transparent;
+        }
+
+        .score-indicator { width: 100%; text-align: center; font-size: 1.3em; font-weight: bold; color: #2c3e50; margin-top: 15px; padding: 14px; background: rgba(255, 255, 255, 0.4); border-radius: 18px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.6); }
+        .score-value { color: #2196f3; font-size: 1.15em; font-weight: 700; }
+        .center-section { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: clamp(10px, 2vh, 30px); min-width: clamp(250px, 30vw, 600px); position: relative; z-index: 1; }
+        .center-section h1 { color: #333; font-size: clamp(1rem, 3vw, 2rem); margin: 0; white-space: nowrap; }
+        .instruction { font-size: clamp(0.75rem, 2vw, 1.25rem); color: #666; margin: 0; white-space: nowrap; max-width: 100%; }
+        .game-field { position: relative; width: 100%; height: clamp(150px, 25vh, 350px); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 0 20px; }
+
+.modal { 
+    display: none; 
+    position: fixed; 
+    z-index: 1000; 
+    left: 0; top: 0; right: 0; bottom: 0; 
+    width: 100vw; height: 100vh; 
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px); 
+    justify-content: center; 
+    align-items: center; 
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-out;
+}
+
+.modal.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+@keyframes fadeInModal { from { opacity: 0; } to { opacity: 1; } } 
+
+.modal-content { 
+    background: linear-gradient(135deg, #a881ff 0%, #6a5acd 100%); 
+    padding: 55px 70px; 
+    border-radius: 36px; 
+    text-align: center; 
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4); 
+    max-width: 650px; 
+    min-width: 500px; 
+    border: 2px solid rgba(255, 255, 255, 0.2); 
+    position: relative; 
+    transform: scale(0.8) translateY(-50px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal.show .modal-content {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+@keyframes modalSlideIn { from { transform: translateY(-50px) scale(0.9); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+.modal-content h2 { color: white; font-size: 2.2em; margin: 0 0 25px 0; text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; gap: 15px; }
+        .modal-content p { color: rgba(255, 255, 255, 0.95); font-size: 1.15em; margin: 0 0 35px 0; }
+        .play-again-btn { background: rgba(255, 255, 255, 0.95); color: #667eea; border: none; padding: 18px 60px; font-size: 1.2em; font-weight: 700; border-radius: 50px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25); }
+        .play-again-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35); }
+.play-again-btn:active { transform: translateY(-1px) scale(0.98); }
+
+#profileModal .play-again-btn {
+    background: rgba(255, 255, 255, 0.9);
+    color: #6a5acd; 
+}
+#profileModal .play-again-btn:hover {
+    background: white;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    transform: translateY(-3px);
+}
+
+
+.confetti { 
+    position: fixed; 
+            width: auto;
+            height: auto;
+            top: -20px;
+            z-index: 1001; 
+            animation: confettiFall linear forwards; 
+            pointer-events: none; 
+            font-size: 24px;
+            color: #000;
+        }
+        @keyframes confettiFall { to { transform: translateY(100vh) rotate(360deg); } }
+
+        @keyframes changingGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .countdown-overlay { 
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; right: 0; bottom: 0; 
+            width: 100vw; height: 100vh; 
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            z-index: 10000; 
+            justify-content: center; 
+            align-items: center; 
+            animation: fadeInOverlay 0.3s ease-out, changingGradient 10s ease infinite; 
+        }
+        .countdown-overlay.show { display: flex; }
+        @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
+        .countdown-content { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 30px; }
+        .countdown-number { 
+            font-size: 15em; 
+            font-weight: 900; 
+            color: white; 
+            text-shadow: 0 10px 40px rgba(0, 0, 0, 0.4); 
+            line-height: 1; 
+            animation: countdownPop 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
+        @keyframes countdownPop { 
+            0% { transform: scale(0.3) rotate(-10deg); opacity: 0; } 
+            30% { transform: scale(1.1) rotate(5deg); opacity: 1; } 
+            50% { transform: scale(1); rotate(0deg); opacity: 1; } 
+            90% { transform: scale(1); opacity: 1; } 
+            100% { transform: scale(0.8); opacity: 0; } 
+        }
+        .countdown-text { 
+            font-size: 2.5em; 
+            font-weight: 600; 
+            color: rgba(255, 255, 255, 0.9); 
+            text-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); 
+            letter-spacing: 4px; 
+            text-transform: uppercase; 
+            animation: fadeInText 1s ease-out; 
+        }
+        @keyframes fadeInText { 
+            0% { opacity: 0; transform: translateY(20px); } 
+            20% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-10px); } 
+        }
+        .countdown-number.start { 
+            animation: startAnimation 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); 
+            font-size: 12em; 
+            color: #ffd700; 
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.8); 
+        }
+        @keyframes startAnimation { 
+            0% { transform: scale(0.3) rotate(-30deg); opacity: 0; } 
+            50% { transform: scale(1.15) rotate(10deg); opacity: 1; } 
+            70% { transform: scale(1); rotate(0deg); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; } 
+        }
+        .countdown-text.start { 
+            animation: startTextAnimation 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); 
+            font-size: 3em; 
+            color: #ffd700; 
+        }
+        @keyframes startTextAnimation { 
+            0% { opacity: 0; transform: translateY(-30px) scale(0.8); } 
+            50% { transform: translateY(0) scale(1.1); opacity: 1; }
+            70% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        .balap-mobil-game { 
+            background: linear-gradient(-45deg, #87ceeb, #a8d8ff, #90ee90, #98fb98, #87ceeb);
+            background-size: 400% 400%;
+            animation: changingGradient 15s ease infinite;
+        }
+        .balap-mobil-field { position: relative; width: 100%; max-width: clamp(600px, 70vw, 900px); height: clamp(250px, 35vh, 350px); display: flex; align-items: center; justify-content: center; overflow: visible; }
+        
+        .race-track { 
+            position: relative; 
+            width: 100%; 
+            max-width: clamp(600px, 70vw, 900px); 
+            height: clamp(220px, 30vh, 300px);
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .track-image { 
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            height: auto; 
+            max-height: clamp(500px, 30vh, 600px);
+            object-fit: contain; 
+            z-index: 1; 
+        }
+        
+        .racer-container { position: absolute; left: 0; width: clamp(200px, 20vw, 120px); height: clamp(110px, 15vh, 150px); display: flex; align-items: flex-end; justify-content: center; z-index: 2; transition: left 0.5s ease-out; will-change: left, transform; }
+        .racer-image { position: absolute; bottom: 0; width: 100%; height: auto; max-height: 250px; object-fit: contain; object-position: center bottom; }
+        .racer-image.stand { display: block; } .racer-image.hop { display: none; }
+        
+        .left-racer { 
+            bottom: clamp(90px, 10vh, 100px);
+            left: -10px; 
+            z-index: 3; 
+            transform: scale(1); 
+        }
+        .right-racer { 
+            bottom: clamp(130px, 20vh, 150px);
+            left: 3.5%; 
+            z-index: 2; 
+            transform: scale(0.9); 
+        }
+
+        @keyframes hopParabolaFront { 0% { transform: translateY(0) scale(1); } 50% { transform: translateY(-60px) scale(1); } 100% { transform: translateY(0) scale(1); } }
+        @keyframes hopParabolaBack { 0% { transform: translateY(0) scale(0.9); } 50% { transform: translateY(-50px) scale(0.9); } 100% { transform: translateY(0) scale(0.9); } }
+        .left-racer.hopping { animation: hopParabolaFront 0.5s ease-in-out; }
+        .right-racer.hopping { animation: hopParabolaBack 0.5s ease-in-out; }
+
+        @keyframes shakeRacerFront { 0%, 100% { transform: translateX(0) scale(1); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-4px) scale(1); } 20%, 40%, 60%, 80% { transform: translateX(4px) scale(1); } }
+        @keyframes shakeRacerBack { 0%, 100% { transform: translateX(0) scale(0.9); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-4px) scale(0.9); } 20%, 40%, 60%, 80% { transform: translateX(4px) scale(0.9); } }
+        .left-racer.shaking { animation: shakeRacerFront 0.4s; }
+        .right-racer.shaking { animation: shakeRacerBack 0.4s; }
+        @media screen and (max-width: 768px) { .countdown-number { font-size: 10em; } .countdown-number.start { font-size: 8em; } .countdown-text { font-size: 2em; } .countdown-text.start { font-size: 2.5em; } }
+        @media screen and (max-height: 600px) and (orientation: landscape) {
+            .game-container { padding: 8px 15px; gap: 15px; }
+            .player-section { width: 260px; padding: 10px; gap: 8px; }
+            .question-box { padding: 10px 8px; font-size: 1.1em; min-height: 48px; }
+            .answer-box { height: 45px; font-size: 1.3em; }
+            .keypad { padding: 8px; gap: 6px; } .keypad-row { gap: 6px; }
+            .keypad button { height: 45px; font-size: 1.1em; }
+            .center-section { min-width: 250px; gap: 6px; } .center-section h1 { font-size: 1.1em; }
+            .instruction { font-size: 0.75em; }
+            .game-field { height: 160px; padding: 0 10px; }
+            .score-indicator { font-size: 0.9em; padding: 6px; margin-top: 6px; }
+            .balap-mobil-field { max-width: 500px; height: 200px; } 
+            .race-track { max-width: 500px; height: 180px; }
+            .track-image { max-height: 120px; }
+            .racer-container { width: 90px; height: 110px; } .racer-image { max-height: 110px; }
+            .left-racer { bottom: 45px; }
+            .right-racer { bottom: 75px; }
+            .top-center-controls { top: 10px; gap: 8px; }
+            .fullscreen-btn, .home-btn, .profile-btn { width: 44px; height: 44px; }
+            .copyright-footer { bottom: 10px; } .copyright-footer p { font-size: 0.75em; }
+            .modal-content { padding: 30px 40px; min-width: 350px; max-width: 500px; }
+            .modal-content h2 { font-size: 1.5em; margin-bottom: 15px; }
+            .modal-content p { font-size: 0.95em; margin-bottom: 20px; }
+            .play-again-btn { padding: 12px 40px; font-size: 1em; }
+        }
+        @media screen and (max-height: 400px) and (orientation: landscape) {
+            .game-container { padding: 3px 8px; gap: 8px; }
+            .player-section { width: 200px; padding: 6px; gap: 5px; }
+            .question-box { padding: 6px 5px; font-size: 0.95em; min-height: 38px; }
+            .answer-box { height: 35px; font-size: 1.05em; }
+            .keypad { padding: 5px; gap: 4px; } .keypad-row { gap: 4px; }
+            .keypad button { height: 37px; font-size: 0.98em; }
+            .center-section { min-width: 180px; gap: 3px; } .center-section h1 { font-size: 0.85em; }
+            .instruction { font-size: 0.65em; }
+            .game-field { height: 110px; }
+            .score-indicator { font-size: 0.8em; padding: 4px; margin-top: 3px; }
+            .balap-mobil-field { max-width: 380px; height: 150px; } 
+            .race-track { max-width: 380px; height: 140px; }
+            .track-image { max-height: 95px; }
+            .racer-container { width: 65px; height: 85px; } .racer-image { max-height: 85px; }
+            .left-racer { bottom: 35px; }
+            .right-racer { bottom: 55px; }
+            .top-center-controls { top: 5px; gap: 5px; }
+            .fullscreen-btn, .home-btn, .profile-btn { width: 38px; height: 38px; }
+            .copyright-footer { bottom: 5px; } .copyright-footer p { font-size: 0.65em; }
+            .modal-content { padding: 25px 35px; min-width: 280px; max-width: 450px; }
+            .modal-content h2 { font-size: 1.3em; margin-bottom: 12px; }
+            .modal-content p { font-size: 0.85em; margin-bottom: 18px; }
+            .play-again-btn { padding: 10px 35px; font-size: 0.95em; }
+}
+
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 5px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    object-fit: cover;
+    animation: pulseProfile 3s infinite ease-in-out;
+    display: block;
+    margin: 0 auto 20px auto;
+}
+
+@keyframes pulseProfile {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+}
+
+</style>
+
+</head>
+<body>
+    <div class="top-center-controls">
+        <button id="homeBtn" class="home-btn hover-sound-btn" onclick="backToGameTypeMenu()" title="Menu Utama" style="display: none;">
+            <i class="fas fa-home home-icon"></i>
+        </button>
+
+        <button id="fullscreenBtn" class="fullscreen-btn hover-sound-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">
+            <i class="fas fa-expand fullscreen-icon expand"></i>
+            <i class="fas fa-compress fullscreen-icon collapse"></i>
+        </button>
+
+        <button id="profileBtn" class="profile-btn hover-sound-btn" onclick="showProfileModal()" title="Profil Pengembang">
+            <i class="fas fa-user profile-icon"></i>
+        </button>
+    </div>
+
+
+    <div class="page-container">
+
+        <!-- PERUBAHAN: Tampilan Menu Utama dirombak -->
+        <div id="gameTypeMenu" class="content-page container text-center" style="display: flex;">
+            <div class="card p-4 p-md-5 shadow-lg rounded-4 menu-card mx-auto" style="max-width: 800px;"> <!-- PERUBAHAN: max-width dilebarkan -->
+                <h1 class="display-5 fw-bold mb-3" style="color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Pacu Tokoh Bangsa</h1> <!-- JUDUL DIUBAH -->
+                <p class="fs-5 mb-4" style="color: rgba(5, 4, 4, 0.9); text-shadow: 0 1px 3px rgba(244, 241, 241, 0.4);">Pilih menu di bawah ini</p>
+                
+                <!-- Tombol 4 Berdampingan -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-md-3">
+                        <!-- ONCLICK DIUBAH -->
+                        <button class="btn btn-primary btn-lg main-menu-btn hover-sound-btn" onclick="showPage('materiPancasila')">
+                            <i class="fas fa-book-open me-2"></i> Materi
+                        </button>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <button class="btn btn-info btn-lg main-menu-btn hover-sound-btn" onclick="showPage('tujuanPage')">
+                            <i class="fas fa-bullseye me-2"></i> Tujuan
+                        </button>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <button class="btn btn-warning btn-lg main-menu-btn hover-sound-btn" onclick="showPage('petunjukPage')">
+                            <i class="fas fa-map-signs me-2"></i> Petunjuk
+                        </button>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <button class="btn btn-secondary btn-lg main-menu-btn hover-sound-btn" onclick="showPage('pustakaPage')">
+                            <i class="fas fa-bookmark me-2"></i> Pustaka
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tombol Mulai -->
+                <div class="d-grid gap-3">
+                    <button class="btn btn-success btn-lg main-menu-btn mulai-btn hover-sound-btn" onclick="selectGameType('balap-mobil')">
+                        <i class="fas fa-flag-checkered me-2"></i> Mulai
+                    </button>
+                </div>
+
+            </div>
+        </div>
+        <!-- AKHIR PERUBAHAN MENU UTAMA -->
+
+        <!-- **** KONTEN MATERI DIUBAH TOTAL **** -->
+        <div id="materiPancasila" class="content-page container"> <!-- ID DIUBAH -->
+            <div class="card p-4 p-md-5 shadow-lg rounded-4 menu-card mx-auto">
+                <h2 class="text-center fw-bold text-primary mb-4">Materi: Tokoh Perumus Pancasila</h2>
+                
+                <div class="accordion" id="materiAccordion">
+
+                    <!-- Item 1: BPUPKI -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <i class="fas fa-users me-3"></i>Sidang BPUPKI Pertama (29 Mei - 1 Juni 1945)
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#materiAccordion">
+                            <div class="accordion-body fs-5">
+                                <p>BPUPKI (Badan Penyelidik Usaha-usaha Persiapan Kemerdekaan Indonesia) atau <i>Dokuritsu Junbi Cosakai</i> dibentuk oleh Jepang. Sidang pertama BPUPKI bertujuan untuk merumuskan dasar negara Indonesia.</p>
+                                <ul class="list-group list-group-flush fs-5">
+                                    <li class="list-group-item bg-transparent"><i class="fas fa-check-circle text-success me-2"></i> <strong>Ketua:</strong> Dr. K.R.T. Radjiman Wedyodiningrat</li>
+                                    <li class="list-group-item bg-transparent"><i class="fas fa-check-circle text-success me-2"></i> <strong>Tujuan Sidang:</strong> Membahas dan merumuskan Dasar Negara.</li>
+                                    <li class="list-group-item bg-transparent"><i class="fas fa-check-circle text-success me-2"></i> <strong>Tokoh Utama:</strong> Terdapat tiga tokoh utama yang menyampaikan usulan dasar negara.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item 2: Tiga Tokoh -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                <i class="fas fa-user-tie me-3"></i>Tiga Tokoh Pengusul Dasar Negara
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#materiAccordion">
+                            <div class="accordion-body fs-5">
+                                <p>Selama sidang pertama BPUPKI, tiga tokoh menyampaikan gagasan mereka tentang dasar negara:</p>
+                                <ul class="list-group list-group-flush fs-5">
+                                    <li class="list-group-item bg-transparent"><strong>1. Mohammad Yamin (29 Mei 1945):</strong> Mengusulkan 5 asas:
+                                        <ol>
+                                            <li>Peri Kebangsaan</li>
+                                            <li>Peri Kemanusiaan</li>
+                                            <li>Peri Ketuhanan</li>
+                                            <li>Peri Kerakyatan</li>
+                                            <li>Kesejahteraan Rakyat</li>
+                                        </ol>
+                                    </li>
+                                    <li class="list-group-item bg-transparent"><strong>2. Mr. Soepomo (31 Mei 1945):</strong> Mengusulkan 5 asas, termasuk Paham Negara Integralistik (Persatuan), Kekeluargaan, dan Musyawarah.</li>
+                                    <li class="list-group-item bg-transparent"><strong>3. Ir. Soekarno (1 Juni 1945):</strong> Mengusulkan 5 asas yang ia beri nama "Pancasila":
+                                        <ol>
+                                            <li>Kebangsaan Indonesia</li>
+                                            <li>Internasionalisme (Perikemanusiaan)</li>
+                                            <li>Mufakat (Demokrasi)</li>
+                                            <li>Kesejahteraan Sosial</li>
+                                            <li>Ketuhanan yang Berkebudayaan</li>
+                                        </ol>
+                                    </li>
+                                </ul>
+                                <div class="example-box mt-4">
+                                    <h5><i class="fas fa-lightbulb me-2"></i>Fakta Penting</h5>
+                                    <p class="mb-0">Istilah <strong>"Pancasila"</strong> pertama kali diperkenalkan oleh <strong>Ir. Soekarno</strong> dalam pidatonya pada 1 Juni 1945. Tanggal ini sekarang diperingati sebagai Hari Lahir Pancasila.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item 3: Panitia Sembilan -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                <i class="fas fa-users-cog me-3"></i>Panitia Sembilan (Tokoh 9)
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#materiAccordion">
+                            <div class="accordion-body fs-5">
+                                <p>Setelah sidang pertama, dibentuklah Panitia Kecil (Panitia Sembilan) untuk merumuskan usulan-usulan tersebut. Panitia ini menghasilkan dokumen penting pada <strong>22 Juni 1945</strong>.</p>
+                                <ul class="list-group list-group-flush fs-5">
+                                    <li class="list-group-item bg-transparent"><i class="fas fa-file-alt text-primary me-2"></i> <strong>Hasil:</strong> Piagam Jakarta (Jakarta Charter).</li>
+                                    <li class="list-group-item bg-transparent"><i class="fas fa-user-check text-primary me-2"></i> <strong>Ketua:</strong> Ir. Soekarno</li>
+                                    <li class="list-group-item bg-transparent"><i class="fas fa-user-check text-primary me-2"></i> <strong>Wakil Ketua:</strong> Drs. Moh. Hatta</li>
+                                    <li class="list-group-item bg-transparent"><i class="fas fa-user text-primary me-2"></i> <strong>Anggota:</strong> Achmad Soebardjo, Moh. Yamin, Wahid Hasyim, Abdul Kahar Muzakkir, Abikusno Tjokrosoejoso, H. Agus Salim, dan A.A. Maramis.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item 4: PPKI -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                <i class="fas fa-check-double me-3"></i>Pengesahan Pancasila (PPKI)
+                            </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#materiAccordion">
+                            <div class="accordion-body fs-5">
+                                <p>Setelah Proklamasi Kemerdekaan, PPKI (Panitia Persiapan Kemerdekaan Indonesia) mengadakan sidang pada <strong>18 Agustus 1945</strong>.</p>
+                                
+                                <div class="example-box mt-4">
+                                    <h5><i class="fas fa-lightbulb me-2"></i>Hasil Sidang 18 Agustus 1945</h5>
+                                    <ol>
+                                        <li>Mengesahkan UUD 1945.</li>
+                                        <li>Memilih Soekarno sebagai Presiden dan Moh. Hatta sebagai Wakil Presiden.</li>
+                                        <li>Membentuk Komite Nasional Indonesia Pusat (KNIP).</li>
+                                    </ol>
+                                    <p class="mt-3 mb-0"><strong>Penting:</strong> Pancasila yang sah dan resmi tercantum dalam <strong>Pembukaan UUD 1945</strong>. Sila pertama "Ketuhanan, dengan kewajiban menjalankan syari'at Islam bagi pemeluk-pemeluknya" (dari Piagam Jakarta) diubah menjadi <strong>"Ketuhanan Yang Maha Esa"</strong> demi persatuan nasional.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- AKHIR DARI ACCORDION -->
+
+                <hr class="my-4">
+                <div class="text-center">
+                    <button class="btn btn-secondary btn-lg px-5 shadow hover-sound-btn" onclick="backToGameTypeMenu()">
+                        <i class="fas fa-arrow-left me-2"></i> Kembali
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- **** AKHIR DARI KONTEN MATERI BARU **** -->
+
+
+        <!-- **** KONTEN TUJUAN DIUBAH **** -->
+        <div id="tujuanPage" class="content-page container">
+             <div class="card p-4 p-md-5 shadow-lg rounded-4 menu-card mx-auto" style="max-width: 1000px;">
+                <h2 class="text-center fw-bold text-info mb-4">Tujuan Pembelajaran</h2>
+                
+                <ul class="fs-5">
+                    <li><i class="fas fa-user-tie me-2 text-info"></i>Mengenal tokoh-tokoh utama perumus Pancasila (Soekarno, Hatta, Soepomo, Yamin).</li>
+                    <li><i class="fas fa-users me-2 text-info"></i>Memahami peran BPUPKI dan Panitia Sembilan (Tokoh 9) dalam perumusan dasar negara.</li>
+                    <li><i class="fas fa-file-alt me-2 text-info"></i>Mengetahui perbedaan antara usulan dasar negara dan Piagam Jakarta.</li>
+                    <li><i class="fas fa-check-double me-2 text-info"></i>Memahami proses pengesahan Pancasila pada 18 Agustus 1945.</li>
+                    <li><i class="fas fa-flag-checkered me-2 text-info"></i>Menguji pemahaman sejarah melalui permainan interaktif.</li>
+                </ul>
+
+                <hr class="my-4">
+                <div class="text-center">
+                    <button class="btn btn-secondary btn-lg px-5 shadow hover-sound-btn" onclick="backToGameTypeMenu()">
+                        <i class="fas fa-arrow-left me-2"></i> Kembali
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- **** AKHIR KONTEN TUJUAN **** -->
+
+
+        <!-- Halaman Petunjuk (Tidak diubah, masih relevan) -->
+        <div id="petunjukPage" class="content-page container">
+             <div class="card p-4 p-md-5 shadow-lg rounded-4 menu-card mx-auto" style="max-width: 1000px;">
+                <h2 class="text-center fw-bold text-warning mb-4">Petunjuk Penggunaan</h2>
+                
+                <ol class="fs-5">
+                    <li>Pilih menu <strong>"<i class="fas fa-book-open me-1"></i> Materi"</strong> untuk belajar.</li>
+                    <li>Pilih menu <strong>"<i class="fas fa-bullseye me-1"></i> Tujuan"</strong> untuk melihat tujuan.</li>
+                    <li>Pilih menu <strong>"<i class="fas fa-bookmark me-1"></i> Pustaka"</strong> untuk melihat sumber.</li>
+                    <li>Pilih menu <strong>"<i class="fas fa-flag-checkered me-1"></i> Mulai"</strong> untuk bermain.</li>
+                    <li>Di dalam game, pilih kategori soal untuk memulai.</li>
+                    <li>Jawab pertanyaan sejarah dengan benar untuk memajukan pembalap.</li>
+                    <li>Gunakan tombol <strong>"Kembali"</strong> atau tombol <i class="fas fa-home" style="color: #1a237e; vertical-align: middle; font-size: 20px;"></i> untuk kembali ke menu utama.</li>
+                </ol>
+
+                <hr class="my-4">
+                <div class="text-center">
+                    <button class="btn btn-secondary btn-lg px-5 shadow hover-sound-btn" onclick="backToGameTypeMenu()">
+                        <i class="fas fa-arrow-left me-2"></i> Kembali
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Halaman Pustaka (Tidak diubah) -->
+        <div id="pustakaPage" class="content-page container">
+             <div class="card p-4 p-md-5 shadow-lg rounded-4 menu-card mx-auto" style="max-width: 1000px;">
+                <h2 class="text-center fw-bold mb-4" style="color: #6c757d;">Daftar Pustaka</h2>
+                
+                <div class="fs-6" style="line-height: 1.7;">
+                    <p class="mb-2"><strong>Aset Grafis (Gambar):</strong><br>
+                    - <code>Bangbin.jpg</code> merupakan aset pribadi pengembang.<br>
+                    - <code>favicon.ico</code> diperoleh dari situs resmi <a href="https://kemendikdasmen.go.id" target="_blank" rel="noopener noreferrer" style="color: #0a58ca;">kemendikdasmen.go.id</a>.<br>
+                    - Aset grafis lainnya (<code>bangbinBG.png</code>, <code>bangbinTrack.png</code>, <code>bangbinPacu1.png</code>, <code>bangbinPaci1Jalan.png</code>, <code>bangbinPacu2.png</code>, <code>bangbinPacu2Jalan.png</code>) dibuat menggunakan alat bantu AI generatif, Google Gemini.
+                    </p>
+                    
+                    <p class="mb-2"><strong>Aset Audio (Efek Suara):</strong><br>
+                    Seluruh aset efek suara diperoleh dari Pixabay dan diunduh pada 10 November 2025. <br>
+                    Sumber: <a href="https://pixabay.com/sound-effects/" target="_blank" rel="noopener noreferrer" style="color: #0a58ca;">https://pixabay.com/sound-effects/</a>
+                    </p>
+
+                    <p class="mb-2"><strong>Tipografi (Font):</strong><br>
+                    Media ini menggunakan font 'Poppins' (Regular, Bold, SemiBold) yang bersumber dari Google Fonts.
+                    </p>
+
+                    <p class="mb-2"><strong>Framework & Pustaka Lain:</strong><br>
+                    Antarmuka media ini dibangun menggunakan framework Bootstrap (v5.x) dan pustaka ikon Font Awesome (v6.x).
+                    </p>
+                </div>
+
+                <hr class="my-4">
+                <div class="text-center">
+                    <button class="btn btn-secondary btn-lg px-5 shadow hover-sound-btn" onclick="backToGameTypeMenu()">
+                        <i class="fas fa-arrow-left me-2"></i> Kembali
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- AKHIR DARI HALAMAN BARU -->
+
+
+        <!-- **** LEVEL MENU DIUBAH **** -->
+        <div id="levelMenuWaktu" class="content-page container"> <!-- ID DIBIARKAN SAMA AGAR JS TIDAK RUSAK -->
+            <div class="card p-4 p-md-5 shadow-lg rounded-4 menu-card mx-auto text-center" style="max-width: 1800px;">
+                <h2 class="fw-bold text-success mb-2">Pacu Tokoh Bangsa</h2> <!-- JUDUL DIUBAH -->
+                <p class="fs-5 text-muted mb-4">Pilih Kategori Soal</p> <!-- SUBJUDUL DIUBAH -->
+                
+                <div class="d-flex flex-row flex-wrap justify-content-center gap-3">
+                    <!-- TOMBOL LEVEL DIUBAH -->
+                    <button class="btn menu-btn level-btn beginner hover-sound-btn" onclick="selectLevel('pancasila_1')">
+                        <span class="level-icon">⭐</span>
+                        <span class="level-name">Jalur 1</span>
+                        <span class="level-desc">Tokoh & Sidang BPUPKI</span>
+                    </button>
+                    <button class="btn menu-btn level-btn amateur hover-sound-btn" onclick="selectLevel('pancasila_2')">
+                        <span class="level-icon">⭐⭐</span>
+                        <span class="level-name">Jalur 2</span>
+                        <span class="level-desc">Panitia Sembilan (Tokoh 9)</span>
+                    </button>
+                    <button class="btn menu-btn level-btn pro hover-sound-btn" onclick="selectLevel('pancasila_3')">
+                        <span class="level-icon">⭐⭐⭐</span>
+                        <span class="level-name">Jalur 3</span>
+                        <span class="level-desc">Rumusan & Pengesahan</span>
+                    </button>
+                </div>
+                <hr class="my-4">
+                <div class="text-center">
+                    <button class="btn btn-secondary btn-lg px-5 shadow hover-sound-btn" onclick="backToGameTypeMenu()">
+                        <i class="fas fa-arrow-left me-2"></i> Kembali
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- **** AKHIR LEVEL MENU **** -->
+
+        <div id="nameInputPage" class="content-page container">
+            <div class="card p-4 p-md-5 shadow-lg rounded-4 menu-card mx-auto text-center" style="max-width: 600px;">
+                <h2 class="fw-bold text-primary mb-4">Masukkan Nama Pemain</h2>
+                
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="playerLeftNameInput" placeholder="Pemain Kiri" value="Pemain Kiri">
+                    <label for="playerLeftNameInput">Nama Pemain Kiri (Mobil Hijau)</label>
+                </div>
+                
+                <div class="form-floating mb-4">
+                    <input type="text" class="form-control" id="playerRightNameInput" placeholder="Pemain Kanan" value="Pemain Kanan">
+                    <label for="playerRightNameInput">Nama Pemain Kanan (Mobil Biru)</label>
+                </div>
+
+                <div class="d-grid gap-3">
+                    <button class="btn btn-success btn-lg main-menu-btn hover-sound-btn" onclick="startCountdownFromNames()" style="--btn-shadow-color: #146c43; background: linear-gradient(145deg, #1db163, #198754); box-shadow: 0 6px 0 var(--btn-shadow-color), 0 8px 15px rgba(0,0,0,0.2);">
+                        <i class="fas fa-play me-2"></i> Mulai
+                    </button>
+                    <button class="btn btn-secondary btn-lg shadow hover-sound-btn" onclick="backToLevelMenu()">
+                        <i class="fas fa-arrow-left me-2"></i> Kembali
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="gameScreenBalapmobil" class="game-container balap-mobil-game" style="display: none;">
+            <div class="player-section left-player">
+                <div class="answer-options d-grid gap-2">
+                    <button class="btn btn-light btn-lg option-btn shadow-sm hover-sound-btn" onclick="handleAnswer('left', 0)">...</button>
+                    <button class="btn btn-light btn-lg option-btn shadow-sm hover-sound-btn" onclick="handleAnswer('left', 1)">...</button>
+                    <button class="btn btn-light btn-lg option-btn shadow-sm hover-sound-btn" onclick="handleAnswer('left', 2)">...</button>
+                    <button class="btn btn-light btn-lg option-btn shadow-sm hover-sound-btn" onclick="handleAnswer('left', 3)">...</button>
+                </div>
+                <div class="score-indicator">Posisi: <span class="score-value">0/5</span></div>
+            </div>
+
+            <div class="center-section balap-mobil-center">
+                <h1>Pacu Tokoh Bangsa</h1> <!-- JUDUL DIUBAH -->
+                <div id="centralQuestionBox" class="question-box text-center mb-3 fs-4" style="--player-color: #333; --player-color-dark: #222; min-height: 80px; width: 100%; max-width: 600px; font-size: clamp(1rem, 2.5vw, 1.75rem); letter-spacing: 1px;">
+                    Memuat soal...
+                </div>
+                <div class="game-field balap-mobil-field">
+                    <div class="race-track">
+                        <img src="bangbin_pacu_File/bangbinTrack.png" alt="Track" class="track-image">
+                        
+                        <div class="racer-container left-racer">
+                            <img src="bangbin_pacu_File/bangbinPacu1.png" alt="Pemain Kiri" class="racer-image stand">
+                            <img src="bangbin_pacu_File/bangbinPacu1Jalan.png" alt="Pemain Kiri Hop" class="racer-image hop" style="display: none;">
+                        </div>
+                        
+                        <div class="racer-container right-racer">
+                            <img src="bangbin_pacu_File/bangbinPacu2.png" alt="Pemain Kanan" class="racer-image stand">
+                            <img src="bangbin_pacu_File/bangbinPacu2Jalan.png" alt="Pemain Kanan Hop" class="racer-image hop" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+                <p class="instruction">Jawab soal untuk melaju sampai garis finish!</p>
+            </div>
+
+            <div class="player-section right-player">
+                <div class="answer-options d-grid gap-2">
+                    <button class="btn btn-light btn-lg option-btn shadow-sm hover-sound-btn" onclick="handleAnswer('right', 0)">...</button>
+                    <button class="btn btn-light btn-lg option-btn shadow-sm hover-sound-btn" onclick="handleAnswer('right', 1)">...</button>
+                    <button class="btn btn-light btn-lg option-btn shadow-sm hover-sound-btn" onclick="handleAnswer('right', 2)">...</button>
+                    <button class="btn btn-light btn-lg option-btn shadow-sm hover-sound-btn" onclick="handleAnswer('right', 3)">...</button>
+                </div>
+                <div class="score-indicator">Posisi: <span class="score-value">0/5</span></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="winnerModal" class="modal">
+        <div class="modal-content">
+            <h2 id="winnerText">🎉 Pemain Menang! 🎉</h2>
+            <p id="winnerMessage">Selamat! Anda berhasil mencapai garis finish!</p>
+            <div class="d-flex justify-content-center gap-3" style="width: 100%;">
+                <button class="play-again-btn hover-sound-btn" onclick="closeModal()" style="background: rgba(255, 255, 255, 0.95); color: #667eea; flex: 1;">
+                    <i class="fas fa-redo me-2"></i> Main Lagi
+                </button>
+                <button id="printCertificateBtn" class="play-again-btn hover-sound-btn" style="background: #4CAF50; color: white; flex: 1;">
+                    <i class="fas fa-print me-2"></i> Cetak Sertifikat
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <img src="bangbin_pacu_File/Bangbin.jpg" alt="Foto Profil" class="profile-picture">
+            <h2 id="profileText" style="margin-top: 0; margin-bottom: 10px;">Profil Pengembang</h2>
+            <p id="profileName" style="font-size: 1.5em; font-weight: 600; color: white; margin-bottom: 15px; margin-top: 0;">Bintang Adhi Permana</p>
+            <p id="profileDescription" style="font-size: 1.0em; color: rgba(255,255,255,0.85); margin-bottom: 35px; max-width: 400px; margin-left: auto; margin-right: auto; line-height: 1.5;">
+                Pengembang yang bersemangat dalam menciptakan media edukasi interaktif dan menyenangkan untuk pembelajaran.
+            </p>
+            <button class="play-again-btn hover-sound-btn" onclick="closeProfileModal()">Tutup</button>
+        </div>
+    </div>
+
+    <div id="countdownOverlay" class="countdown-overlay">
+        <div class="countdown-content">
+            <div id="countdownNumber" class="countdown-number">3</div>
+            <div id="countdownText" class="countdown-text">Bersiap...</div>
+        </div>
+    </div>
+
+    <div class="copyright-footer">
+        <p>© Bangbin 2025</p>
+    </div>
+    <script src="../Berpacu-Waktu/style/bootstrap.bundle.min.js"></script>
+    <script>
+    const _0x37df58=_0x58c5;(function(_0x34ec6c,_0x21e4b1){const _0x171406=_0x58c5,_0x282e47=_0x34ec6c();while(!![]){try{const _0x4bcd13=parseInt(_0x171406(0x1fc))/0x1*(-parseInt(_0x171406(0x263))/0x2)+-parseInt(_0x171406(0x26e))/0x3*(-parseInt(_0x171406(0x224))/0x4)+-parseInt(_0x171406(0x284))/0x5*(parseInt(_0x171406(0x279))/0x6)+parseInt(_0x171406(0x1ed))/0x7*(-parseInt(_0x171406(0x1e7))/0x8)+-parseInt(_0x171406(0x1c2))/0x9*(parseInt(_0x171406(0x287))/0xa)+parseInt(_0x171406(0x218))/0xb+parseInt(_0x171406(0x249))/0xc;if(_0x4bcd13===_0x21e4b1)break;else _0x282e47['push'](_0x282e47['shift']());}catch(_0x368336){_0x282e47['push'](_0x282e47['shift']());}}}(_0xa021,0x4986e));const RACE_LENGTH=0x5,gameState={'leftPlayer':{'name':_0x37df58(0x23a),'score':0x0,'racePosition':0x0},'rightPlayer':{'name':'Pemain\x20Kanan','score':0x0,'racePosition':0x0},'currentGameType':_0x37df58(0x212),'currentMode':_0x37df58(0x226),'currentLevel':_0x37df58(0x259),'currentQuestionData':{'question':_0x37df58(0x28a),'options':['...',_0x37df58(0x25f),_0x37df58(0x25f),'...'],'correctAnswerIndex':0x0},'gameCooldown':![]},questionDatabase={'pancasila_1':[{'q':_0x37df58(0x262),'correct':_0x37df58(0x27e),'wrong':['Soekarno',_0x37df58(0x248),'Soepomo']},{'q':_0x37df58(0x275),'correct':'29\x20Mei\x20-\x201\x20Juni\x201945','wrong':[_0x37df58(0x1f4),_0x37df58(0x1ec),'1\x20Maret\x201945']},{'q':'Tokoh\x20yang\x20mengusulkan\x205\x20asas\x20yaitu\x20\x27Peri\x20Kebangsaan,\x20Peri\x20Kemanusiaan,\x20Peri\x20Ketuhanan,\x20Peri\x20Kerakyatan,\x20dan\x20Kesejahteraan\x20Rakyat\x27\x20adalah...','correct':_0x37df58(0x24d),'wrong':[_0x37df58(0x1d3),_0x37df58(0x238),_0x37df58(0x248)]},{'q':_0x37df58(0x243),'correct':_0x37df58(0x293),'wrong':[_0x37df58(0x207),_0x37df58(0x1f6),'22\x20Juni\x201945']},{'q':_0x37df58(0x291),'correct':_0x37df58(0x294),'wrong':['9\x20orang',_0x37df58(0x1e1),_0x37df58(0x281)]},{'q':_0x37df58(0x269),'correct':_0x37df58(0x1cd),'wrong':[_0x37df58(0x1ca),_0x37df58(0x1ff),'PETA']}],'pancasila_2':[{'q':_0x37df58(0x22e),'correct':'Soekarno','wrong':[_0x37df58(0x248),_0x37df58(0x211),'Mohammad\x20Yamin']},{'q':_0x37df58(0x1dc),'correct':'Merumuskan\x20dasar\x20negara','wrong':[_0x37df58(0x256),'Membubarkan\x20BPUPKI',_0x37df58(0x232)]},{'q':_0x37df58(0x21b),'correct':_0x37df58(0x209),'wrong':['Pancasila',_0x37df58(0x21a),_0x37df58(0x292)]},{'q':'Berikut\x20ini\x20yang\x20BUKAN\x20anggota\x20Panitia\x20Sembilan\x20adalah...','correct':_0x37df58(0x215),'wrong':[_0x37df58(0x248),_0x37df58(0x27f),_0x37df58(0x25d)]},{'q':_0x37df58(0x203),'correct':'22\x20Juni\x201945','wrong':[_0x37df58(0x1f6),_0x37df58(0x23e),'18\x20Agustus\x201945']},{'q':'Berapa\x20jumlah\x20anggota\x20Panitia\x20Sembilan?','correct':_0x37df58(0x253),'wrong':['8\x20orang',_0x37df58(0x28d),'62\x20orang']}],'pancasila_3':[{'q':_0x37df58(0x1d7),'correct':'Soekarno','wrong':[_0x37df58(0x24c),'Soepomo','Moh.\x20Hatta']},{'q':_0x37df58(0x285),'correct':_0x37df58(0x1f4),'wrong':['17\x20Agustus\x201945','1\x20Juni\x201945',_0x37df58(0x1fb)]},{'q':_0x37df58(0x1f0),'correct':_0x37df58(0x257),'wrong':[_0x37df58(0x1d3),_0x37df58(0x214),_0x37df58(0x282)]},{'q':_0x37df58(0x1c1),'correct':_0x37df58(0x280),'wrong':[_0x37df58(0x20c),_0x37df58(0x27a),_0x37df58(0x23c)]},{'q':_0x37df58(0x266),'correct':_0x37df58(0x277),'wrong':[_0x37df58(0x1fd),_0x37df58(0x1d9),_0x37df58(0x27b)]},{'q':_0x37df58(0x220),'correct':_0x37df58(0x1ea),'wrong':[_0x37df58(0x1db),_0x37df58(0x26f),_0x37df58(0x29c)]}]},audioCorrect=new Audio(_0x37df58(0x221)),audioWrong=new Audio(_0x37df58(0x1c8)),audioMove=new Audio(_0x37df58(0x28c)),audioWin=new Audio(_0x37df58(0x276)),audioStart=new Audio(_0x37df58(0x2a0)),audioHover=new Audio(_0x37df58(0x22f));function playSound(_0x50e724){const _0x420e23=_0x37df58;_0x50e724[_0x420e23(0x217)]=0.7,_0x50e724[_0x420e23(0x272)]=0x0,_0x50e724[_0x420e23(0x231)]()[_0x420e23(0x234)](_0x83a413=>{const _0x5ebac6=_0x420e23;console[_0x5ebac6(0x225)](_0x5ebac6(0x299),_0x83a413['message']);});}function playHoverSound(){const _0x33728d=_0x37df58;audioHover[_0x33728d(0x217)]=0.3,playSound(audioHover);}function shuffleArray(_0x55dc72){const _0xe4f36=_0x37df58;for(let _0x55cede=_0x55dc72[_0xe4f36(0x29f)]-0x1;_0x55cede>0x0;_0x55cede--){const _0x790517=Math['floor'](Math[_0xe4f36(0x236)]()*(_0x55cede+0x1));[_0x55dc72[_0x55cede],_0x55dc72[_0x790517]]=[_0x55dc72[_0x790517],_0x55dc72[_0x55cede]];}return _0x55dc72;}const allPages=document[_0x37df58(0x208)](_0x37df58(0x1d8));function showPage(_0x2fd50f){const _0x32419b=_0x37df58;allPages[_0x32419b(0x270)](_0x3b3d69=>{const _0x28ad72=_0x32419b;_0x3b3d69[_0x28ad72(0x295)][_0x28ad72(0x1e4)]=_0x28ad72(0x201);});const _0x35f6aa=document[_0x32419b(0x1f1)](_0x2fd50f);if(_0x35f6aa){if(_0x2fd50f===_0x32419b(0x20b))_0x35f6aa['style'][_0x32419b(0x1e4)]=_0x32419b(0x28b);else{_0x35f6aa[_0x32419b(0x295)][_0x32419b(0x1e4)]=_0x32419b(0x21e);const _0x3638df=document['querySelector'](_0x32419b(0x241));_0x3638df&&(_0x3638df[_0x32419b(0x295)][_0x32419b(0x1e4)]=_0x32419b(0x28b),_0x3638df[_0x32419b(0x295)][_0x32419b(0x24a)]=_0x32419b(0x26d),_0x3638df['style'][_0x32419b(0x296)]=_0x32419b(0x26d));}}const _0xc5b2b4=document[_0x32419b(0x1f1)]('homeBtn'),_0x12dcc7=document[_0x32419b(0x1f1)]('fullscreenBtn'),_0x56dea3=document[_0x32419b(0x1f1)](_0x32419b(0x1fa));if(_0x2fd50f===_0x32419b(0x27d)){if(_0xc5b2b4)_0xc5b2b4[_0x32419b(0x295)][_0x32419b(0x1e4)]=_0x32419b(0x201);if(_0x12dcc7)_0x12dcc7[_0x32419b(0x295)][_0x32419b(0x1e4)]=_0x32419b(0x28b);if(_0x56dea3)_0x56dea3[_0x32419b(0x295)][_0x32419b(0x1e4)]=_0x32419b(0x28b);}else{if(_0xc5b2b4)_0xc5b2b4[_0x32419b(0x295)]['display']=_0x32419b(0x28b);if(_0x12dcc7)_0x12dcc7['style'][_0x32419b(0x1e4)]=_0x32419b(0x28b);if(_0x56dea3)_0x56dea3['style']['display']=_0x32419b(0x28b);}}function selectGameType(_0x40673f){const _0x56e127=_0x37df58;gameState[_0x56e127(0x228)]=_0x40673f,_0x40673f===_0x56e127(0x212)&&showPage(_0x56e127(0x1fe));}function backToGameTypeMenu(){const _0x372cb4=_0x37df58;showPage(_0x372cb4(0x27d));}function handleAnswer(_0x121721,_0x286fa6){const _0xc62ca=_0x37df58;if(gameState[_0xc62ca(0x290)])return;gameState[_0xc62ca(0x290)]=!![];const _0x4ecb74=_0x286fa6===gameState[_0xc62ca(0x274)][_0xc62ca(0x202)],_0x5f14e1=document[_0xc62ca(0x208)]('#gameScreenBalapmobil\x20.'+_0x121721+_0xc62ca(0x1ee));document['querySelectorAll'](_0xc62ca(0x29a))['forEach'](_0x32ac3b=>_0x32ac3b[_0xc62ca(0x1e5)]=!![]);if(_0x4ecb74){playSound(audioCorrect),_0x5f14e1[_0x286fa6]['classList'][_0xc62ca(0x255)](_0xc62ca(0x268));_0x121721===_0xc62ca(0x1d0)?gameState[_0xc62ca(0x265)]['racePosition']++:gameState['rightPlayer'][_0xc62ca(0x1f8)]++;updateRacerPosition(_0x121721),updateScoreDisplay(_0x121721);const _0x5707ee=RACE_LENGTH;if(gameState['leftPlayer'][_0xc62ca(0x1f8)]>=_0x5707ee){setTimeout(()=>showWinnerModal('left',_0xc62ca(0x240)),0x258);return;}else{if(gameState[_0xc62ca(0x26a)][_0xc62ca(0x1f8)]>=_0x5707ee){setTimeout(()=>showWinnerModal(_0xc62ca(0x29b),_0xc62ca(0x240)),0x258);return;}}setTimeout(generateNewQuestion,0x258);}else{playSound(audioWrong),_0x5f14e1[_0x286fa6][_0xc62ca(0x230)][_0xc62ca(0x255)](_0xc62ca(0x1ef)),_0x5f14e1[gameState[_0xc62ca(0x274)][_0xc62ca(0x202)]]['classList']['add']('correct');const _0x47da92=_0x121721==='left'?_0xc62ca(0x1c5):'.right-racer',_0x38da36=document[_0xc62ca(0x20d)]('#gameScreenBalapmobil\x20'+_0x47da92);_0x38da36['classList']['add'](_0xc62ca(0x283)),setTimeout(()=>_0x38da36[_0xc62ca(0x230)][_0xc62ca(0x251)](_0xc62ca(0x283)),0x1f4),setTimeout(generateNewQuestion,0x5dc);}}function updateScoreDisplay(_0x40d786){const _0x1b9ed9=_0x37df58,_0x15a180=_0x1b9ed9(0x260),_0x1affed=document[_0x1b9ed9(0x20d)](_0x15a180+'\x20.'+_0x40d786+_0x1b9ed9(0x204));if(_0x1affed){const _0x53d831=_0x40d786===_0x1b9ed9(0x1d0)?gameState[_0x1b9ed9(0x265)]['racePosition']:gameState['rightPlayer'][_0x1b9ed9(0x1f8)];_0x1affed[_0x1b9ed9(0x206)]=_0x53d831+'/'+RACE_LENGTH;}}function updateRacerPosition(_0x590b94){const _0x570df6=_0x37df58;playSound(audioMove);const _0x26e3ec=_0x590b94===_0x570df6(0x1d0)?_0x570df6(0x1c5):_0x570df6(0x20e),_0x32ed7c=document['querySelector'](_0x570df6(0x1d1)+_0x26e3ec),_0x564379=_0x32ed7c[_0x570df6(0x20d)](_0x570df6(0x1c9)),_0x4e162d=_0x32ed7c[_0x570df6(0x20d)](_0x570df6(0x25e)),_0x3593cb=document['querySelector']('#gameScreenBalapmobil\x20.race-track'),_0xa5b3cc=_0x3593cb?_0x3593cb[_0x570df6(0x298)]:0x384,_0x4528e8=_0x590b94===_0x570df6(0x1d0)?gameState[_0x570df6(0x265)][_0x570df6(0x1f8)]:gameState['rightPlayer']['racePosition'],_0x25d1ea=RACE_LENGTH;let _0x267b47,_0x4b97de,_0x1e8e01;_0x590b94==='left'?(_0x267b47=_0xa5b3cc*0.035,_0x4b97de=_0xa5b3cc*0.82):(_0x267b47=_0xa5b3cc*0.065,_0x4b97de=_0xa5b3cc*0.78);_0x1e8e01=(_0x4b97de-_0x267b47)/_0x25d1ea;const _0x5bf528=_0x267b47+_0x4528e8*_0x1e8e01;_0x564379[_0x570df6(0x295)][_0x570df6(0x1e4)]='none',_0x4e162d[_0x570df6(0x295)][_0x570df6(0x1e4)]=_0x570df6(0x21e),_0x32ed7c[_0x570df6(0x230)][_0x570df6(0x255)](_0x570df6(0x1e3)),_0x32ed7c[_0x570df6(0x295)][_0x570df6(0x1d0)]=_0x5bf528+'px',setTimeout(()=>{const _0x5ae9fc=_0x570df6;_0x4e162d[_0x5ae9fc(0x295)][_0x5ae9fc(0x1e4)]=_0x5ae9fc(0x201),_0x564379[_0x5ae9fc(0x295)][_0x5ae9fc(0x1e4)]='block',_0x32ed7c['classList'][_0x5ae9fc(0x251)](_0x5ae9fc(0x1e3));if(_0x590b94===_0x5ae9fc(0x1d0))_0x32ed7c['style']['transform']=_0x5ae9fc(0x205);else _0x32ed7c[_0x5ae9fc(0x295)]['transform']=_0x5ae9fc(0x237);},0x1f4);}let confettiInterval=null;function createConfetti(){const _0x4994fa=_0x37df58,_0x1ed062=0xbb8,_0x394805=Date[_0x4994fa(0x1f2)]()+_0x1ed062,_0x64aa9c=[{'icon':_0x4994fa(0x1c7),'color':_0x4994fa(0x1e9)},{'icon':_0x4994fa(0x23d),'color':_0x4994fa(0x1e8)},{'icon':_0x4994fa(0x1c7),'color':_0x4994fa(0x1e6)},{'icon':'fa-flag-checkered','color':'#FFFFFF'}];function _0x458334(_0x3955d6,_0x4c136c){const _0x3a9204=_0x4994fa;return Math[_0x3a9204(0x236)]()*(_0x4c136c-_0x3955d6)+_0x3955d6;}confettiInterval=setInterval(function(){const _0x4aa448=_0x4994fa;if(Date[_0x4aa448(0x1f2)]()>_0x394805){clearInterval(confettiInterval),confettiInterval=null;return;}for(let _0x3bbc86=0x0;_0x3bbc86<0x3;_0x3bbc86++){const _0x17884e=document['createElement'](_0x4aa448(0x1f3));_0x17884e['className']=_0x4aa448(0x22b);const _0x48d21a=_0x64aa9c[Math[_0x4aa448(0x28e)](Math[_0x4aa448(0x236)]()*_0x64aa9c[_0x4aa448(0x29f)])];_0x17884e[_0x4aa448(0x245)]=_0x4aa448(0x261)+_0x48d21a['icon']+_0x4aa448(0x22a),_0x17884e[_0x4aa448(0x295)]['color']=_0x48d21a[_0x4aa448(0x22d)],_0x17884e[_0x4aa448(0x295)]['left']=_0x458334(0x0,0x64)+'%',_0x17884e['style']['animationDuration']=_0x458334(0x2,0x4)+'s',document[_0x4aa448(0x286)][_0x4aa448(0x1f5)](_0x17884e),setTimeout(()=>_0x17884e[_0x4aa448(0x251)](),0xfa0);}},0x32);}function showWinnerModal(_0x519ff2,_0x308846){const _0x35795f=_0x37df58;playSound(audioWin),createConfetti();const _0x573721=document['getElementById'](_0x35795f(0x258)),_0x1bfcdc=_0x519ff2===_0x35795f(0x1d0)?gameState[_0x35795f(0x265)][_0x35795f(0x2a1)]:gameState[_0x35795f(0x26a)][_0x35795f(0x2a1)],_0x3b31b7=_0x519ff2==='left'?_0x35795f(0x20a):'#f44336';document[_0x35795f(0x1f1)](_0x35795f(0x233))['innerHTML']=_0x35795f(0x1ce)+_0x3b31b7+_0x35795f(0x23f)+_0x1bfcdc+'\x20Menang!</span><i\x20class=\x22fas\x20fa-flag-checkered\x20ms-2\x22></i>',document[_0x35795f(0x1f1)]('winnerMessage')[_0x35795f(0x206)]=_0x308846;const _0x50007c=document[_0x35795f(0x1f1)]('printCertificateBtn');_0x50007c&&(_0x50007c[_0x35795f(0x223)]=()=>printCertificate(_0x1bfcdc)),_0x573721[_0x35795f(0x295)][_0x35795f(0x1e4)]=_0x35795f(0x28b),setTimeout(()=>{const _0x2805c0=_0x35795f;_0x573721[_0x2805c0(0x230)][_0x2805c0(0x255)](_0x2805c0(0x1d6));},0xa),document[_0x35795f(0x1f1)](_0x35795f(0x200))['style'][_0x35795f(0x1e4)]=_0x35795f(0x201),document['getElementById'](_0x35795f(0x25a))[_0x35795f(0x295)][_0x35795f(0x1e4)]='none',document[_0x35795f(0x1f1)](_0x35795f(0x1fa))[_0x35795f(0x295)][_0x35795f(0x1e4)]=_0x35795f(0x201);}function closeModal(){const _0x3d1a00=_0x37df58,_0x254865=document[_0x3d1a00(0x1f1)]('winnerModal');_0x254865&&(_0x254865['classList'][_0x3d1a00(0x251)]('show'),setTimeout(()=>{const _0x2e7452=_0x3d1a00;_0x254865[_0x2e7452(0x295)][_0x2e7452(0x1e4)]=_0x2e7452(0x201);},0x12c)),document[_0x3d1a00(0x1f1)](_0x3d1a00(0x200))[_0x3d1a00(0x295)][_0x3d1a00(0x1e4)]='flex',document['getElementById'](_0x3d1a00(0x25a))['style'][_0x3d1a00(0x1e4)]=_0x3d1a00(0x28b),document['getElementById']('profileBtn')[_0x3d1a00(0x295)][_0x3d1a00(0x1e4)]=_0x3d1a00(0x28b),confettiInterval&&(clearInterval(confettiInterval),confettiInterval=null),document[_0x3d1a00(0x208)](_0x3d1a00(0x20f))['forEach'](_0x14b72a=>_0x14b72a[_0x3d1a00(0x251)]()),showNameInput();}function generatePancasilaQuestion(){const _0xa575ff=_0x37df58,_0x381f07=gameState[_0xa575ff(0x229)];if(!questionDatabase[_0x381f07]||questionDatabase[_0x381f07][_0xa575ff(0x29f)]===0x0)return{'question':'Soal\x20tidak\x20ditemukan\x20untuk\x20level\x20ini.','options':['A','B','C','D'],'correctAnswerIndex':0x0};const _0x462516=questionDatabase[_0x381f07],_0x4bbef4=_0x462516[Math[_0xa575ff(0x28e)](Math[_0xa575ff(0x236)]()*_0x462516['length'])];let _0x3bcbfe=[_0x4bbef4[_0xa575ff(0x268)],..._0x4bbef4['wrong']];const _0x4846a7=shuffleArray(_0x3bcbfe),_0x22375f=_0x4846a7['findIndex'](_0x57c703=>_0x57c703===_0x4bbef4[_0xa575ff(0x268)]);return{'question':_0x4bbef4['q'],'options':_0x4846a7,'correctAnswerIndex':_0x22375f};}function _0x58c5(_0x4cae4f,_0x4afa4f){const _0xa02103=_0xa021();return _0x58c5=function(_0x58c5ec,_0x5d0d7d){_0x58c5ec=_0x58c5ec-0x1c0;let _0xc1fd15=_0xa02103[_0x58c5ec];return _0xc1fd15;},_0x58c5(_0x4cae4f,_0x4afa4f);}function generateNewQuestion(){const _0x42c8ac=_0x37df58,_0x3664b3=generatePancasilaQuestion();gameState[_0x42c8ac(0x274)]=_0x3664b3;const _0x12fe6c=document[_0x42c8ac(0x1f1)](_0x42c8ac(0x246));_0x12fe6c&&(_0x12fe6c['innerHTML']=_0x3664b3[_0x42c8ac(0x1da)]);const _0x772321=document[_0x42c8ac(0x208)](_0x42c8ac(0x29a));_0x772321['forEach']((_0xef2de,_0x1a0a5e)=>{const _0x27abc9=_0x42c8ac,_0x3e552f=_0x1a0a5e%0x4;_0xef2de['textContent']=_0x3664b3[_0x27abc9(0x239)][_0x3e552f],_0xef2de[_0x27abc9(0x230)][_0x27abc9(0x251)](_0x27abc9(0x268),'wrong'),_0xef2de[_0x27abc9(0x1e5)]=![];}),gameState[_0x42c8ac(0x290)]=![];}function resetGame(){const _0x20eae4=_0x37df58;gameState['leftPlayer']={...gameState[_0x20eae4(0x265)],'score':0x0,'racePosition':0x0},gameState['rightPlayer']={...gameState[_0x20eae4(0x26a)],'score':0x0,'racePosition':0x0},gameState['gameCooldown']=!![],recalculateRacerPositions(),document[_0x20eae4(0x208)](_0x20eae4(0x24f))[_0x20eae4(0x270)](_0x152e74=>{const _0x4e8cd6=_0x20eae4;_0x152e74[_0x4e8cd6(0x20d)](_0x4e8cd6(0x1c9))[_0x4e8cd6(0x295)][_0x4e8cd6(0x1e4)]='block',_0x152e74[_0x4e8cd6(0x20d)](_0x4e8cd6(0x25e))[_0x4e8cd6(0x295)]['display']=_0x4e8cd6(0x201),_0x152e74['classList'][_0x4e8cd6(0x251)](_0x4e8cd6(0x1e3),_0x4e8cd6(0x283));}),updateScoreDisplay(_0x20eae4(0x1d0)),updateScoreDisplay(_0x20eae4(0x29b)),generateNewQuestion();}function selectLevel(_0x7c5dcb){const _0x1d32c9=_0x37df58;gameState[_0x1d32c9(0x229)]=_0x7c5dcb,gameState[_0x1d32c9(0x1de)]=_0x1d32c9(0x226),showNameInput();}function showNameInput(){const _0x2d806a=_0x37df58;document[_0x2d806a(0x1f1)](_0x2d806a(0x1c4))[_0x2d806a(0x1c3)]=gameState[_0x2d806a(0x265)][_0x2d806a(0x2a1)],document[_0x2d806a(0x1f1)](_0x2d806a(0x1f7))[_0x2d806a(0x1c3)]=gameState[_0x2d806a(0x26a)][_0x2d806a(0x2a1)],showPage(_0x2d806a(0x25c));}function backToLevelMenu(){const _0x37e5b0=_0x37df58;showPage(_0x37e5b0(0x1fe));}function startCountdownFromNames(){const _0x1c4855=_0x37df58,_0x377e7a=document['getElementById'](_0x1c4855(0x1c4))['value'],_0x1bdb6b=document[_0x1c4855(0x1f1)](_0x1c4855(0x1f7))[_0x1c4855(0x1c3)];gameState[_0x1c4855(0x265)][_0x1c4855(0x2a1)]=_0x377e7a['trim']()||'Pemain\x20Kiri',gameState[_0x1c4855(0x26a)][_0x1c4855(0x2a1)]=_0x1bdb6b[_0x1c4855(0x297)]()||'Pemain\x20Kanan',showCountdown();}function showCountdown(){const _0x5ed54a=_0x37df58,_0x56962d=document[_0x5ed54a(0x1f1)]('countdownOverlay');document['getElementById']('homeBtn')[_0x5ed54a(0x295)][_0x5ed54a(0x1e4)]=_0x5ed54a(0x201),document[_0x5ed54a(0x1f1)](_0x5ed54a(0x25a))[_0x5ed54a(0x295)][_0x5ed54a(0x1e4)]=_0x5ed54a(0x201),document[_0x5ed54a(0x1f1)](_0x5ed54a(0x1fa))[_0x5ed54a(0x295)][_0x5ed54a(0x1e4)]=_0x5ed54a(0x201),_0x56962d[_0x5ed54a(0x230)][_0x5ed54a(0x255)](_0x5ed54a(0x1d6)),playSound(audioStart);const _0x256d22=[{'number':'3','text':'Bersiap...'},{'number':'2','text':_0x5ed54a(0x271)},{'number':'1','text':'Fokus...'},{'number':_0x5ed54a(0x252),'text':_0x5ed54a(0x247),'isStart':!![]}];function _0x36130a(_0x4f5115){const _0x4712a2=_0x5ed54a;if(_0x4f5115>=_0x256d22[_0x4712a2(0x29f)]){setTimeout(()=>{const _0x267970=_0x4712a2;_0x56962d[_0x267970(0x230)][_0x267970(0x251)]('show'),startGame();},0x1f4);return;}const _0x633fd=_0x256d22[_0x4f5115],_0x514926=document[_0x4712a2(0x1f1)]('countdownNumber'),_0x28a0e0=document[_0x4712a2(0x1f1)](_0x4712a2(0x267));_0x514926[_0x4712a2(0x206)]=_0x633fd['number'],_0x28a0e0['textContent']=_0x633fd[_0x4712a2(0x22c)],_0x633fd[_0x4712a2(0x29e)]?(_0x514926[_0x4712a2(0x230)]['add'](_0x4712a2(0x222)),_0x28a0e0[_0x4712a2(0x230)][_0x4712a2(0x255)]('start')):(_0x514926[_0x4712a2(0x230)][_0x4712a2(0x251)](_0x4712a2(0x222)),_0x28a0e0[_0x4712a2(0x230)][_0x4712a2(0x251)](_0x4712a2(0x222))),_0x514926[_0x4712a2(0x295)][_0x4712a2(0x1f9)]='none',_0x28a0e0[_0x4712a2(0x295)][_0x4712a2(0x1f9)]='none',void _0x514926['offsetHeight'],_0x514926[_0x4712a2(0x295)][_0x4712a2(0x1f9)]='',_0x28a0e0[_0x4712a2(0x295)][_0x4712a2(0x1f9)]='',setTimeout(()=>_0x36130a(_0x4f5115+0x1),_0x4f5115<_0x256d22['length']-0x1?0x3e8:0x320);}_0x36130a(0x0);}function startGame(){const _0x46b2c8=_0x37df58;document[_0x46b2c8(0x1f1)](_0x46b2c8(0x200))['style'][_0x46b2c8(0x1e4)]=_0x46b2c8(0x28b),document[_0x46b2c8(0x1f1)]('fullscreenBtn')[_0x46b2c8(0x295)]['display']=_0x46b2c8(0x28b),document[_0x46b2c8(0x1f1)](_0x46b2c8(0x1fa))['style'][_0x46b2c8(0x1e4)]=_0x46b2c8(0x28b),showPage(_0x46b2c8(0x20b)),resetGame();}function toggleFullscreen(){const _0x2d3e45=_0x37df58;if(!document[_0x2d3e45(0x1d4)]&&!document[_0x2d3e45(0x28f)]&&!document['webkitFullscreenElement']&&!document[_0x2d3e45(0x1cc)]){const _0x25ecd1=document[_0x2d3e45(0x29d)];if(_0x25ecd1['requestFullscreen'])_0x25ecd1[_0x2d3e45(0x21f)]()[_0x2d3e45(0x234)](_0x2ab151=>console[_0x2d3e45(0x1e2)](_0x2ab151));else{if(_0x25ecd1[_0x2d3e45(0x27c)])_0x25ecd1[_0x2d3e45(0x27c)]();else{if(_0x25ecd1[_0x2d3e45(0x264)])_0x25ecd1[_0x2d3e45(0x264)]();else _0x25ecd1[_0x2d3e45(0x244)]&&_0x25ecd1[_0x2d3e45(0x244)]();}}}else{if(document['exitFullscreen'])document[_0x2d3e45(0x235)]();else{if(document['mozCancelFullScreen'])document[_0x2d3e45(0x21c)]();else{if(document['webkitExitFullscreen'])document[_0x2d3e45(0x1e0)]();else document['msExitFullscreen']&&document[_0x2d3e45(0x1df)]();}}}}function handleFullscreenChange(){const _0x254f53=_0x37df58;document[_0x254f53(0x1d4)]||document[_0x254f53(0x28f)]||document['webkitFullscreenElement']||document['msFullscreenElement']?document[_0x254f53(0x286)]['classList'][_0x254f53(0x255)](_0x254f53(0x21d)):document[_0x254f53(0x286)][_0x254f53(0x230)][_0x254f53(0x251)]('fullscreen'),setTimeout(recalculateRacerPositions,0x64);}document[_0x37df58(0x24b)](_0x37df58(0x219),handleFullscreenChange),document[_0x37df58(0x24b)](_0x37df58(0x1c6),handleFullscreenChange),document[_0x37df58(0x24b)](_0x37df58(0x213),handleFullscreenChange),document[_0x37df58(0x24b)](_0x37df58(0x24e),handleFullscreenChange);function recalculateRacerPositions(){const _0x3d4e2a=_0x37df58,_0x1d4ac4=document[_0x3d4e2a(0x20d)](_0x3d4e2a(0x250));if(!_0x1d4ac4||_0x1d4ac4[_0x3d4e2a(0x298)]===0x0)return;const _0x5bd1aa=_0x1d4ac4[_0x3d4e2a(0x298)],_0x41fa63=RACE_LENGTH,_0x6d6aa0=document['querySelector'](_0x3d4e2a(0x1cf));if(_0x6d6aa0){const _0x37a2d8=_0x5bd1aa*0.035,_0x22fd93=_0x5bd1aa*0.82,_0x109111=(_0x22fd93-_0x37a2d8)/_0x41fa63,_0x378ebf=_0x37a2d8+gameState[_0x3d4e2a(0x265)][_0x3d4e2a(0x1f8)]*_0x109111;_0x6d6aa0[_0x3d4e2a(0x295)][_0x3d4e2a(0x1d0)]=_0x378ebf+'px',_0x6d6aa0[_0x3d4e2a(0x295)][_0x3d4e2a(0x242)]='scale(1)';}const _0x185a5b=document['querySelector'](_0x3d4e2a(0x254));if(_0x185a5b){const _0x344f13=_0x5bd1aa*0.065,_0x2bbd72=_0x5bd1aa*0.78,_0x2c6015=(_0x2bbd72-_0x344f13)/_0x41fa63,_0x3e7a55=_0x344f13+gameState[_0x3d4e2a(0x26a)][_0x3d4e2a(0x1f8)]*_0x2c6015;_0x185a5b[_0x3d4e2a(0x295)]['left']=_0x3e7a55+'px',_0x185a5b[_0x3d4e2a(0x295)][_0x3d4e2a(0x242)]=_0x3d4e2a(0x237);}}let resizeTimeout;window[_0x37df58(0x24b)](_0x37df58(0x1c0),()=>{clearTimeout(resizeTimeout),resizeTimeout=setTimeout(()=>{const _0x4e49d4=_0x58c5;document[_0x4e49d4(0x1f1)](_0x4e49d4(0x20b))[_0x4e49d4(0x295)][_0x4e49d4(0x1e4)]===_0x4e49d4(0x28b)&&recalculateRacerPositions();},0x64);}),document[_0x37df58(0x24b)](_0x37df58(0x1eb),()=>{const _0x52a4b3=_0x37df58,_0x52e799=document[_0x52a4b3(0x208)](_0x52a4b3(0x26c));_0x52e799[_0x52a4b3(0x270)](_0x1f88f5=>{const _0x427bfb=_0x52a4b3;_0x1f88f5[_0x427bfb(0x24b)]('mouseenter',playHoverSound);});});function _0xa021(){const _0x5e760b=['1244giCQSf','log','pancasila','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p>Atas\x20keberhasilannya\x20memenangkan\x20permainan</p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<!--\x20JUDUL\x20SERTIFIKAT\x20DIUBAH\x20-->\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p\x20class=\x22game-title\x22>Edukasi\x20Pacu\x20Tokoh\x20Bangsa</p>\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22footer\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22signature-block\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p>Jakarta,\x20','currentGameType','currentLevel','\x22></i>','confetti','text','color','Siapa\x20yang\x20menjadi\x20ketua\x20Panitia\x20Sembilan?','bangbin_pacu_File/bangbinKlik.mp3','classList','play','Memilih\x20presiden','winnerText','catch','exitFullscreen','random','scale(0.9)','Soepomo','options','Pemain\x20Kiri','write','KNIP','fa-flag-checkered','17\x20Agustus\x201945','\x22></i><span>','Selamat!\x20Anda\x20berhasil\x20mencapai\x20garis\x20finish!','.page-container','transform','Usulan\x20dasar\x20negara\x20dari\x20Mr.\x20Soepomo\x20disampaikan\x20pada\x20tanggal...','msRequestFullscreen','innerHTML','centralQuestionBox','Ayooo\x20Kamu\x20Bisa!!!...','Moh.\x20Hatta','14429148VEYBvf','alignItems','addEventListener','Moh.\x20Yamin','Mohammad\x20Yamin','MSFullscreenChange','.racer-container','#gameScreenBalapmobil\x20.race-track','remove','Mulai!','9\x20orang','#gameScreenBalapmobil\x20.right-racer','add','Menyusun\x20teks\x20proklamasi','Mohammad\x20Hatta\x20(mewakili\x20tokoh\x20Indonesia\x20Timur)','winnerModal','pancasila_1','fullscreenBtn','</p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22signature-line\x22></div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p\x20style=\x22font-weight:\x20600;\x22>(\x20Pengembang\x20)</p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22signature-block\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p>&nbsp;</p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22signature-line\x22></div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p\x20style=\x22font-weight:\x20600;\x22>(\x20Pemenang\x20)</p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20</body>\x0a\x20\x20\x20\x20\x20\x20\x20\x20</html>\x0a\x20\x20\x20\x20','nameInputPage','Abikusno\x20Tjokrosoejoso','.hop','...','#gameScreenBalapmobil','<i\x20class=\x22fas\x20','Siapa\x20ketua\x20BPUPKI\x20(Badan\x20Penyelidik\x20Usaha-usaha\x20Persiapan\x20Kemerdekaan\x20Indonesia)?','980522PcgQVk','webkitRequestFullscreen','leftPlayer','Bunyi\x20sila\x20kelima\x20Pancasila\x20yang\x20disahkan\x20pada\x2018\x20Agustus\x201945\x20adalah...','countdownText','correct','Apa\x20nama\x20lain\x20BPUPKI\x20dalam\x20bahasa\x20Jepang?','rightPlayer','document','.hover-sound-btn','center','1167ckrycz','Hari\x20Kemerdekaan','forEach','Konsentrasi...','currentTime','</title>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<link\x20rel=\x22stylesheet\x22\x20href=\x22banbinFont.css\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<style>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20body\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20font-family:\x20\x27Poppins\x27,\x20\x27Arial\x27,\x20sans-serif;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20display:\x20flex;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20justify-content:\x20center;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20align-items:\x20center;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20height:\x20100vh;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20margin:\x200;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20background-color:\x20#f0f0f0;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20.certificate-container\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20width:\x20842px;\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20height:\x20595px;\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20border:\x2010px\x20solid\x20#1a237e;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20background:\x20#ffffff;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20padding:\x2040px;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20box-sizing:\x20border-box;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20position:\x20relative;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20text-align:\x20center;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20display:\x20flex;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20flex-direction:\x20column;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20justify-content:\x20center;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20align-items:\x20center;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20box-shadow:\x200\x2010px\x2030px\x20rgba(0,0,0,0.1);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20.certificate-container::before,\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20.certificate-container::after\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20content:\x20\x27\x27;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20position:\x20absolute;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20width:\x20120px;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20height:\x20120px;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20background-image:\x20url(\x27bangbin_pacu_File/favicon.ico\x27);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20background-size:\x2080%;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20background-repeat:\x20no-repeat;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20background-position:\x20center;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20opacity:\x200.1;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20z-index:\x201;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20h1\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20font-family:\x20\x27Playfair\x20Display\x27,\x20serif;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20font-size:\x2054px;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20color:\x20#1a237e;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20margin:\x200;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20z-index:\x202;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20h2\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20font-size:\x2024px;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20color:\x20#333;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20margin:\x2020px\x200\x2010px\x200;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20z-index:\x202;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20.winner-name\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20font-family:\x20\x27Poppins\x27,\x20sans-serif;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20font-size:\x2044px;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20font-weight:\x20700;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20color:\x20#b71c1c;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20border-bottom:\x203px\x20solid\x20#b71c1c;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20display:\x20inline-block;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20padding:\x200\x2040px\x2010px\x2040px;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20margin:\x2020px\x200;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20z-index:\x202;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20background:\x20#fff;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20p\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20font-size:\x2018px;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20color:\x20#555;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20margin:\x2010px\x200;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20z-index:\x202;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20.game-title\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20font-size:\x2026px;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20font-weight:\x20600;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20color:\x20#1a237e;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20margin-top:\x2015px;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20.footer\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20margin-top:\x2050px;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20display:\x20flex;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20justify-content:\x20space-between;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20width:\x2090%;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20z-index:\x202;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20.signature-block\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20width:\x2040%;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20text-align:\x20center;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20.signature-line\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20border-bottom:\x201.5px\x20solid\x20#333;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20margin-top:\x2060px;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20margin-bottom:\x208px;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20/*\x20Print-specific\x20styles\x20*/\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20@media\x20print\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20body\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20background-color:\x20#ffffff;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20margin:\x200;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20padding:\x200;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20.certificate-container\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20width:\x20100%;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20height:\x20100%;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20margin:\x200;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20padding:\x2020mm;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20border:\x2010px\x20solid\x20#1a237e;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20box-shadow:\x20none;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20box-sizing:\x20border-box;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20@page\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20size:\x20A4\x20landscape;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20margin:\x200;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</style>\x0a\x20\x20\x20\x20\x20\x20\x20\x20</head>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<body>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22certificate-container\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<h1>SERTIFIKAT</h1>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<h2>diberikan\x20kepada:</h2>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22winner-name\x22>','currentQuestionData','Kapan\x20sidang\x20pertama\x20BPUPKI\x20dilaksanakan?','bangbin_pacu_File/bangbinWinner.mp3','Keadilan\x20sosial\x20bagi\x20seluruh\x20rakyat\x20Indonesia','\x0a\x20\x20\x20\x20\x20\x20\x20\x20<html>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<head>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<title>Sertifikat\x20-\x20','42wNhmbn','Panitia\x20Sembilan','Kesejahteraan\x20sosial','mozRequestFullScreen','gameTypeMenu','Dr.\x20K.R.T.\x20Radjiman\x20Wedyodiningrat','Achmad\x20Soebardjo','PPKI\x20(Panitia\x20Persiapan\x20Kemerdekaan\x20Indonesia)','45\x20orang','Wahid\x20Hasyim','shaking','12785RXJgFp','Pancasila\x20disahkan\x20sebagai\x20dasar\x20negara\x20oleh\x20PPKI\x20pada\x20tanggal...','body','266200cqZGiF','_blank','numeric','Memuat...','flex','bangbin_pacu_File/bangbinCar.mp3','10\x20orang','floor','mozFullScreenElement','gameCooldown','Berapa\x20jumlah\x20anggota\x20BPUPKI?','Teks\x20Proklamasi','31\x20Mei\x201945','62\x20orang','style','justifyContent','trim','offsetWidth','Audio\x20play\x20failed\x20(will\x20retry\x20on\x20next\x20user\x20interaction):','#gameScreenBalapmobil\x20.option-btn','right','Hari\x20Konstitusi','documentElement','isStart','length','bangbin_pacu_File/bangbinStart.mp3','name','resize','Badan\x20yang\x20mengesahkan\x20UUD\x201945\x20(termasuk\x20Pancasila\x20di\x20dalamnya)\x20adalah...','99ZgfGog','value','playerLeftNameInput','.left-racer','mozfullscreenchange','fa-car-side','bangbin_pacu_File/bangbinCarSalah.mp3','.stand','Dokuritsu\x20Junbi\x20Inkai','toLocaleDateString','msFullscreenElement','Dokuritsu\x20Junbi\x20Cosakai','<i\x20class=\x22fas\x20fa-car-side\x20me-2\x22\x20style=\x22color:\x20','#gameScreenBalapmobil\x20.left-racer','left','#gameScreenBalapmobil\x20','onload','Soekarno','fullscreenElement','profileModal','show','Istilah\x20\x27Pancasila\x27\x20sebagai\x20nama\x20dasar\x20negara\x20pertama\x20kali\x20dikemukakan\x20oleh...','.content-page,\x20.game-container','Keadilan\x20bagi\x20seluruh\x20rakyat','question','Hari\x20Kesaktian\x20Pancasila','Panitia\x20Sembilan\x20dibentuk\x20SETELAH\x20sidang\x20BPUPKI\x20pertama\x20untuk...','open','currentMode','msExitFullscreen','webkitExitFullscreen','70\x20orang','error','hopping','display','disabled','#b71c1c','8HiWEhv','#333333','#1a237e','Hari\x20Lahir\x20Pancasila','DOMContentLoaded','10-17\x20Juli\x201945','2011478dQOYqg','-player\x20.option-btn','wrong','Sila\x20pertama\x20dalam\x20Piagam\x20Jakarta\x20diubah\x20menjadi\x20\x27Ketuhanan\x20Yang\x20Maha\x20Esa\x27\x20atas\x20usulan\x20dari...','getElementById','now','div','18\x20Agustus\x201945','appendChild','1\x20Juni\x201945','playerRightNameInput','racePosition','animation','profileBtn','22\x20Juni\x201945','1wnjIQN','Kesejahteraan\x20Rakyat','levelMenuWaktu','Heiho','homeBtn','none','correctAnswerIndex','Kapan\x20Panitia\x20Sembilan\x20melaporkan\x20hasil\x20rumusan\x20Piagam\x20Jakarta?','-player\x20.score-value','scale(1)','textContent','29\x20Mei\x201945','querySelectorAll','Piagam\x20Jakarta\x20(Jakarta\x20Charter)','#667eea','gameScreenBalapmobil','BPUPKI','querySelector','.right-racer','.confetti','long','A.A.\x20Maramis','balap-mobil','webkitfullscreenchange','Ki\x20Bagus\x20Hadikusumo','Mr.\x20Soepomo','close','volume','727012THjWON','fullscreenchange','UUD\x201945','Dokumen\x20yang\x20dihasilkan\x20oleh\x20Panitia\x20Sembilan\x20dikenal\x20sebagai...','mozCancelFullScreen','fullscreen','block','requestFullscreen','Tanggal\x201\x20Juni\x20diperingati\x20sebagai\x20hari...','bangbin_pacu_File/bangbinCarBenar.mp3','start','onclick'];_0xa021=function(){return _0x5e760b;};return _0xa021();}function showProfileModal(){const _0x2cd9e1=_0x37df58,_0x21fc83=document[_0x2cd9e1(0x1f1)](_0x2cd9e1(0x1d5));_0x21fc83&&(_0x21fc83[_0x2cd9e1(0x295)][_0x2cd9e1(0x1e4)]='flex',setTimeout(()=>{const _0x59adf4=_0x2cd9e1;_0x21fc83[_0x59adf4(0x230)]['add'](_0x59adf4(0x1d6));},0xa));}function closeProfileModal(){const _0x156814=_0x37df58,_0xe4042b=document[_0x156814(0x1f1)](_0x156814(0x1d5));_0xe4042b&&(_0xe4042b[_0x156814(0x230)][_0x156814(0x251)](_0x156814(0x1d6)),setTimeout(()=>{const _0x4714c1=_0x156814;_0xe4042b[_0x4714c1(0x295)][_0x4714c1(0x1e4)]=_0x4714c1(0x201);},0x12c));}function printCertificate(_0x27b079){const _0x14e91f=_0x37df58,_0x3dbfe6=new Date(),_0x5c863d=_0x3dbfe6[_0x14e91f(0x1cb)]('id-ID',{'day':_0x14e91f(0x289),'month':_0x14e91f(0x210),'year':_0x14e91f(0x289)}),_0x175c2b=_0x14e91f(0x278)+_0x27b079+_0x14e91f(0x273)+_0x27b079+_0x14e91f(0x227)+_0x5c863d+_0x14e91f(0x25b),_0x27a78f=window[_0x14e91f(0x1dd)]('',_0x14e91f(0x288));_0x27a78f[_0x14e91f(0x26b)][_0x14e91f(0x1dd)](),_0x27a78f[_0x14e91f(0x26b)][_0x14e91f(0x23b)](_0x175c2b),_0x27a78f['document'][_0x14e91f(0x216)](),_0x27a78f[_0x14e91f(0x1d2)]=function(){_0x27a78f['focus'](),_0x27a78f['print']();};}backToGameTypeMenu();
+
+    </script>
+</body>
+</html>
